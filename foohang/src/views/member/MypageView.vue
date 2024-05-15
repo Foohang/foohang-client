@@ -2,34 +2,36 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import MainHeader from "@/components/header/MainHeader.vue";
 const authStore = useAuthStore();
 const router = useRouter();
 
 const joinForm = ref({
-  email: "",
+  email: authStore.user.email,
   password: "",
-  nickName: "",
-  region: "",
-  food: "",
-  birth: "",
-  gender: "",
+  nickName: authStore.user.nickName,
+  region: authStore.user.region,
+  food: authStore.user.food,
+  birth: authStore.user.birth,
+  gender: authStore.user.gender,
 });
 
-const join = async () => {
-  if (!confirm("이대로 가입하시겠습니까?")) return;
+const update = async () => {
+  if (!confirm("이대로 변경하시겠습니까?")) return;
   try {
-    await authStore.join(joinForm.value);
-    router.push({name:"home"});
+    await authStore.update(joinForm.value);
+    router.push({name:"mypage"});
   } catch (error) {
     console.error("에러:", error);
-    alert("가입 실패");
+    alert("변경 실패");
   }
 };
+
 </script>
 
 <template>
   <main>
-    <h1>회원가입</h1>
+    <h1>마이페이지</h1>
     <form @submit.prevent="join">
       <label
         ><input
@@ -93,9 +95,8 @@ const join = async () => {
         <label for="women">여성</label>
       </div>
       <br />
-      <input type="submit" value="가입" />
+      <input type="submit" value="변경" />
     </form>
   </main>
 </template>
-
 <style scoped></style>

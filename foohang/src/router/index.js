@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "@/views/member/LoginView.vue";
 import RegistView from "@/views/member/RegistView.vue";
+import MypageView from "@/views/member/MypageView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,6 +21,11 @@ const router = createRouter({
       name: "regist",
       component: RegistView,
     },
+    {
+      path: "/mypage",
+      name: "mypage",
+      component: MypageView,
+    }
   ],
 });
 

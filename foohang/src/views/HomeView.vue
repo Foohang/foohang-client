@@ -5,3 +5,4 @@
     <h1>메인</h1>
   </main>
 </template>
+<style scoped></style>

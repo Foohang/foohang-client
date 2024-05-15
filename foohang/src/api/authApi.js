@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authApi = axios.create({
-  baseURL: "http://localhost/api/members",
+  baseURL: "http://localhost/members",
 });
 
 export default authApi;

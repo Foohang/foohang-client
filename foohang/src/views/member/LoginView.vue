@@ -7,14 +7,14 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const loginForm = ref({
-  id: "",
+  email: "",
   password: "",
 });
 
 const login = async () => {
   try {
     await authStore.login(loginForm.value);
-    router.push("/");
+    router.push({name:"home"});
   } catch (error) {
     console.error("에러:", error);
     alert(" 실패");
@@ -27,7 +27,7 @@ const login = async () => {
     <h1>로그인</h1>
     <form @submit.prevent="login">
       <label
-        ><input type="text" v-model.trim="loginForm.id" required />아이디</label
+        ><input type="text" v-model.trim="loginForm.email" required />아이디</label
       >
       <br />
       <label
