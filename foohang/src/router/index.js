@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from "@/views/member/LoginView.vue";
 import RegistView from "@/views/member/RegistView.vue";
 import MypageView from "@/views/member/MypageView.vue";
+import MainView from "@/views/trail/MainView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,6 +26,12 @@ const router = createRouter({
       path: "/mypage",
       name: "mypage",
       component: MypageView,
+    },
+    {
+      path: "/mainPage",
+      name: "mainPage",
+      component: MainView,
+      // props : true,
     }
   ],
 });
