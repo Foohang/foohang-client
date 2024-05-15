@@ -17,12 +17,11 @@ const logout = () => {
 </script>
 
 <template>
-  <div>
+  <header>
     <nav>
       <ul>
-        <li><RouterLink :to="{name:'home'}"><img src="@/assets/logo.svg" height="20" alt="로고" /></RouterLink></li>
+        <li><RouterLink :to="{name:'home'}"><img src="@/assets/FoohangLogo.png" height="120" alt="로고" /></RouterLink></li>
       </ul>
-
       <ul v-if="user == null">
         <li><RouterLink :to="{name:'login'}" >로그인</RouterLink></li>
         <li><RouterLink :to="{name:'regist'}">회원가입</RouterLink></li>
@@ -33,8 +32,17 @@ const logout = () => {
         <li @click="logout">로그아웃</li>
       </ul>
     </nav>
-  </div>
+  </header>
 </template>
 
 <style scoped>
+header {
+  border: 1px solid black;
+}
+
+header ul {
+  display: flex;
+  justify-content: space-around;
+}
 </style>
+
