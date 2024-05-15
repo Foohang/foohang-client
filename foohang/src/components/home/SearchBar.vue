@@ -1,10 +1,20 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useSidoStore } from "@/stores/sido";
+import {useAuthStore} from "@/stores/auth";
 import { useRouter } from 'vue-router';
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const token = computed(()=>authStore.token);
 const router = useRouter();
 const moveMain = (item)=>{
-    console.log(item.sidoName)
+    console.log(token)
+    if(user.value==null || token.value == null){
+        alert("로그인이 필요합니다.");
+        router.push({name: 'login'});
+    }
+    else {
+        console.log(item.sidoName)
     console.log(item.sidoCode)
     router.push({
 	name: 'mainPage',
@@ -14,6 +24,7 @@ const moveMain = (item)=>{
     },
 }
 })
+    }
 }
 const sidoStore = useSidoStore();
 // await sidoStore.getSido();

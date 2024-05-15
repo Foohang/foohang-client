@@ -7,6 +7,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const joinForm = ref({
+  memberId: authStore.user.memberId,
   email: authStore.user.email,
   password: "",
   nickName: authStore.user.nickName,
@@ -33,6 +34,7 @@ const update = async () => {
   <main>
     <h1>마이페이지</h1>
     <form @submit.prevent="join">
+        <input type="hidden" v-model="joinForm.memberId"/>
       <label
         ><input
           type="text"
