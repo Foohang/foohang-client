@@ -24,6 +24,7 @@ const update = async () => {
   try {
     await authStore.update(joinForm.value);
     router.push({ name: "mypage" });
+    alert("변경 완료");
   } catch (error) {
     console.error("에러:", error);
     alert("변경 실패");

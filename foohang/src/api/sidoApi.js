@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const sdioApi = axios.create({
-  baseURL: "http://localhost/sido",
+  baseURL: "http://localhost/spots/sido",
 });
 
 export default sdioApi;

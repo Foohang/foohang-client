@@ -7,14 +7,12 @@ export const useSidoStore = defineStore("sido", () => {
     {
       sidoCode: "31",
       sidoName: "서울",
-      sidImage:
-        "https://github.com/Foohang/Image/assets/72538151/b9184172-a274-4a93-b9e5-770e30d23884",
+      sidoImage: `/src/assets/city/31.jpeg`,
     },
     {
       sidoCode: "32",
       sidoName: "대전",
-      sidImage:
-        "https://github.com/Foohang/Image/assets/72538151/b1c6ca36-330d-4f58-972a-70a5d8b40b55",
+      sidoImage: `/src/assets/city/32.jpeg`,
     },
   ]);
 
