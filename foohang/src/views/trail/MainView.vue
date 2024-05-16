@@ -10,7 +10,12 @@ const sidoName = ref(dataObj.sidoName);
 const sidoCode = ref(dataObj.sidoCode);
 
 const sidoStore = useSidoStore();
-const sidoList = ref(sidoStore.sidoList);
+const sidoList = ref(null);
+const setInfo = async () => {
+  await sidoStore.getSido();
+  sidoList.value = sidoStore.sidoList;
+};
+setInfo();
 const sidoNames = ref(sidoStore.sidoList.map((item) => item.sidoName));
 
 const gugunName = ref(null);
@@ -25,7 +30,7 @@ watch(sidoName, (newVal) => {
   if (matchedSido) {
     sidoCode.value = matchedSido.sidoCode;
   }
-  // gugunStore.getGugun(sidoCode);
+  gugunStore.getGugun(sidoCode);
 });
 
 watch(gugunName, (newVal) => {
@@ -42,7 +47,7 @@ const type = ref("0");
 const attractionStore = useAttractionStore();
 const attractionList = ref(attractionStore.attractionList);
 const search = async (sidoCode, gugunCode, type) => {
-  // await attractionStore.getAttraction(sidoCode, gugunCode, type);
+  await attractionStore.getAttraction(sidoCode, gugunCode, type);
 };
 const routeName = ref("장소 불러오기");
 const seen = ref(false);

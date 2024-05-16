@@ -28,7 +28,7 @@ const moveMain = (item) => {
   // }
 };
 const sidoStore = useSidoStore();
-// await sidoStore.getSido();
+sidoStore.getSido();
 const sidoList = sidoStore.sidoList;
 const sidoNames = ref(sidoList.map((item) => item.sidoName));
 const selectName = ref("");
