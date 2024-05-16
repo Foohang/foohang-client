@@ -11,11 +11,7 @@ const sidoCode = ref(dataObj.sidoCode);
 
 const sidoStore = useSidoStore();
 const sidoList = ref(null);
-const setInfo = async () => {
-  await sidoStore.getSido();
-  sidoList.value = sidoStore.sidoList;
-};
-setInfo();
+sidoList.value = sidoStore.sidoList;
 const sidoNames = ref(sidoStore.sidoList.map((item) => item.sidoName));
 
 const gugunName = ref(null);
@@ -24,13 +20,22 @@ const gugunCode = ref(null);
 const gugunStore = useGugunStore();
 const gugunList = ref(gugunStore.gugunList);
 const gugunNames = ref(gugunStore.gugunList.map((item) => item.gugunName));
+const initGugun = async()=>{
+  await gugunStore.getGugun(sidoCode.value);
+  gugunList.value = gugunStore.gugunList;
+  gugunNames.value = gugunStore.gugunList.map((item) => item.gugunName);
+}
 
-watch(sidoName, (newVal) => {
+watch(sidoName, async (newVal) => {
   const matchedSido = sidoList.value.find((item) => item.sidoName === newVal);
   if (matchedSido) {
     sidoCode.value = matchedSido.sidoCode;
   }
-  gugunStore.getGugun(sidoCode);
+  await gugunStore.getGugun(sidoCode.value);
+  gugunName.value = null;
+  gugunCode.value = null;
+  gugunList.value = gugunStore.gugunList;
+  gugunNames.value = gugunStore.gugunList.map((item) => item.gugunName);
 });
 
 watch(gugunName, (newVal) => {
@@ -46,14 +51,70 @@ const type = ref("0");
 
 const attractionStore = useAttractionStore();
 const attractionList = ref(attractionStore.attractionList);
+
 const search = async (sidoCode, gugunCode, type) => {
   await attractionStore.getAttraction(sidoCode, gugunCode, type);
+  attractionList.value = attractionStore.attractionList;
+  expandedCardIndex.value = null;
 };
+
 const routeName = ref("장소 불러오기");
 const seen = ref(false);
 const getRouteList = function () {
-  seen = true;
+  console.log(seen.value)
+  if(seen.value){
+    seen.value =false;
+    routeName.value = "장소 불러오기"
+  }else{
+    seen.value = true;
+    routeName.value = "장소 불러오기 취소"
+  }
 };
+
+
+//카드 관련
+const getContentTypeName = (contentTypeId) => {
+  switch (contentTypeId) {
+    case 12:
+      return '관광지';
+    case 14:
+      return '문화시설';
+    case 15:
+      return '축제공연행사';
+    case 25:
+      return '여행코스';
+    case 28:
+      return '레포츠';
+    case 32:
+      return '숙박';
+    case 38:
+      return '쇼핑';
+    case 39:
+      return '음식점';
+    default:
+      return '';
+  }
+};
+
+// 카드 상세 정보 관련
+const attractionDetail = ref(null)
+const expandedCardIndex = ref(null);
+
+const expandCard = async (index, item) => {
+  expandedCardIndex.value = index;
+  await attractionStore.getAttractionDetail(item.contentId);
+  attractionDetail.value = attractionStore.attractionDetail;
+  console.log(attractionDetail.value)
+};
+
+const closeCard = () => {
+  expandedCardIndex.value = null;
+};
+
+const register = (item) => {
+  // 등록 버튼 클릭 시 실행되는 로직
+};
+initGugun();
 </script>
 
 <template>
@@ -76,7 +137,7 @@ const getRouteList = function () {
           label="구·군"
         ></v-select>
 
-        <v-btn variant="outlined" @clicked="search"> 검색 </v-btn>
+        <v-btn variant="outlined" @click="search(sidoCode,gugunCode,type)"> 검색 </v-btn>
       </div>
       <!-- 버튼 -->
       <v-card flat>
@@ -142,38 +203,45 @@ const getRouteList = function () {
       </v-card>
       <hr />
       <div class="cards">
-        <p>{{ sidoCode }}</p>
-        <p>{{ sidoName }}</p>
-        <p>{{ gugunCode }}</p>
-        <p>{{ gugunName }}</p>
-        <p>{{ type }}</p>
         <v-card
           class="mx-auto"
           max-width="300"
+          height="200"
           v-for="(item, index) in attractionList"
           :key="index"
         >
+        <div  v-if="expandedCardIndex !== index">
           <v-img
             class="align-end text-white"
             height="100"
             :src="item.firstImage"
             cover
           >
-            <v-card-title>{{ item.contentName }}</v-card-title>
+            <v-card-title>{{ item.title }}</v-card-title>
           </v-img>
-
+          
           <v-card-subtitle class="pt-4">{{
-            item.contentTypeId
+            getContentTypeName(item.contentTypeId)
           }}</v-card-subtitle>
-
+    <v-card-actions>
+      <v-btn color="orange" @click.stop="register(index)">등록</v-btn>
+      <v-btn color="gray" @click.stop="expandCard(index,item)">정보</v-btn>
+    </v-card-actions>
+</div>
+<div v-else class="card-text">
+    <v-card-text v-if="attractionDetail">
+      <p>관광지명: {{ attractionDetail.title }}</p>
+      <p>주소: {{ attractionDetail.addr1 }}</p>
+      <p>상세 정보: {{ attractionDetail.overview }}</p>
+    </v-card-text>
           <v-card-actions>
-            <v-btn color="orange" text="등록"></v-btn>
-
-            <v-btn color="gray" text="정보"></v-btn>
-          </v-card-actions>
+      <v-btn color="orange" @click.stop="register(index)">등록</v-btn>
+      <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+    </v-card-actions>
+  </div>
         </v-card>
       </div>
-      <v-btn variant="outlined" @clicked="getRouteList" color="orange">
+      <v-btn variant="outlined" @click="getRouteList" color="orange">
         {{ routeName }}
       </v-btn>
     </div>
@@ -203,12 +271,16 @@ const getRouteList = function () {
 }
 
 /* 카드 */
-.v-card + .v-card {
+.v-card {
   margin-top: 20px; /* 원하는 간격으로 조절 */
 }
 /* 스크롤 영역을 가진 컨테이너 */
 .cards {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
-  max-height: 40vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+  max-height: 45vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+}
+.card-text{
+  overflow-y: auto;
+  max-height: 200px;
 }
 </style>

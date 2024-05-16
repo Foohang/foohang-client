@@ -28,21 +28,26 @@ const moveMain = (item) => {
   // }
 };
 const sidoStore = useSidoStore();
-sidoStore.getSido();
-const sidoList = sidoStore.sidoList;
-const sidoNames = ref(sidoList.map((item) => item.sidoName));
+const sidoNames = ref(null);
 const selectName = ref("");
 const selectList = ref(null);
+const setInfo = async () => {
+  await sidoStore.getSido();
+  selectList.value = sidoStore.sidoList;
+  sidoNames.value = sidoStore.sidoList.map((item) => item.sidoName);
+};
+
 watch(selectName, (newVal) => {
   if (newVal === "") {
-    selectList.value = sidoList;
+    selectList.value = sidoStore.sidoList;
   } else {
-    selectList.value = sidoList.filter((item) =>
+    selectList.value = sidoStore.sidoList.filter((item) =>
       item.sidoName.includes(newVal)
     );
   }
 });
-selectList.value = sidoList;
+setInfo();
+sidoNames.value = sidoStore.sidoList.map((item) => item.sidoName);
 </script>
 
 <template>
