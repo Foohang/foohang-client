@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { KakaoMap } from "vue3-kakao-maps";
 import { useSidoStore } from "@/stores/sido";
 import { useGugunStore } from "@/stores/gugun";
 import { useAttractionStore } from "@/stores/attraction";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const token = computed(() => authStore.token);
+const router = useRouter();
 
 const { dataObj } = history.state;
 const sidoName = ref(dataObj.sidoName);
@@ -61,7 +67,10 @@ const search = async (sidoCode, gugunCode, type) => {
 const routeName = ref("장소 불러오기");
 const seen = ref(false);
 const getRouteList = function () {
-  console.log(seen.value)
+  if(user.value==null || token.value == null){
+      alert("로그인이 필요합니다.");
+  }else{
+      console.log(seen.value)
   if(seen.value){
     seen.value =false;
     routeName.value = "장소 불러오기"
@@ -69,6 +78,8 @@ const getRouteList = function () {
     seen.value = true;
     routeName.value = "장소 불러오기 취소"
   }
+  }
+
 };
 
 
@@ -112,7 +123,7 @@ const closeCard = () => {
 };
 
 const register = (item) => {
-  // 등록 버튼 클릭 시 실행되는 로직
+  
 };
 initGugun();
 </script>
