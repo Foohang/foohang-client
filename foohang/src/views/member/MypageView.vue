@@ -17,29 +17,31 @@ const joinForm = ref({
   gender: authStore.user.gender,
 });
 
+console.log(authStore.user);
+
 const update = async () => {
   if (!confirm("이대로 변경하시겠습니까?")) return;
   try {
     await authStore.update(joinForm.value);
-    router.push({name:"mypage"});
+    router.push({ name: "mypage" });
   } catch (error) {
     console.error("에러:", error);
     alert("변경 실패");
   }
 };
-
 </script>
 
 <template>
   <main>
     <h1>마이페이지</h1>
-    <form @submit.prevent="join">
-        <input type="hidden" v-model="joinForm.memberId"/>
+    <form @submit.prevent="update">
+      <input type="hidden" v-model="joinForm.memberId" />
       <label
         ><input
           type="text"
           v-model.trim="joinForm.email"
           required
+          disabled
         />이메일</label
       >
       <br />
@@ -47,7 +49,6 @@ const update = async () => {
         ><input
           type="password"
           v-model.trim="joinForm.password"
-          required
         />비밀번호</label
       >
       <br />

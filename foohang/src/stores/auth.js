@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import authApi from "@/api/authApi";
-import mypageApi from "@/api/mypageApi"
+import mypageApi from "@/api/mypageApi";
 import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -18,7 +18,6 @@ export const useAuthStore = defineStore("auth", () => {
 
   const update = async (joinInfo) => {
     const response = await mypageApi.put("/", joinInfo);
-
     token.value = response.data;
     user.value = jwtDecode(token.value);
   };
