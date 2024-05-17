@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { KakaoMap } from "vue3-kakao-maps";
 import { useSidoStore } from "@/stores/sido";
 import { useGugunStore } from "@/stores/gugun";
 import { useAttractionStore } from "@/stores/attraction";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import MapView from "@/components/trail/MapView.vue";
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 const token = computed(() => authStore.token);
@@ -26,11 +26,11 @@ const gugunCode = ref(null);
 const gugunStore = useGugunStore();
 const gugunList = ref(gugunStore.gugunList);
 const gugunNames = ref(gugunStore.gugunList.map((item) => item.gugunName));
-const initGugun = async()=>{
+const initGugun = async () => {
   await gugunStore.getGugun(sidoCode.value);
   gugunList.value = gugunStore.gugunList;
   gugunNames.value = gugunStore.gugunList.map((item) => item.gugunName);
-}
+};
 
 watch(sidoName, async (newVal) => {
   const matchedSido = sidoList.value.find((item) => item.sidoName === newVal);
@@ -64,67 +64,122 @@ const search = async (sidoCode, gugunCode, type) => {
   expandedCardIndex.value = null;
 };
 
-const routeName = ref("장소 불러오기");
+const routeName = ref("여행 경로 리스트 열기");
 const seen = ref(false);
 const getRouteList = function () {
-  if(user.value==null || token.value == null){
-      alert("로그인이 필요합니다.");
-  }else{
-      console.log(seen.value)
-  if(seen.value){
-    seen.value =false;
-    routeName.value = "장소 불러오기"
-  }else{
-    seen.value = true;
-    routeName.value = "장소 불러오기 취소"
+  if (user.value == null || token.value == null) {
+    alert("로그인이 필요합니다.");
+  } else {
+    console.log(seen.value);
+    if (seen.value) {
+      seen.value = false;
+      routeName.value = "여행 경로 리스트 열기";
+    } else {
+      seen.value = true;
+      routeName.value = "여행 경로 리스트 접기";
+    }
   }
-  }
-
 };
-
 
 //카드 관련
 const getContentTypeName = (contentTypeId) => {
   switch (contentTypeId) {
     case 12:
-      return '관광지';
+      return "관광지";
     case 14:
-      return '문화시설';
+      return "문화시설";
     case 15:
-      return '축제공연행사';
+      return "축제공연행사";
     case 25:
-      return '여행코스';
+      return "여행코스";
     case 28:
-      return '레포츠';
+      return "레포츠";
     case 32:
-      return '숙박';
+      return "숙박";
     case 38:
-      return '쇼핑';
+      return "쇼핑";
     case 39:
-      return '음식점';
+      return "음식점";
     default:
-      return '';
+      return "";
   }
 };
 
 // 카드 상세 정보 관련
-const attractionDetail = ref(null)
+const attractionDetail = ref(null);
 const expandedCardIndex = ref(null);
 
 const expandCard = async (index, item) => {
   expandedCardIndex.value = index;
   await attractionStore.getAttractionDetail(item.contentId);
   attractionDetail.value = attractionStore.attractionDetail;
-  console.log(attractionDetail.value)
+  console.log(attractionDetail.value);
 };
 
 const closeCard = () => {
   expandedCardIndex.value = null;
 };
 
+// attraction 선택 시 주변 관광지 보여주기
+const centerLat = ref(37.0);
+const centerLong = ref(127.0);
+const centerSrc = ref("/src/assets/FoohangLogo.png");
+const ceterContent = ref(0);
 const register = (item) => {
-  
+  centerLat.value = item.latitude;
+  centerLong.value = item.longitude;
+  centerSrc.value = item.firstImage;
+  ceterContent.value = item.contentId;
+  attractionStore.clearSelectedAttractions();
 };
+
+// attraction 추가시 변경
+
+const attractionSeen = ref(false);
+const selectList = ref([]);
+const attractionAdd = function () {
+  attractionSeen.value = true;
+  selectList.value = attractionStore.selectedAttractions;
+};
+
+const removeList = async (contentId) => {
+  await attractionStore.deleteSelectedAttractions(contentId);
+  selectList.value = attractionStore.selectedAttractions;
+};
+
+//최적 경로 생성
+const getBestRoute = async () => {
+  await attractionStore.makeBestRoute();
+  selectList.value = attractionStore.selectedAttractions;
+};
+
+//최적 경로 저장
+const saveRoute = async () => {
+  if (user.value == null || token.value == null) {
+    alert("로그인이 필요합니다.");
+  } else {
+    await attractionStore.saveRoute();
+    if (seen.value) {
+      seen.value = false;
+      routeName.value = "여행 경로 리스트 열기";
+    } else {
+      seen.value = true;
+      routeName.value = "여행 경로 리스트 접기";
+    }
+  }
+};
+
+const updateMealType = (item: any, mealType: number) => {
+  item.mealType = mealType;
+  // 스토어의 상태도 업데이트
+  const index = attractionStore.selectedAttractions.findIndex(
+    (attraction) => attraction.contentId === item.contentId
+  );
+  if (index !== -1) {
+    attractionStore.selectedAttractions[index].mealType = mealType;
+  }
+};
+
 initGugun();
 </script>
 
@@ -148,7 +203,9 @@ initGugun();
           label="구·군"
         ></v-select>
 
-        <v-btn variant="outlined" @click="search(sidoCode,gugunCode,type)"> 검색 </v-btn>
+        <v-btn variant="outlined" @click="search(sidoCode, gugunCode, type)">
+          검색
+        </v-btn>
       </div>
       <!-- 버튼 -->
       <v-card flat>
@@ -221,42 +278,147 @@ initGugun();
           v-for="(item, index) in attractionList"
           :key="index"
         >
-        <div  v-if="expandedCardIndex !== index">
-          <v-img
-            class="align-end text-white"
-            height="100"
-            :src="item.firstImage"
-            cover
-          >
-            <v-card-title>{{ item.title }}</v-card-title>
-          </v-img>
-          
-          <v-card-subtitle class="pt-4">{{
-            getContentTypeName(item.contentTypeId)
-          }}</v-card-subtitle>
-    <v-card-actions>
-      <v-btn color="orange" @click.stop="register(index)">등록</v-btn>
-      <v-btn color="gray" @click.stop="expandCard(index,item)">정보</v-btn>
-    </v-card-actions>
-</div>
-<div v-else class="card-text">
-    <v-card-text v-if="attractionDetail">
-      <p>관광지명: {{ attractionDetail.title }}</p>
-      <p>주소: {{ attractionDetail.addr1 }}</p>
-      <p>상세 정보: {{ attractionDetail.overview }}</p>
-    </v-card-text>
-          <v-card-actions>
-      <v-btn color="orange" @click.stop="register(index)">등록</v-btn>
-      <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
-    </v-card-actions>
-  </div>
+          <div v-if="expandedCardIndex !== index">
+            <v-img
+              class="align-end text-white"
+              height="100"
+              :src="item.firstImage"
+              cover
+            >
+              <v-card-title>{{ item.title }}</v-card-title>
+            </v-img>
+
+            <v-card-subtitle class="pt-4">{{
+              getContentTypeName(item.contentTypeId)
+            }}</v-card-subtitle>
+            <v-card-actions>
+              <v-btn color="orange" @click.stop="register(item)">이동</v-btn>
+              <v-btn color="gray" @click.stop="expandCard(index, item)"
+                >정보</v-btn
+              >
+            </v-card-actions>
+          </div>
+          <div v-else class="card-text">
+            <v-card-text v-if="attractionDetail">
+              <p>관광지명: {{ attractionDetail.title }}</p>
+              <p>주소: {{ attractionDetail.addr1 }}</p>
+              <p>상세 정보: {{ attractionDetail.overview }}</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="orange" @click.stop="register(item)">이동</v-btn>
+              <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+            </v-card-actions>
+          </div>
         </v-card>
       </div>
       <v-btn variant="outlined" @click="getRouteList" color="orange">
         {{ routeName }}
       </v-btn>
     </div>
-    <KakaoMap :lat="33.450701" :lng="126.570667" width="100%" height="50rem" />
+    <!-- 선택한 리스트 -->
+    <div v-if="attractionSeen" class="attractionList">
+      <h1>test2</h1>
+      <div class="cards2">
+        <v-card
+          class="mx-auto"
+          max-width="300"
+          height="200"
+          v-for="(item, index) in selectList"
+          :key="index"
+        >
+          <div v-if="expandedCardIndex !== index">
+            <v-img
+              class="align-end text-white"
+              height="100"
+              :src="item.firstImage"
+              cover
+            >
+              <v-card-title>{{ item.title }}</v-card-title>
+            </v-img>
+
+            <v-card-subtitle class="pt-4">{{
+              getContentTypeName(item.contentTypeId)
+            }}</v-card-subtitle>
+            <div v-if="item.contentTypeId === 39" class="radio-buttons">
+              <label>
+                <input
+                  type="radio"
+                  :name="'mealType-' + item.contentId"
+                  :value="1"
+                  v-model="item.mealType"
+                  @change="updateMealType(item, 1)"
+                />
+                아침
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  :name="'mealType-' + item.contentId"
+                  :value="2"
+                  v-model="item.mealType"
+                  @change="updateMealType(item, 2)"
+                />
+                점심
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  :name="'mealType-' + item.contentId"
+                  :value="3"
+                  v-model="item.mealType"
+                  @change="updateMealType(item, 3)"
+                />
+                저녁
+              </label>
+            </div>
+            <div v-if="item.contentTypeId === 32" class="radio-buttons">
+              <label>
+                <input
+                  type="check"
+                  :name="'firstHome-' + item.contentId"
+                  :value="1"
+                  v-model="item.mealType"
+                  @change="updateMealType(item, 1)"
+                />
+                아침
+              </label>
+            </div>
+            <v-card-actions>
+              <v-btn color="orange" @click.stop="removeList(item.contentId)"
+                >삭제</v-btn
+              >
+              <v-btn color="gray" @click.stop="expandCard(index, item)"
+                >정보</v-btn
+              >
+            </v-card-actions>
+          </div>
+          <div v-else class="card-text">
+            <v-card-text v-if="attractionDetail">
+              <p>관광지명: {{ attractionDetail.title }}</p>
+              <p>주소: {{ attractionDetail.addr1 }}</p>
+              <p>상세 정보: {{ attractionDetail.overview }}</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="orange" @click.stop="removeList(item)">삭제</v-btn>
+              <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+            </v-card-actions>
+          </div>
+        </v-card>
+      </div>
+      <v-btn variant="outlined" @click="getBestRoute" color="orange">
+        최적 루트 요청
+      </v-btn>
+      <v-btn variant="outlined" @click="saveRoute" color="orange">
+        루트 저장
+      </v-btn>
+    </div>
+    <MapView
+      :center-lat="centerLat"
+      :center-long="centerLong"
+      :center-src="centerSrc"
+      :center-content="ceterContent"
+      @attraction-event="attractionAdd"
+    ></MapView>
     <div v-if="seen">
       <h1>test2</h1>
     </div>
@@ -278,7 +440,7 @@ initGugun();
 /* 버튼 */
 .v-radio,
 .v-label {
-  font-size: 5px; /* 원하는 크기로 조정하세요 */
+  font-size: 10px; /* 원하는 크기로 조정하세요 */
 }
 
 /* 카드 */
@@ -290,8 +452,16 @@ initGugun();
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 45vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
 }
-.card-text{
+.cards2 {
+  overflow-y: auto; /* 세로 스크롤을 추가합니다. */
+  max-height: 80vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+}
+.card-text {
   overflow-y: auto;
   max-height: 200px;
+}
+
+.attractionList {
+  width: 500px;
 }
 </style>
