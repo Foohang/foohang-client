@@ -70,7 +70,6 @@ const getRouteList = function () {
   if (user.value == null || token.value == null) {
     alert("로그인이 필요합니다.");
   } else {
-    console.log(seen.value);
     if (seen.value) {
       seen.value = false;
       routeName.value = "여행 경로 리스트 열기";
@@ -113,11 +112,26 @@ const expandCard = async (index, item) => {
   expandedCardIndex.value = index;
   await attractionStore.getAttractionDetail(item.contentId);
   attractionDetail.value = attractionStore.attractionDetail;
-  console.log(attractionDetail.value);
 };
+
 
 const closeCard = () => {
   expandedCardIndex.value = null;
+};
+
+// 카드 상세 정보 관련
+const attractionDetail2 = ref(null);
+const expandedCardIndex2 = ref(null);
+
+const expandCard2 = async (index, item) => {
+  expandedCardIndex2.value = index;
+  await attractionStore.getAttractionDetail(item.contentId);
+  attractionDetail2.value = attractionStore.attractionDetail;
+};
+
+
+const closeCard2 = () => {
+  expandedCardIndex2.value = null;
 };
 
 // attraction 선택 시 주변 관광지 보여주기
@@ -151,6 +165,7 @@ const removeList = async (contentId) => {
 const getBestRoute = async () => {
   await attractionStore.makeBestRoute();
   selectList.value = attractionStore.selectedAttractions;
+  ceterContent.value = 0;
 };
 
 //최적 경로 저장
@@ -178,6 +193,12 @@ const updateMealType = (item: any, mealType: number) => {
   if (index !== -1) {
     attractionStore.selectedAttractions[index].mealType = mealType;
   }
+};
+
+const updateAccommodationsType = (item: any) => {
+  attractionStore.selectedAttractions.forEach(attraction => {
+    attraction.mainAccommodations = (attraction.contentId === item.contentId) ? item.mainAccommodations : 0;
+  });
 };
 
 initGugun();
@@ -326,7 +347,7 @@ initGugun();
           v-for="(item, index) in selectList"
           :key="index"
         >
-          <div v-if="expandedCardIndex !== index">
+          <div v-if="expandedCardIndex2 !== index">
             <v-img
               class="align-end text-white"
               height="100"
@@ -374,33 +395,33 @@ initGugun();
             <div v-if="item.contentTypeId === 32" class="radio-buttons">
               <label>
                 <input
-                  type="check"
-                  :name="'firstHome-' + item.contentId"
+                  type="radio"
+                  name="firstHome"
                   :value="1"
-                  v-model="item.mealType"
-                  @change="updateMealType(item, 1)"
+                  v-model="item.mainAccommodations"
+                  @change="updateAccommodationsType(item)"
                 />
-                아침
+                첫 숙소
               </label>
             </div>
             <v-card-actions>
               <v-btn color="orange" @click.stop="removeList(item.contentId)"
                 >삭제</v-btn
               >
-              <v-btn color="gray" @click.stop="expandCard(index, item)"
+              <v-btn color="gray" @click.stop="expandCard2(index, item)"
                 >정보</v-btn
               >
             </v-card-actions>
           </div>
           <div v-else class="card-text">
-            <v-card-text v-if="attractionDetail">
-              <p>관광지명: {{ attractionDetail.title }}</p>
-              <p>주소: {{ attractionDetail.addr1 }}</p>
-              <p>상세 정보: {{ attractionDetail.overview }}</p>
+            <v-card-text v-if="attractionDetail2">
+              <p>관광지명: {{ attractionDetail2.title }}</p>
+              <p>주소: {{ attractionDetail2.addr1 }}</p>
+              <p>상세 정보: {{ attractionDetail2.overview }}</p>
             </v-card-text>
             <v-card-actions>
               <v-btn color="orange" @click.stop="removeList(item)">삭제</v-btn>
-              <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+              <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
             </v-card-actions>
           </div>
         </v-card>
@@ -417,10 +438,11 @@ initGugun();
       :center-long="centerLong"
       :center-src="centerSrc"
       :center-content="ceterContent"
+      :select-list="selectList"
       @attraction-event="attractionAdd"
     ></MapView>
     <div v-if="seen">
-      <h1>test2</h1>
+      <h1>test3</h1>
     </div>
   </main>
 </template>

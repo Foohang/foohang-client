@@ -35,7 +35,6 @@ export const useAttractionStore = defineStore("attraction", () => {
     const alreadySelected = selectedAttractions.value.some(
       (attraction) => attraction.contentId === contentId
     );
-    console.log(selectedAttractions.value);
     if (alreadySelected) {
       alert("이미 들어있습니다.");
       return;

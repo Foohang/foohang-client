@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { KakaoMap, KakaoMapMarker, KakaoMapInfoWindow } from "vue3-kakao-maps";
+import { ref, watch,Ref } from "vue";
+import { KakaoMap, KakaoMapMarker, KakaoMapInfoWindow ,KakaoMapPolyline} from "vue3-kakao-maps";
+import type { KakaoMapLatLngItem } from 'vue3-kakao-maps';
 import { useAttractionStore } from "@/stores/attraction";
 const attractionStore = useAttractionStore();
 
@@ -10,7 +11,9 @@ const props = defineProps({
   centerLong: Number,
   centerSrc: String,
   centerContent: Number,
+  selectList: Object
 });
+const chceckContent = ref(0);
 const emit = defineEmits(["attractionEvent"]);
 
 const visibleRef = ref<boolean>(true);
@@ -31,7 +34,6 @@ const restaurantList = ref(attractionStore.nearRestaurants);
 const around = async () => {
   await attractionStore.getNearRestaurants(props.centerContent);
   restaurantList.value = attractionStore.nearRestaurants;
-  console.log(restaurantList.value);
   restaurantList.value.forEach(() => {
     visibleRefs.value.push(false);
     markers.value.push(null);
@@ -61,15 +63,28 @@ const registR = async (contentId) => {
   emit("attractionEvent");
 };
 
-watch(props, () => {
-  restaurantList.value = attractionStore.nearRestaurants;
+//선택된 리스트 마커 및 직선 관리
+const latLngList: Ref<KakaoMapLatLngItem[]> = ref([]);
+console.log(props)
+watch(props,(newProps)=>{
+  if(chceckContent.value!==props.centerContent){
+    restaurantList.value = attractionStore.nearRestaurants;
   visibleRefs.value = [];
   markers.value = [];
-});
+  chceckContent.value=props.centerContent;
+  }else{
+    latLngList.value = newProps.selectList.map(item => ({
+    lat: item.latitude,
+    lng: item.longitude
+  }));
+  console.log(latLngList.value)
+  }
+})
 </script>
 
 <template>
   <KakaoMap :lat="centerLat" :lng="centerLong" width="100%" height="50rem">
+    <div v-if="centerContent!=0">
     <!-- 중심좌표 마커 -->
     <KakaoMapMarker
       :image="{
@@ -89,11 +104,13 @@ watch(props, () => {
       :lng="centerLong"
       :visible="visibleRef"
     >
-      <v-img class="align-end text-white" height="100" :src="centerSrc" cover />
+      <div class="info-window-content">
+      <v-img class="align-end text-white" height="100" width = "150" :src="centerSrc" cover />
       <v-card-actions>
         <v-btn color="orange" @click.stop="regist">등록</v-btn>
         <v-btn color="orange" @click.stop="around">주변 맛집 보기</v-btn>
       </v-card-actions>
+    </div>
     </KakaoMapInfoWindow>
 
     <!-- 음식점 마커 -->
@@ -136,7 +153,24 @@ watch(props, () => {
         >
       </v-card-actions>
     </KakaoMapInfoWindow>
+  </div>
+    <!-- 선택된 리스트 마커 -->
+    <KakaoMapPolyline :latLngList="latLngList" />
+    <KakaoMapMarker
+      v-for="(point, index) in latLngList"
+      :key="index"
+      :lat="point.lat"
+      :lng="point.lng"
+    />
   </KakaoMap>
 </template>
 
-<style scoped></style>
+<style scoped>
+.info-window-content {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}</style>
