@@ -4,6 +4,10 @@ import LoginView from "@/views/member/LoginView.vue";
 import RegistView from "@/views/member/RegistView.vue";
 import MypageView from "@/views/member/MypageView.vue";
 import MainView from "@/views/trail/MainView.vue";
+import ProfileView from "@/views/member/ProfileView.vue"
+import ReviewView from "@/views/member/ReviewView.vue"
+import ReviewReadView from "@/views/member/review/ReviewReadView.vue"
+import ReviewWriteView from "@/views/member/review/ReviewWriteView.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -24,8 +28,30 @@ const router = createRouter({
     },
     {
       path: "/mypage",
-      name: "mypage",
-      component: MypageView,
+      component: ProfileView,
+      children: [
+        {
+          path: "",
+          name: "mypage",
+          component: MypageView,
+        },
+        {
+          path: "/review",
+          component: ReviewView,
+          children: [
+            {
+              path: "",
+              name: "review",
+              component: ReviewReadView,
+            },
+            {
+              path: "/write",
+              name: "reviewWrite",
+              component: ReviewWriteView,
+            },
+          ],
+        },
+      ],
     },
     {
       path: "/mainPage",

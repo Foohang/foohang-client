@@ -24,6 +24,7 @@ const update = async () => {
   try {
     await authStore.update(joinForm.value);
     router.push({ name: "mypage" });
+    alert("변경 완료");
   } catch (error) {
     console.error("에러:", error);
     alert("변경 실패");
@@ -33,7 +34,6 @@ const update = async () => {
 
 <template>
   <main>
-    <h1>마이페이지</h1>
     <form @submit.prevent="update">
       <input type="hidden" v-model="joinForm.memberId" />
       <label
