@@ -30,7 +30,9 @@ export const useAttractionStore = defineStore("attraction", () => {
 
   //선택한 관광지 리스트
   const selectedAttractions = ref([]);
-  const getSelectedAttractions = async (travelId) => {};
+  const setSelectedAttractions = async (response) => {
+    selectedAttractions.value = response.data;
+  };
   const addSelectedAttracitons = async (contentId) => {
     const alreadySelected = selectedAttractions.value.some(
       (attraction) => attraction.contentId === contentId
@@ -58,6 +60,10 @@ export const useAttractionStore = defineStore("attraction", () => {
     nearRestaurants.value = [];
   };
 
+    const clearSelected = function () {
+      selectedAttractions.value = [];
+  };
+
   const changeAttribute = function (contentId) {};
 
   const makeBestRoute = async () => {
@@ -68,10 +74,6 @@ export const useAttractionStore = defineStore("attraction", () => {
     selectedAttractions.value = response.data;
   };
 
-  const saveRoute = function () {
-    const response = routeApi.post("", selectedAttractions.value);
-  };
-
   return {
     attractionList,
     attractionDetail,
@@ -80,12 +82,12 @@ export const useAttractionStore = defineStore("attraction", () => {
     getAttraction,
     getAttractionDetail,
     getNearRestaurants,
-    getSelectedAttractions,
+    setSelectedAttractions,
     addSelectedAttracitons,
     deleteSelectedAttractions,
     clearSelectedAttractions,
     changeAttribute,
     makeBestRoute,
-    saveRoute,
+    clearSelected,
   };
 });

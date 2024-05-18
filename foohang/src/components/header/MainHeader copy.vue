@@ -26,16 +26,13 @@
             </div>
           </label>
           <ul v-if="checked" class="dropdown-menu">
-            <li v-if="user !== null">
+            <li>
               <RouterLink :to="{ name: 'mypage' }" class="dropdown-link">마이페이지</RouterLink>
             </li>
-            <li v-if="user !== null">
+            <li>
               <RouterLink :to="{ name: 'review' }" class="dropdown-link">후기</RouterLink>
             </li>
-            <li v-if="user !== null" @click="logout" class="dropdown-link">로그아웃</li>
-            <li v-if="user === null">
-              <RouterLink :to="{ name: 'regist' }" class="dropdown-link">회원가입</RouterLink>
-            </li>
+            <li @click="logout" class="dropdown-link">로그아웃</li>
           </ul>
         </li>
       </ul>

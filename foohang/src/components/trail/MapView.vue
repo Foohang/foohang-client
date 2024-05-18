@@ -67,24 +67,39 @@ const registR = async (contentId) => {
 const latLngList: Ref<KakaoMapLatLngItem[]> = ref([]);
 console.log(props)
 watch(props,(newProps)=>{
-  if(chceckContent.value!==props.centerContent){
+  if(newProps.centerContent===-1){
+    restaurantList.value = [];
+    visibleRefs.value = [];
+    markers.value = [];
+    latLngList.value = newProps.selectList.map(item => ({
+      lat: item.latitude,
+      lng: item.longitude
+      }));
+  }
+  else if(chceckContent.value!==props.centerContent){
     restaurantList.value = attractionStore.nearRestaurants;
-  visibleRefs.value = [];
-  markers.value = [];
-  chceckContent.value=props.centerContent;
+    visibleRefs.value = [];
+    markers.value = [];
+    chceckContent.value=props.centerContent;
+    if(newProps.centerContent===0){
+      latLngList.value = newProps.selectList.map(item => ({
+      lat: item.latitude,
+      lng: item.longitude
+      }));
+    }
   }else{
     latLngList.value = newProps.selectList.map(item => ({
     lat: item.latitude,
     lng: item.longitude
-  }));
-  console.log(latLngList.value)
+    }));
+    console.log(latLngList.value)
   }
 })
 </script>
 
 <template>
   <KakaoMap :lat="centerLat" :lng="centerLong" width="100%" height="50rem">
-    <div v-if="centerContent!=0">
+    <div v-if="centerContent>0">
     <!-- 중심좌표 마커 -->
     <KakaoMapMarker
       :image="{

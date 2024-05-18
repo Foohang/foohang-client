@@ -34,7 +34,6 @@ const update = async () => {
 
 <template>
   <main>
-    <h1>마이페이지</h1>
     <form @submit.prevent="update">
       <input type="hidden" v-model="joinForm.memberId" />
       <label
