@@ -2,9 +2,9 @@
   <div class="card">
     <div class="card-header">
       <div class="headers">
-        <div class="title">{{ post.title }}</div>
+        <div class="title">{{ review.title }}</div>
         <div class="divider orange-line"></div>
-        <div class="post-date">{{ post.postDate }}</div>
+        <div class="post-date">{{ review.postDate }}</div>
       </div>
       <div class="menu-button" @click="toggleMenu">⋮</div>
       <div v-if="menuVisible" class="menu">
@@ -12,48 +12,35 @@
         <div @click="deletePost">Delete Post</div>
       </div>
     </div>
-    <div class="card-image" v-if="post.images.length">
-      <div v-for="(image, index) in post.images" :key="index" class="image">
+    <div class="card-image" v-if="review.images.length">
+      <div v-for="(image, index) in review.images" :key="index" class="image">
         <img :src="image" alt="Placeholder" />
       </div>
     </div>
     <div class="image-details">
-      <div class="travel-date">Travel Date: {{ post.travelDate }}</div>
+      <div class="travel-date">Travel Date: {{ review.travelDate }}</div>
       <div class="emotions">
-        <span :class="{'active': post.selectedEmotion === '1'}">😊</span>
-        <span :class="{'active': post.selectedEmotion === '2'}">😐</span>
-        <span :class="{'active': post.selectedEmotion === '3'}">😢</span>
-        <span :class="{'active': post.selectedEmotion === '4'}">😍</span>
-        <span :class="{'active': post.selectedEmotion === '5'}">😡</span>
+        <span :class="{'active': review.selectedEmotion === '1'}">😊</span>
+        <span :class="{'active': review.selectedEmotion === '2'}">😐</span>
+        <span :class="{'active': review.selectedEmotion === '3'}">😢</span>
+        <span :class="{'active': review.selectedEmotion === '4'}">😍</span>
+        <span :class="{'active': review.selectedEmotion === '5'}">😡</span>
       </div>
     </div>
     <div class="details">
-      <div class="content">{{ post.content }}</div>
+      <div class="content">{{ review.content }}</div>
       <div class="hashtags">
-        <span v-for="(hashtag, index) in post.hashtags" :key="index">{{ hashtag }}</span>
+        <span v-for="(hashtag, index) in review.hashtags" :key="index">{{ hashtag }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
-const post = ref({
-  title: 'Sample Title',
-  postDate: '4 days ago',
-  travelDate: '2023-05-15',
-  images: [
-    '/src/assets/city/31-1.jpg',
-    '/src/assets/city/31-1.jpg',
-    '/src/assets/city/31-1.jpg',
-    '/src/assets/city/31-1.jpg',
-    '/src/assets/city/31-1.jpg',
-    '/src/assets/city/31-1.jpg'
-  ],
-  content: 'This is a sample post content.',
-  hashtags: ['#sample', '#post', '#content'],
-  selectedEmotion: '1'
+const props = defineProps({
+  review: Object
 });
 
 const menuVisible = ref(false);
