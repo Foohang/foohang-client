@@ -2,43 +2,65 @@
   <main>
     <div class="card">
       <div class="card-border-top"></div>
-      <div class="img">
-        <input type="file" @change="onFileChange" />
+      <span>회원가입</span>
+      <div class="img" @click="triggerFileInput">
+        <input type="file" ref="fileInput" @change="onFileChange" style="display: none;" />
         <img v-if="joinForm.profile_img" :src="joinForm.profile_img" alt="프로필 이미지" />
       </div>
-      <span>회원가입</span>
+      <button class="photo-button" @click="triggerFileInput">사진 추가</button>
       <form @submit.prevent="join">
         <div class="form-group">
-          <label class="input-label">이메일</label>
-          <input type="text" class="input-field" v-model.trim="joinForm.email" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model.trim="joinForm.email" placeholder="이메일" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">비밀번호</label>
-          <input type="password" class="input-field" v-model.trim="joinForm.password" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="password" class="input-field" v-model.trim="joinForm.password" placeholder="비밀번호" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">닉네임</label>
-          <input type="text" class="input-field" v-model.trim="joinForm.nickName" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'user']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model.trim="joinForm.nickName" placeholder="닉네임" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">선호 지역</label>
-          <input type="text" class="input-field" v-model.trim="joinForm.region" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model.trim="joinForm.region" placeholder="선호 지역" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">선호 음식</label>
-          <input type="text" class="input-field" v-model.trim="joinForm.food" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'utensils']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model.trim="joinForm.food" placeholder="선호 음식" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">상태 메시지</label>
-          <input type="text" class="input-field" v-model="joinForm.statusMessage" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'comment-dots']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model="joinForm.statusMessage" placeholder="상태 메시지" required />
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">생년월일</label>
-          <input type="date" class="input-field" v-model="joinForm.birth" required />
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="date" class="input-field" v-model="joinForm.birth" placeholder="생년월일" required />
+          </div>
         </div>
-        <div class="form-group">
+        <div class="form-group gender-group">
           <label class="input-label">성별</label>
-          <div>
+          <div class="gender-container">
             <input id="men" name="gender" type="radio" value="1" v-model="joinForm.gender" />
             <label for="men">남성</label>
             <input id="women" name="gender" type="radio" value="0" v-model="joinForm.gender" />
@@ -52,40 +74,73 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt);
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const joinForm = ref({
-  email: "",
-  password: "",
-  nickName: "",
-  region: "",
-  food: "",
-  birth: "",
-  gender: "",
-  statusMessage: "",
+  email: '',
+  password: '',
+  nickName: '',
+  region: '',
+  food: '',
+  birth: '',
+  gender: '',
+  statusMessage: '',
   profile: null,
   profile_img: null
 });
 
+const fileInputRef = ref(null);
+
 const onFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
-    console.log(file)
     joinForm.value.profile = file;
     joinForm.value.profile_img = URL.createObjectURL(file);
   }
 };
 
+const triggerFileInput = () => {
+  fileInputRef.value.click();
+};
+
+onMounted(() => {
+  fileInputRef.value = document.querySelector('input[type="file"]');
+});
+
+// const join = async () => {
+//   if (!confirm('이대로 가입하시겠습니까?')) return;
+//   try {
+//     await authStore.join(joinForm.value);
+//     router.push({ name: 'home' });
+//   } catch (error) {
+//     console.error('에러:', error);
+//     alert('가입 실패');
+//   }
+// };
+
 const join = async () => {
   if (!confirm("이대로 가입하시겠습니까?")) return;
+
+  const formData = new FormData();
+
+  formData.append("file", joinForm.value.profile);
+  for (const key in joinForm.value) {
+    formData.append(key, joinForm.value[key]);
+  }
+
   try {
-    await authStore.join(joinForm.value);
-    router.push({name:"home"});
+    await authStore.join(formData);
+    router.push({ name: "home" });
   } catch (error) {
     console.error("에러:", error);
     alert("가입 실패");
@@ -93,9 +148,10 @@ const join = async () => {
 };
 </script>
 
+
 <style scoped>
 .card {
-  width: 400px; /* 입력 폼의 가로를 넓혀줍니다 */
+  width: 500px; /* 입력 폼의 가로를 유지 */
   height: auto;
   background: #f57c00; /* 주황색 배경 */
   border-radius: 15px;
@@ -119,15 +175,13 @@ const join = async () => {
   background: #ffb74d; /* 연한 주황색 */
   border-radius: 50%;
   margin: auto;
-  margin-top: 20px;
   position: relative;
   cursor: pointer;
   overflow: hidden;
 }
 
 .card .img input {
-  width: 100
-  <input;
+  width: 100%;
   height: 100%;
   opacity: 0;
   position: absolute;
@@ -149,7 +203,25 @@ const join = async () => {
   text-align: center;
   display: block;
   padding-top: 10px;
-  font-size: 24px;
+  font-size: 36px; /* 회원가입 글자 크기 증가 */
+  margin-bottom: 20px; /* 회원가입과 이미지 사이 여백 */
+}
+
+.photo-button {
+  display: block;
+  width: 120px;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-button:hover {
+  background-color: #fb8c00;
 }
 
 form {
@@ -171,13 +243,57 @@ form label {
   color: white; /* 입력 라벨의 텍스트 색상을 설정 */
 }
 
+.input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px; /* 입력 필드와 카드 사이의 여백 추가 */
+}
+
+.input-icon {
+  position: absolute;
+  left: 60px; /* 위치 조정 */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1.2em; /* 아이콘 크기 조절 */
+  color: #000; /* 흑백 아이콘으로 설정 */
+}
+
+.input-divider {
+  position: absolute;
+  left: 100px; /* 위치 조정 */
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 1px;
+  background-color: #ccc;
+}
+
 .input-field {
-  width: calc(100% - 120px); /* 입력 필드의 너비 조절 */
-  padding: 8px;
+  width: calc(100% - 80px); /* 입력 필드의 너비 조절 */
+  padding: 8px 8px 8px 90px; /* 입력 필드 내부 패딩 조절 */
   border-radius: 5px;
   border: 1px solid #000;
   margin-top: 5px;
   background-color: #fff;
+}
+
+.gender-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* 성별 그룹 사이의 간격 조절 */
+  justify-content: center; /* 가운데 정렬 */
+  margin-left: 60px;
+}
+
+.gender-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* 성별 선택의 왼쪽 여백 */
+}
+
+form div input[type="radio"] {
+  margin: -10px 15px 0 -10px; /* 라디오 버튼 사이의 간격 조절 */
 }
 
 form button {
@@ -200,10 +316,6 @@ form div {
   align-items: center;
   justify-content: space-around;
   width: 100%;
-}
-
-form div input[type="radio"] {
-  margin: 0 5px;
 }
 
 .form-group {

@@ -1,12 +1,12 @@
 <script setup>
-import imageUpload from "@/components/review/imageUpload.vue"
 import ReviewForm from "@/components/review/ReviewForm.vue"
+import ReviewUpload from "@/components/review/ReviewUpload.vue"
 </script>
 
 <template>
     <div>
         <ReviewForm></ReviewForm>   
-        <imageUpload></imageUpload>
+        <ReviewUpload></ReviewUpload>
     </div>
 </template>
 

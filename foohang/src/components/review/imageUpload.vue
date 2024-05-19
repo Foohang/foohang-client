@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits } from 'vue';
+
+const emit = defineEmits(['upload']);
+
 const files = ref([]);
 const uploadImageIndex = ref(0);
 const fileInput = ref(null);
@@ -10,7 +13,6 @@ const imageUpload = () => {
     alert("사진이 너무 많습니다! 최대 6장");
     return;
   }
-  let num = -1;
   for (let i = 0; i < fileList.length; i++) {
     files.value = [
       ...files.value,
@@ -20,19 +22,19 @@ const imageUpload = () => {
         number: files.value.length + i,
       },
     ];
-    num = i;
   }
   uploadImageIndex.value = files.value.length;
-  console.log(uploadImageIndex.value);
+  emitUploadEvent();
 };
 
 const imageAddUpload = () => {
   const fileList = fileInput.value.files;
+
   if (files.value.length + fileList.length > 6) {
     alert("사진이 너무 많습니다! 최대 6장");
     return;
   }
-  let num = -1;
+
   for (let i = 0; i < fileList.length; i++) {
     files.value = [
       ...files.value,
@@ -42,36 +44,19 @@ const imageAddUpload = () => {
         number: files.value.length + i,
       },
     ];
-    num = i;
   }
   uploadImageIndex.value = files.value.length;
-  console.log(uploadImageIndex.value);
+  emitUploadEvent();
 };
 
 const fileDeleteButton = (number) => {
   files.value = files.value.filter((file) => file.number !== number);
   uploadImageIndex.value = files.value.length;
+  emitUploadEvent();
 };
 
-const uploadImages = async () => {
-  const formData = new FormData();
-  files.value.forEach((fileWrapper, index) => {
-    formData.append("files", fileWrapper.file);
-  });
-
-  try {
-    const response = await fetch("http://localhost:8080/upload", {
-      method: "POST",
-      body: formData
-    });
-    if (response.ok) {
-      alert("Files successfully uploaded");
-    } else {
-      alert("Failed to upload files");
-    }
-  } catch (error) {
-    console.error("Error uploading files:", error);
-  }
+const emitUploadEvent = () => {
+  emit("upload", files.value);
 };
 
 </script>
@@ -88,55 +73,31 @@ const uploadImages = async () => {
         <div v-if="!files.length" class="room-file-upload-example-container">
           <div class="room-file-upload-example">
             <div class="room-file-image-example-wrapper">이미지</div>
-            <div class="room-file-notice-item">
-              여러분의 추억을 저장해 보아요.
-            </div>
+            <div class="room-file-notice-item">여러분의 추억을 저장해 보아요.</div>
             <div class="room-file-notice-item room-file-upload-button">
               <div class="image-box">
                 <label for="file">일반 사진 등록</label>
-                <input
-                  type="file"
-                  id="file"
-                  ref="fileInput"
-                  @change="imageUpload"
-                  multiple
-                />
+                <input type="file" id="file" ref="fileInput" @change="imageUpload" multiple />
               </div>
             </div>
           </div>
         </div>
         <div v-else class="file-preview-content-container">
           <div class="file-preview-container">
-            <div
-              v-for="(file) in files"
-              :key="file.number"
-              class="file-preview-wrapper"
-            >
-              <div
-                class="file-close-button"
-                @click="fileDeleteButton(file.number)"
-              >
-                x
-              </div>
+            <div v-for="(file) in files" :key="file.number" class="file-preview-wrapper">
+              <div class="file-close-button" @click="fileDeleteButton(file.number)">x</div>
               <img :src="file.preview" />
             </div>
             <div v-if="files.length < 6" class="file-preview-wrapper-upload">
               <div class="image-box">
                 <label for="file">추가 사진 등록</label>
-                <input
-                  type="file"
-                  id="file"
-                  ref="fileInput"
-                  @change="imageAddUpload"
-                  multiple
-                />
+                <input type="file" id="file" ref="fileInput" @change="imageAddUpload" multiple />
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <button @click="uploadImages">Upload</button>
   </div>
 </template>
 
@@ -326,8 +287,6 @@ const uploadImages = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* height: 100%;
-  width: 100%; */
 }
 
 .room-file-image-example-wrapper {
@@ -383,7 +342,6 @@ const uploadImages = async () => {
 
 .file-close-button {
   position: absolute;
-  /* align-items: center; */
   line-height: 18px;
   z-index: 99;
   font-size: 18px;
