@@ -3,6 +3,7 @@ import CardForm from "@/components/review/CardForm.vue";
 import { useReviewStore } from "@/stores/review";
 import { ref, onMounted } from 'vue';
 import { watch } from "vue";
+import SearchBar from "@/components/review/SearchBar.vue";
 
 const reviewStore = useReviewStore();
 const reviewList = ref([]);
@@ -39,17 +40,22 @@ onMounted(() => {
 <template>
   <div>
     <div class="search out">
+        <div class="select">
         <v-select
           v-model="selectedOption"
           label="정렬"
           :items="['날짜별', '제목별']"
           variant="outlined"
-          class="search"
+          class="pick"
         ></v-select>
         <v-switch
           v-model="reverse"
           label="역순"
         ></v-switch>
+    </div>
+    <div>
+<SearchBar></SearchBar>
+    </div>
     </div>
     
     <div v-for="(review, index) in reviewList" :key="index" class="card">
@@ -67,6 +73,14 @@ onMounted(() => {
 }
 .search{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    /* width: 100%; */
+}
+.select{
+    display: flex;
+    align-content: center;
+}
+.pick{
+    padding-right: 10px;
 }
 </style>
