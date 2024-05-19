@@ -1,9 +1,8 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
-import { useSidoStore } from '@/stores/sido';
-import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
-import SearchBar from '@/components/SearchBar.vue';
+import { ref, watch, computed } from "vue";
+import { useSidoStore } from "@/stores/sido";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
@@ -13,7 +12,7 @@ const sidoStore = useSidoStore();
 
 // 데이터 초기화
 const sidoNames = ref([]);
-const selectName = ref('');
+const selectName = ref("");
 const selectList = ref([]);
 
 // 데이터 셋팅 함수
@@ -29,7 +28,7 @@ const setInfo = async () => {
 
 // selectName이 변경될 때마다 selectList 업데이트
 watch(selectName, (newVal) => {
-  if (newVal === '') {
+  if (newVal === "") {
     selectList.value = sidoStore.sidoList.map((item) => ({
       ...item,
       currentIndex: 1, // 각 항목에 currentIndex를 추가
@@ -60,7 +59,7 @@ const moveMain = (item) => {
   console.log(item.sidoName);
   console.log(item.sidoCode);
   router.push({
-    name: 'mainPage',
+    name: "mainPage",
     state: {
       dataObj: {
         sidoName: item.sidoName,
@@ -93,7 +92,12 @@ const stopHover = (item) => {
 
 <template>
   <div>
-    <SearchBar @update:search="selectName = $event" />
+    <v-combobox
+      label="Combobox"
+      :items="sidoNames"
+      v-model="selectName"
+      variant="outlined"
+    ></v-combobox>
     <v-container>
       <v-row justify="center">
         <v-col
@@ -105,13 +109,12 @@ const stopHover = (item) => {
         >
           <v-card
             elevation="2"
-            class="v-card-custom"
             @click="moveMain(item)"
             @mouseover="startHover(item)"
             @mouseleave="stopHover(item)"
           >
             <v-img :src="item.gugunName || `${item.sidoImage}-1.jpg`" height="200"></v-img>
-            <v-card-title class="v-card-title-custom">{{ item.sidoName }}</v-card-title>
+            <v-card-title>{{ item.sidoName }}</v-card-title>
           </v-card>
         </v-col>
       </v-row>
@@ -119,21 +122,4 @@ const stopHover = (item) => {
   </div>
 </template>
 
-<style scoped>
-.v-card-custom {
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-  border: 2px solid transparent;
-}
-
-.v-card-custom:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: #ff7043;
-}
-
-.v-card-title-custom {
-  color: #ff7043;
-  text-align: center;
-  font-weight: bold;
-}
-</style>
+<style scoped></style>

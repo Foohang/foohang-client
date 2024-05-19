@@ -2,109 +2,72 @@
   <main>
     <div class="card">
       <div class="card-border-top"></div>
-      <span>내 정보 수정</span>
-      <form @submit.prevent="update">
-        <input type="hidden" v-model="joinForm.memberId" />
+      <span>회원가입</span>
+      <div class="img" @click="triggerFileInput">
+        <input type="file" ref="fileInput" @change="onFileChange" />
+        <img v-if="joinForm.profile_img" :src="joinForm.profile_img" alt="프로필 이미지" />
+      </div>
+      <button class="photo-button" @click="triggerFileInput">사진 추가</button>
+      <form @submit.prevent="join">
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="text"
-              class="input-field"
-              v-model.trim="joinForm.email"
-              required
-              disabled
-              placeholder="이메일"
-            />
+            <input type="text" class="input-field" v-model.trim="joinForm.email" placeholder="이메일" required />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="password"
-              class="input-field"
-              v-model.trim="joinForm.password"
-              placeholder="비밀번호"
-            />
+            <input type="password" class="input-field" v-model.trim="joinForm.password" placeholder="비밀번호" required />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'user']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="text"
-              class="input-field"
-              v-model.trim="joinForm.nickName"
-              required
-              placeholder="닉네임"
-            />
+            <input type="text" class="input-field" v-model.trim="joinForm.nickName" placeholder="닉네임" required />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="text"
-              class="input-field"
-              v-model.trim="joinForm.region"
-              required
-              placeholder="선호 지역"
-            />
+            <input type="text" class="input-field" v-model.trim="joinForm.region" placeholder="선호 지역" required />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'utensils']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="text"
-              class="input-field"
-              v-model.trim="joinForm.food"
-              required
-              placeholder="선호 음식"
-            />
+            <input type="text" class="input-field" v-model.trim="joinForm.food" placeholder="선호 음식" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-container">
+            <font-awesome-icon :icon="['fas', 'comment-dots']" class="input-icon" />
+            <div class="input-divider"></div>
+            <input type="text" class="input-field" v-model="joinForm.statusMessage" placeholder="상태 메시지" required />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
             <div class="input-divider"></div>
-            <input
-              type="date"
-              class="input-field"
-              v-model="joinForm.birth"
-              required
-              placeholder="생년월일"
-            />
+            <input type="date" class="input-field" v-model="joinForm.birth" placeholder="생년월일" required />
           </div>
         </div>
         <div class="form-group gender-group">
           <label class="input-label">성별</label>
           <div class="gender-container">
-            <input
-              id="men"
-              name="gender"
-              type="radio"
-              value="1"
-              v-model="joinForm.gender"
-            />
+            <input id="men" name="gender" type="radio" value="1" v-model="joinForm.gender" />
             <label for="men">남성</label>
-            <input
-              id="women"
-              name="gender"
-              type="radio"
-              value="0"
-              v-model="joinForm.gender"
-            />
+            <input id="women" name="gender" type="radio" value="0" v-model="joinForm.gender" />
             <label for="women">여성</label>
           </div>
         </div>
-        <button type="submit">변경</button>
+        <button type="submit">가입</button>
       </form>
     </div>
   </main>
@@ -116,33 +79,48 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCalendarAlt);
+library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt);
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const joinForm = ref({
-  memberId: authStore.user.memberId,
-  email: authStore.user.email,
+  email: "",
   password: "",
-  nickName: authStore.user.nickName,
-  region: authStore.user.region,
-  food: authStore.user.food,
-  birth: authStore.user.birth,
-  gender: authStore.user.gender,
+  nickName: "",
+  region: "",
+  food: "",
+  birth: "",
+  gender: "",
+  statusMessage: "",
+  profile: null,
+  profile_img: null
 });
 
-const update = async () => {
-  if (!confirm("이대로 변경하시겠습니까?")) return;
+const fileInputRef = ref(null);
+
+const onFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    joinForm.value.profile = file;
+    joinForm.value.profile_img = URL.createObjectURL(file);
+  }
+};
+
+const triggerFileInput = () => {
+  fileInputRef.value.click();
+};
+
+const join = async () => {
+  if (!confirm("이대로 가입하시겠습니까?")) return;
   try {
-    await authStore.update(joinForm.value);
-    router.push({ name: "mypage" });
-    alert("변경 완료");
+    await authStore.join(joinForm.value);
+    router.push({ name: "home" });
   } catch (error) {
     console.error("에러:", error);
-    alert("변경 실패");
+    alert("가입 실패");
   }
 };
 </script>
@@ -167,6 +145,34 @@ const update = async () => {
   border-radius: 0px 0px 15px 15px;
 }
 
+.card .img {
+  width: 100px;
+  height: 100px;
+  background: #ffb74d; /* 연한 주황색 */
+  border-radius: 50%;
+  margin: auto;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.card .img input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+.card .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .card span {
   font-weight: 600;
   color: white;
@@ -175,6 +181,23 @@ const update = async () => {
   padding-top: 10px;
   font-size: 36px; /* 회원가입 글자 크기 증가 */
   margin-bottom: 20px; /* 회원가입과 이미지 사이 여백 */
+}
+
+.photo-button {
+  display: block;
+  width: 120px;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-button:hover {
+  background-color: #fb8c00;
 }
 
 form {

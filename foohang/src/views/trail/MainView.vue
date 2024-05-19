@@ -4,7 +4,7 @@ import { useSidoStore } from "@/stores/sido";
 import { useGugunStore } from "@/stores/gugun";
 import { useAttractionStore } from "@/stores/attraction";
 import { useAuthStore } from "@/stores/auth";
-import {useRouteStore } from "@/stores/route";
+import { useRouteStore } from "@/stores/route";
 import { useRouter } from "vue-router";
 import MapView from "@/components/trail/MapView.vue";
 const authStore = useAuthStore();
@@ -271,66 +271,68 @@ initGugun();
       </div>
       <!-- 버튼 -->
       <v-card flat>
-        <v-card-text>
+        <v-card-text class="radio-group-container">
           <v-container fluid>
-            <v-radio-group v-model="type" column>
-              <v-row>
-                <v-col cols="12" md="4">
-                  <v-radio
-                    color="orange-darken-3"
-                    label="전체"
-                    value="0"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="관광지"
-                    value="12"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="문화시설"
-                    value="14"
-                  ></v-radio>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-radio
-                    color="orange-darken-3"
-                    label="축제공연행사"
-                    value="15"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="여행코스"
-                    value="25"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="레포츠"
-                    value="28"
-                  ></v-radio>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-radio
-                    color="orange-darken-3"
-                    label="숙박"
-                    value="32"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="쇼핑"
-                    value="38"
-                  ></v-radio>
-                  <v-radio
-                    color="orange-darken-3"
-                    label="음식점"
-                    value="39"
-                  ></v-radio>
-                </v-col>
-              </v-row>
+            <v-radio-group v-model="type" class="custom-radio-group" row>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="전체"
+                value="0"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="관광지"
+                value="12"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="문화시설"
+                value="14"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="축제공연행사"
+                value="15"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="여행코스"
+                value="25"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="레포츠"
+                value="28"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="숙박"
+                value="32"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="쇼핑"
+                value="38"
+              ></v-radio>
+              <v-radio
+                class="custom-radio"
+                color="orange-darken-3"
+                label="음식점"
+                value="39"
+              ></v-radio>
             </v-radio-group>
           </v-container>
         </v-card-text>
       </v-card>
+
       <hr />
       <div class="cards">
         <v-card
@@ -564,12 +566,14 @@ initGugun();
 /* 버튼 */
 .v-radio,
 .v-label {
-  font-size: 10px; /* 원하는 크기로 조정하세요 */
+  font-size: 12px; /* 원하는 크기로 조정하세요 */
+  margin-bottom: 0px; /* 줄 사이 간격 줄이기 */
+  padding: 0; /* 패딩 제거 */
 }
 
 /* 카드 */
 .v-card {
-  margin-top: 20px; /* 원하는 간격으로 조절 */
+  margin-top: 10px; /* 원하는 간격으로 조절 */
 }
 /* 스크롤 영역을 가진 컨테이너 */
 .cards {
@@ -610,4 +614,34 @@ initGugun();
   min-height: 24px;
   border-radius: 4px;
 }
+
+.custom-radio-group {
+  display: flex;
+  flex-wrap: wrap; /* 버튼들을 여러 줄로 정렬 */
+  gap: 0    px; /* 버튼들 사이의 간격을 조절 */
+  margin-top: -45px; /* 버튼 위의 공백을 제거 */
+}
+
+.custom-radio .v-label {
+  font-size: 12px; /* 글자 크기 줄이기 */
+}
+
+.v-card-actions {
+  padding: 0; /* 카드 액션의 패딩 제거 */
+  display: flex;
+  flex-direction: row; /* 버튼들을 한 줄로 정렬 */
+  justify-content: space-between; /* 버튼들 사이의 간격을 자동으로 조절 */
+}
+
+.v-btn {
+  margin: 0; /* 버튼의 마진 제거 */
+  padding: 2px 8px; /* 버튼의 패딩 줄이기 */
+  font-size: 12px; /* 버튼의 글자 크기 조절 */
+}
+
+.radio-buttons label {
+  font-size: 12px; /* 글자 크기 조절 */
+  margin-right: 4px; /* 레이블 사이 간격 줄이기 */
+}
+
 </style>

@@ -1,11 +1,17 @@
 import mypageApi from "@/api/mypageApi";
 import {useAuthStore} from "@/stores/auth"
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useReviewStore = defineStore("review", () => {
     const reviewList = ref([]);
     
-    const postReview = async(review) =>{
-        await mypageApi.post("/reviews",review);
+    const postReview = async(formData) =>{
+        await mypageApi.post("/reviews", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
         getReviews();
     }
 
@@ -13,7 +19,6 @@ export const useReviewStore = defineStore("review", () => {
         const response  = await mypageApi.get("/reviews")
         reviewList.value = response.data;
     }
-
 
   
     return { reviewList ,getReviews,postReview };

@@ -5,7 +5,6 @@ import Picture from "@/components/home/Picture.vue"
 
 <template>
   <main>
-    <h1>메인</h1>
     <Picture></Picture> 
     <SearchBar></SearchBar>
   </main>

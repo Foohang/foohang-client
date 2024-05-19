@@ -13,7 +13,7 @@
           <RouterLink :to="{ name: 'login' }" class="nav-link button">로그인</RouterLink>
         </li>
         <li v-else class="user-info">
-          <img :src="user.profileUrl" alt="프로필 사진" class="profile-img" />
+          <img :src="`http://localhost/files/${user.profileName}`" alt="프로필 사진" class="profile-img" />
           <span class="user-nickname">{{ user.nickName }}님 접속 중</span>
         </li>
         <li class="menu-container" @click.stop>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted,watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
