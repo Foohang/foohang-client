@@ -6,7 +6,7 @@ import { ref } from "vue";
 export const useReviewStore = defineStore("review", () => {
     const reviewList = ref([
       {
-        title: 'Sample Title',
+        title: 'test1',
         postDate: '2023-05-11',
         travelDate: '2023-05-15',
         images: [
@@ -22,7 +22,7 @@ export const useReviewStore = defineStore("review", () => {
         selectedEmotion: '1'
       },
       {
-        title: 'Sample Title',
+        title: 'test2',
         postDate: '2023-05-10',
         travelDate: '2023-05-15',
         images: [
@@ -36,8 +36,8 @@ export const useReviewStore = defineStore("review", () => {
         selectedEmotion: '1'
       },
       {
-        title: 'Sample Title',
-        postDate: '2023-05-01',
+        title: 'zzzz',
+        postDate: '2023-06-01',
         travelDate: '2023-05-15',
         images: [
           '/src/assets/city/32-1.jpg',
@@ -64,7 +64,19 @@ export const useReviewStore = defineStore("review", () => {
         reviewList.value = response.data;
     }
 
+    const sorting = (reverse, standard) => {
+      const sortKey = standard === '제목별' ? 'title' : 'postDate';
+      reviewList.value.sort((a, b) => {
+        if (a[sortKey] < b[sortKey]) {
+          return reverse ? 1 : -1;
+        }
+        if (a[sortKey] > b[sortKey]) {
+          return reverse ? -1 : 1;
+        }
+        return 0;
+      });
+    };
   
-    return { reviewList ,getReviews,postReview };
+    return { reviewList ,getReviews,postReview, sorting };
   });
   
