@@ -41,6 +41,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useReviewStore } from "@/stores/review";
+import router from "@/router";
 
 const reviewStore = useReviewStore();
 
@@ -59,6 +60,10 @@ function toggleMenu() {
 function handleMenuOption(option) {
   if (option === "edit") {
     if (confirm("수정하시겠습니까?")) {
+      router.push({
+        name: "reviewUpdate",
+        params: { reviewId: props.review.reviewId },
+      });
     }
   } else if (option === "delete") {
     if (confirm("삭제하시겠습니까?")) {

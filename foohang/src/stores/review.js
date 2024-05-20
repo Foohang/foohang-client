@@ -5,6 +5,7 @@ import { ref } from "vue";
 
 export const useReviewStore = defineStore("review", () => {
   const reviewList = ref([]);
+  const review = ref({});
 
   const postReview = async (formData) => {
     await mypageApi.post("/reviews/", formData, {
@@ -35,9 +36,7 @@ export const useReviewStore = defineStore("review", () => {
 
   const deleteReview = async (id) => {
     // await mypageApi.delete(`/reviews/${id}`);
-    const index = reviewList.value.findIndex(
-      (review) => review.reviewId === id
-    );
+    const index = reviewList.value.findIndex((review) => review.reviewId == id);
 
     if (index !== -1) {
       reviewList.value.splice(index, 1);
@@ -45,5 +44,23 @@ export const useReviewStore = defineStore("review", () => {
     console.log(index);
   };
 
-  return { reviewList, getReviews, postReview, sorting, deleteReview };
+  const findReview = function (id) {
+    const foundReview = reviewList.value.find(
+      (review) => review.reviewId == id
+    );
+
+    if (foundReview) {
+      review.value = foundReview;
+    }
+  };
+
+  return {
+    reviewList,
+    review,
+    getReviews,
+    postReview,
+    sorting,
+    deleteReview,
+    findReview,
+  };
 });

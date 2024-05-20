@@ -4,10 +4,11 @@ import LoginView from "@/views/member/LoginView.vue";
 import RegistView from "@/views/member/RegistView.vue";
 import MypageView from "@/views/member/MypageView.vue";
 import MainView from "@/views/trail/MainView.vue";
-import ProfileView from "@/views/member/ProfileView.vue"
-import ReviewView from "@/views/member/ReviewView.vue"
-import ReviewReadView from "@/views/member/review/ReviewReadView.vue"
-import ReviewWriteView from "@/views/member/review/ReviewWriteView.vue"
+import ProfileView from "@/views/member/ProfileView.vue";
+import ReviewView from "@/views/member/ReviewView.vue";
+import ReviewReadView from "@/views/member/review/ReviewReadView.vue";
+import ReviewWriteView from "@/views/member/review/ReviewWriteView.vue";
+import ReviewUpdateView from "@/views/member/review/ReviewUpdateView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -49,6 +50,11 @@ const router = createRouter({
               name: "reviewWrite",
               component: ReviewWriteView,
             },
+            {
+              path: "/update/:reviewId",
+              name: "reviewUpdate",
+              component: ReviewUpdateView,
+            },
           ],
         },
       ],
@@ -58,7 +64,7 @@ const router = createRouter({
       name: "mainPage",
       component: MainView,
       // props : true,
-    }
+    },
   ],
 });
 

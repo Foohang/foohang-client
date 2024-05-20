@@ -57,22 +57,48 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import ImageUpload from "@/components/review/ImageUpload.vue";
 import { useReviewStore } from "@/stores/review";
 
-const selectedEmotion = ref(0);
-const menuVisible = ref(false);
+const reviewStore = useReviewStore();
+const router = useRouter();
+
+const props = defineProps({
+  reviewId: String,
+});
+
+const review = ref({});
+const selectedEmotion = ref("");
 const reviewText = ref("");
 const reviewTitle = ref("");
 const hashtags = ref("");
 const selectedDate = ref(new Date().toISOString().split("T")[0]);
 const uploadedFiles = ref([]);
 
-const reviewStore = useReviewStore();
+// 리뷰를 초기화하는 함수
+const init = async () => {
+  await reviewStore.findReview(props.reviewId);
+  review.value = reviewStore.review;
 
-const router = useRouter();
+  // 초기화된 데이터로 입력 필드를 설정
+  selectedEmotion.value = review.value.selectedEmotion;
+  reviewText.value = review.value.reviewText;
+  reviewTitle.value = review.value.reviewTitle;
+  hashtags.value = review.value.hashtags;
+  selectedDate.value = review.value.selectedDate;
+  uploadedFiles.value = review.value.uploadedFiles;
+  console.log(selectedEmotion.value);
+  console.log(reviewText.value);
+  console.log(reviewTitle.value);
+  console.log(selectedDate.value);
+  console.log(hashtags.value);
+  console.log(uploadedFiles.value);
+};
+
+// 컴포넌트가 마운트될 때 초기화 함수 호출
+onMounted(init);
 
 const handleImageUpload = (images) => {
   uploadedFiles.value = images;
@@ -83,12 +109,7 @@ const selectEmotion = (emotion) => {
   selectedEmotion.value = emotion;
 };
 
-const toggleMenu = () => {
-  menuVisible.value = !menuVisible.value;
-};
-
 const submitReview = async () => {
-  // console.log(`Review submitted: ${selectedEmotion.value} ${reviewText.value}\nTitle: ${reviewTitle.value}\nHashtags: ${hashtags.value}\nDate: ${selectedDate.value}\nFiles: ${JSON.stringify(uploadedFiles.value)}`);
   if (confirm("등록하시겠습니까?")) {
     const formData = new FormData();
     formData.append("selectedEmotion", selectedEmotion.value);

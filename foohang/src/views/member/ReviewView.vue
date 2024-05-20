@@ -1,14 +1,13 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-    <div>
-        <RouterLink :to="{name: 'review'}">리뷰 확인</RouterLink>
-    <RouterLink :to="{name: 'reviewWrite'}"> 리뷰 작성</RouterLink>
-        <RouterView />
-    </div>
+  <div>
+    <RouterView class="view" />
+  </div>
 </template>
 
 <style scoped>
-
+.view {
+  margin-top: -30px;
+}
 </style>
