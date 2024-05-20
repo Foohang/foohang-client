@@ -1,15 +1,16 @@
 <script setup>
 import CardForm from "@/components/review/CardForm.vue";
 import { useReviewStore } from "@/stores/review";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 import { watch } from "vue";
 import SearchBar from "@/components/review/SearchBar.vue";
 
 const reviewStore = useReviewStore();
 const reviewList = ref([]);
+const selectName = ref("");
 
 const start = async () => {
-//   await reviewStore.getReviews();
+  //   await reviewStore.getReviews();
   reviewList.value = reviewStore.reviewList;
 };
 
@@ -20,7 +21,7 @@ const reverse = ref(null);
 const sorted = async (reverse, type) => {
   await reviewStore.sorting(reverse, type);
   reviewList.value = reviewStore.reviewList;
-}
+};
 
 watch(reverse, (newVal) => {
   sorted(newVal, selectedOption.value);
@@ -32,6 +33,27 @@ watch(selectedOption, (newVal) => {
   console.log(newVal);
 });
 
+// 보여줄 리뷰 리스트
+const selectList = ref([]);
+
+watch(selectName, (newVal) => {
+  if (newVal === "") {
+    selectList.value = sidoStore.sidoList.map((item) => ({
+      ...item,
+      currentIndex: 1, // 각 항목에 currentIndex를 추가
+      timer: null, // 각 항목에 timer를 추가
+    }));
+  } else {
+    selectList.value = sidoStore.sidoList
+      .filter((item) => item.sidoName.includes(newVal))
+      .map((item) => ({
+        ...item,
+        currentIndex: 1, // 각 항목에 currentIndex를 추가
+        timer: null, // 각 항목에 timer를 추가
+      }));
+  }
+});
+
 onMounted(() => {
   start();
 });
@@ -40,7 +62,7 @@ onMounted(() => {
 <template>
   <div>
     <div class="search out">
-        <div class="select">
+      <div class="select">
         <v-select
           v-model="selectedOption"
           label="정렬"
@@ -48,16 +70,13 @@ onMounted(() => {
           variant="outlined"
           class="pick"
         ></v-select>
-        <v-switch
-          v-model="reverse"
-          label="역순"
-        ></v-switch>
+        <v-switch v-model="reverse" label="역순"></v-switch>
+      </div>
+      <div>
+        <SearchBar @update:search="selectName = $event"></SearchBar>
+      </div>
     </div>
-    <div>
-<SearchBar></SearchBar>
-    </div>
-    </div>
-    
+
     <div v-for="(review, index) in reviewList" :key="index" class="card">
       <CardForm :review="review"></CardForm>
     </div>
@@ -65,22 +84,22 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.out{
-    width: 70%;
+.out {
+  width: 70%;
 }
-.card{
-    margin-bottom: 20px;
+.card {
+  margin-bottom: 20px;
 }
-.search{
-    display: flex;
-    justify-content: space-between;
-    /* width: 100%; */
+.search {
+  display: flex;
+  justify-content: space-between;
+  /* width: 100%; */
 }
-.select{
-    display: flex;
-    align-content: center;
+.select {
+  display: flex;
+  align-content: center;
 }
-.pick{
-    padding-right: 10px;
+.pick {
+  padding-right: 10px;
 }
 </style>

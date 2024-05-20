@@ -11,21 +11,52 @@
     <div class="divider"></div>
     <div class="card-content">
       <div class="input-label">제목</div>
-      <input v-model="reviewTitle" placeholder="제목을 입력해주세요..." class="title-input"/>
+      <input
+        v-model="reviewTitle"
+        placeholder="제목을 입력해주세요..."
+        class="title-input"
+      />
       <div class="input-label-file">첨부파일</div>
       <image-upload @upload="handleImageUpload" />
       <div class="details">
         <div class="emotions">
-          <span :class="{'active': selectedEmotion === '1'}" @click="selectEmotion('1')">😊</span>
-          <span :class="{'active': selectedEmotion === '2'}" @click="selectEmotion('2')">😐</span>
-          <span :class="{'active': selectedEmotion === '3'}" @click="selectEmotion('3')">😢</span>
-          <span :class="{'active': selectedEmotion === '4'}" @click="selectEmotion('4')">😍</span>
-          <span :class="{'active': selectedEmotion === '5'}" @click="selectEmotion('5')">😡</span>
+          <span
+            :class="{ active: selectedEmotion === '1' }"
+            @click="selectEmotion('1')"
+            >😊</span
+          >
+          <span
+            :class="{ active: selectedEmotion === '2' }"
+            @click="selectEmotion('2')"
+            >😐</span
+          >
+          <span
+            :class="{ active: selectedEmotion === '3' }"
+            @click="selectEmotion('3')"
+            >😢</span
+          >
+          <span
+            :class="{ active: selectedEmotion === '4' }"
+            @click="selectEmotion('4')"
+            >😍</span
+          >
+          <span
+            :class="{ active: selectedEmotion === '5' }"
+            @click="selectEmotion('5')"
+            >😡</span
+          >
         </div>
-        <input type="date" v-model="selectedDate" class="date-input"/>
+        <input type="date" v-model="selectedDate" class="date-input" />
       </div>
-      <textarea v-model="reviewText" placeholder="후기를 작성해주세요..."></textarea>
-      <input v-model="hashtags" placeholder="해시태그를 입력해주세요..." class="hashtags-input"/>
+      <textarea
+        v-model="reviewText"
+        placeholder="후기를 작성해주세요..."
+      ></textarea>
+      <input
+        v-model="hashtags"
+        placeholder="해시태그를 입력해주세요..."
+        class="hashtags-input"
+      />
       <div class="buttons">
         <button @click="submitReview">Submit</button>
         <button @click="cancelReview">Cancel</button>
@@ -35,17 +66,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import ImageUpload from '@/components/review/ImageUpload.vue';
-import { useReviewStore } from '@/stores/review';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import ImageUpload from "@/components/review/ImageUpload.vue";
+import { useReviewStore } from "@/stores/review";
 
 const selectedEmotion = ref(0);
 const menuVisible = ref(false);
-const reviewText = ref('');
-const reviewTitle = ref('');
-const hashtags = ref('');
-const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const reviewText = ref("");
+const reviewTitle = ref("");
+const hashtags = ref("");
+const selectedDate = ref(new Date().toISOString().split("T")[0]);
 const uploadedFiles = ref([]);
 
 const reviewStore = useReviewStore();
@@ -54,7 +85,7 @@ const router = useRouter();
 
 const handleImageUpload = (images) => {
   uploadedFiles.value = images;
-  console.log('Files received from ImageUpload:', uploadedFiles.value);
+  console.log("Files received from ImageUpload:", uploadedFiles.value);
 };
 
 const selectEmotion = (emotion) => {
@@ -74,29 +105,27 @@ const submitReview = async () => {
     formData.append("reviewTitle", reviewTitle.value);
     formData.append("hashtags", hashtags.value);
     formData.append("selectedDate", selectedDate.value);
-    formData.append("uploadedDate",new Date().toISOString().split('T')[0]);
-    let i = 0;
-    for (const fileObj of uploadedFiles.value) { 
-      i++;
-      formData.append(`file_${i}`, fileObj.file); 
+    formData.append("uploadedDate", new Date().toISOString().split("T")[0]);
+    for (const fileObj of uploadedFiles.value) {
+      formData.append(`files`, fileObj.file);
     }
-      try {
-    await reviewStore.postReview(formData);
-    router.push({ name: "review" });
-  } catch (error) {
-    console.error("에러:", error);
-    alert("등록 실패");
-  }
+    try {
+      await reviewStore.postReview(formData);
+      router.push({ name: "review" });
+    } catch (error) {
+      console.error("에러:", error);
+      alert("등록 실패");
+    }
   }
 };
 
 const cancelReview = () => {
   if (confirm("리뷰 작성을 취소하시겠습니까?")) {
-    reviewText.value = '';
-    reviewTitle.value = '';
-    hashtags.value = '';
+    reviewText.value = "";
+    reviewTitle.value = "";
+    hashtags.value = "";
     selectedEmotion.value = null;
-    selectedDate.value = new Date().toISOString().split('T')[0];
+    selectedDate.value = new Date().toISOString().split("T")[0];
     uploadedFiles.value = [];
     router.push({ name: "review" });
   }

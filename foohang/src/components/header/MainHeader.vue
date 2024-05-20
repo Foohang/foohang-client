@@ -4,16 +4,23 @@
       <ul class="nav-left">
         <li class="logo">
           <RouterLink :to="{ name: 'home' }">
-            <img src="@/assets/FoohangLogo.png" height="80" alt="로고" /> <!-- 높이를 줄임 -->
+            <img src="@/assets/FoohangLogo.png" height="80" alt="로고" />
+            <!-- 높이를 줄임 -->
           </RouterLink>
         </li>
       </ul>
       <ul class="nav-right">
         <li v-if="user === null">
-          <RouterLink :to="{ name: 'login' }" class="nav-link button">로그인</RouterLink>
+          <RouterLink :to="{ name: 'login' }" class="nav-link button"
+            >로그인</RouterLink
+          >
         </li>
         <li v-else class="user-info">
-          <img :src="`http://localhost/files/${user.profileName}`" alt="프로필 사진" class="profile-img" />
+          <img
+            :src="`http://localhost/files/${user.profileName}`"
+            alt="프로필 사진"
+            class="profile-img"
+          />
           <span class="user-nickname">{{ user.nickName }}님 접속 중</span>
         </li>
         <li class="menu-container" @click.stop>
@@ -27,14 +34,22 @@
           </label>
           <ul v-if="checked" class="dropdown-menu">
             <li v-if="user !== null">
-              <RouterLink :to="{ name: 'mypage' }" class="dropdown-link">마이페이지</RouterLink>
+              <RouterLink :to="{ name: 'mypage' }" class="dropdown-link"
+                >마이페이지</RouterLink
+              >
             </li>
             <li v-if="user !== null">
-              <RouterLink :to="{ name: 'review' }" class="dropdown-link">후기</RouterLink>
+              <RouterLink :to="{ name: 'review' }" class="dropdown-link"
+                >후기</RouterLink
+              >
             </li>
-            <li v-if="user !== null" @click="logout" class="dropdown-link">로그아웃</li>
+            <li v-if="user !== null" @click="logout" class="dropdown-link">
+              로그아웃
+            </li>
             <li v-if="user === null">
-              <RouterLink :to="{ name: 'regist' }" class="dropdown-link">회원가입</RouterLink>
+              <RouterLink :to="{ name: 'regist' }" class="dropdown-link"
+                >회원가입</RouterLink
+              >
             </li>
           </ul>
         </li>
@@ -44,9 +59,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted,watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
@@ -54,25 +69,25 @@ const router = useRouter();
 const checked = ref(false);
 
 const logout = () => {
-  if (!confirm('로그아웃 하시겠습니까?')) return;
+  if (!confirm("로그아웃 하시겠습니까?")) return;
   authStore.logout();
-  router.push({ name: 'home' });
+  router.push({ name: "home" });
   checked.value = false; // Close the dropdown menu after logout
 };
 
 const handleOutsideClick = (event) => {
-  if (!event.target.closest('.menu-container')) {
+  if (!event.target.closest(".menu-container")) {
     checked.value = false;
   }
 };
 
 // Ensure the dropdown menu closes when clicking outside
 onMounted(() => {
-  document.addEventListener('click', handleOutsideClick);
+  document.addEventListener("click", handleOutsideClick);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleOutsideClick);
+  document.removeEventListener("click", handleOutsideClick);
 });
 </script>
 
@@ -86,7 +101,7 @@ header {
   padding: 0 1em;
   height: 80px; /* 헤더 높이 줄임 */
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.); /* 하단 그림자 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0); /* 하단 그림자 추가 */
 }
 
 nav {
@@ -198,6 +213,7 @@ nav {
   color: #333;
   font-weight: bold;
   cursor: pointer;
+  width: 5em;
 }
 
 .user-info {
