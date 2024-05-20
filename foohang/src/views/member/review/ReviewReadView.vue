@@ -40,6 +40,11 @@ watch(selectedOption, (newVal) => {
   console.log(newVal);
 });
 
+watch(reviewStore, () => {
+  reviewList.value = reviewStore.reviewList;
+  selectList.value = reviewStore.reviewList;
+});
+
 // 보여줄 리뷰 리스트
 const selectList = ref([]);
 
