@@ -12,7 +12,7 @@ const reviewList = ref([]);
 const selectName = ref("");
 
 const start = async () => {
-  //   await reviewStore.getReviews();
+  await reviewStore.getReviews();
   reviewList.value = reviewStore.reviewList;
   selectList.value = reviewStore.reviewList;
 };
