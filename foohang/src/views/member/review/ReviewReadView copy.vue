@@ -4,15 +4,13 @@ import { useReviewStore } from "@/stores/review";
 import { ref, onMounted } from "vue";
 import { watch } from "vue";
 import SearchBar from "@/components/review/SearchBar.vue";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
 const reviewStore = useReviewStore();
 const reviewList = ref([]);
 const selectName = ref("");
 
 const start = async () => {
-  await reviewStore.getReviews();
+  //   await reviewStore.getReviews();
   reviewList.value = reviewStore.reviewList;
   selectList.value = reviewStore.reviewList;
 };
@@ -20,10 +18,6 @@ const start = async () => {
 const selectedOption = ref("날짜별");
 
 const reverse = ref(null);
-
-const regist = function () {
-  router.push({ name: "reviewWrite" });
-};
 
 const sorted = async (reverse, type) => {
   await reviewStore.sorting(reverse, type);
@@ -38,11 +32,6 @@ watch(reverse, (newVal) => {
 watch(selectedOption, (newVal) => {
   sorted(reverse.value, newVal);
   console.log(newVal);
-});
-
-watch(reviewStore, () => {
-  reviewList.value = reviewStore.reviewList;
-  selectList.value = reviewStore.reviewList;
 });
 
 // 보여줄 리뷰 리스트
@@ -70,18 +59,11 @@ onMounted(() => {
         <img src="/src/assets/reviewIcon.png" height="50px" />
         <div>
           <h1>추억 돌아보기</h1>
-          <p class="subtitle">지난날의 여정을 돌이켜보세요</p>
+          <p>지난날의 여정을 돌이켜보세요</p>
         </div>
       </div>
       <div>
-        <v-btn
-          class="memory-btn"
-          rounded="xl"
-          size="x-large"
-          block
-          @click="regist"
-          >추억 남기기</v-btn
-        >
+        <v-btn rounded="xl" size="x-large" block>추억 남기기</v-btn>
       </div>
     </div>
     <div class="search out">
@@ -111,19 +93,9 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   width: 70%;
-  margin-bottom: 20px;
 }
 .present {
   display: flex;
-  align-items: center;
-}
-.subtitle {
-  font-size: 14px;
-  color: grey;
-}
-.memory-btn {
-  background-color: #f7931e;
-  color: white;
 }
 .out {
   width: 70%;
@@ -134,12 +106,11 @@ onMounted(() => {
 .search {
   display: flex;
   justify-content: space-between;
-  width: 70%;
-  margin-bottom: 20px;
+  /* width: 100%; */
 }
 .select {
   display: flex;
-  align-items: center;
+  align-content: center;
 }
 .pick {
   padding-right: 10px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" ref="card">
     <div class="card-header">
       <div class="headers">
         <div class="title">{{ review.title }}</div>
@@ -7,12 +7,12 @@
         <div class="post-date">{{ review.postDate }}</div>
       </div>
       <div class="menu-button" @click="toggleMenu">⋮</div>
-      <div v-if="menuVisible" class="menu">
-        <div @click="editPost">Edit Post</div>
-        <div @click="deletePost">Delete Post</div>
+      <div v-if="menuVisible" class="menu" ref="menu">
+        <div @click="handleMenuOption('edit')">Edit Post</div>
+        <div @click="handleMenuOption('delete')">Delete Post</div>
       </div>
     </div>
-    <div class="card-image" v-if="review.images.length">
+    <div class="card-image" v-if="review.images != null">
       <div v-for="(image, index) in review.images" :key="index" class="image">
         <img :src="image" alt="Placeholder" />
       </div>
@@ -20,42 +20,72 @@
     <div class="image-details">
       <div class="travel-date">Travel Date: {{ review.travelDate }}</div>
       <div class="emotions">
-        <span :class="{'active': review.selectedEmotion === '1'}">😊</span>
-        <span :class="{'active': review.selectedEmotion === '2'}">😐</span>
-        <span :class="{'active': review.selectedEmotion === '3'}">😢</span>
-        <span :class="{'active': review.selectedEmotion === '4'}">😍</span>
-        <span :class="{'active': review.selectedEmotion === '5'}">😡</span>
+        <span :class="{ active: review.selectedEmotion === '1' }">😊</span>
+        <span :class="{ active: review.selectedEmotion === '2' }">😐</span>
+        <span :class="{ active: review.selectedEmotion === '3' }">😢</span>
+        <span :class="{ active: review.selectedEmotion === '4' }">😍</span>
+        <span :class="{ active: review.selectedEmotion === '5' }">😡</span>
       </div>
     </div>
     <div class="details">
       <div class="content">{{ review.content }}</div>
       <div class="hashtags">
-        <span v-for="(hashtag, index) in review.hashtags" :key="index">{{ hashtag }}</span>
+        <span v-for="(hashtag, index) in review.hashtags" :key="index">{{
+          hashtag
+        }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useReviewStore } from "@/stores/review";
+import router from "@/router";
+
+const reviewStore = useReviewStore();
 
 const props = defineProps({
-  review: Object
+  review: Object,
 });
 
 const menuVisible = ref(false);
+const menu = ref(null);
+const card = ref(null);
 
 function toggleMenu() {
   menuVisible.value = !menuVisible.value;
 }
 
-function editPost() {
-  alert("Edit Post clicked");
+function handleMenuOption(option) {
+  if (option === "edit") {
+    if (confirm("수정하시겠습니까?")) {
+      router.push({
+        name: "reviewUpdate",
+        params: { reviewId: props.review.reviewId },
+      });
+    }
+  } else if (option === "delete") {
+    if (confirm("삭제하시겠습니까?")) {
+      reviewStore.deleteReview(props.review.reviewId);
+    }
+  }
+  menuVisible.value = false;
 }
 
-function deletePost() {
-  alert("Delete Post clicked");
+function handleClickOutside(event) {
+  if (menuVisible.value && card.value && !card.value.contains(event.target)) {
+    menuVisible.value = false;
+  }
 }
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -137,7 +167,7 @@ function deletePost() {
 .card-image {
   background-color: rgb(236, 236, 236);
   width: 100%;
-  height: 300px;
+  /* height: 100;  */
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
