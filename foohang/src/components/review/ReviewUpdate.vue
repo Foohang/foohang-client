@@ -8,7 +8,7 @@
         class="title-input"
       />
       <div class="input-label-file">첨부파일</div>
-      <image-upload @upload="handleImageUpload" />
+      <image-update :initialFiles="initialFiles" @upload="handleImageUpload" />
       <div class="details">
         <div class="emotions">
           <span
@@ -59,7 +59,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import ImageUpload from "@/components/review/ImageUpload.vue";
+import ImageUpdate from "@/components/review/ImageUpdate.vue";
 import { useReviewStore } from "@/stores/review";
 
 const reviewStore = useReviewStore();
@@ -76,6 +76,15 @@ const reviewTitle = ref("");
 const hashtags = ref("");
 const selectedDate = ref(new Date().toISOString().split("T")[0]);
 const uploadedFiles = ref([]);
+const upladedDate = ref("");
+
+async function urlToFile(url, filename, mimeType) {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new File([blob], filename, { type: mimeType });
+}
+
+const initialFiles = ref([]);
 
 // 리뷰를 초기화하는 함수
 const init = async () => {
@@ -83,18 +92,25 @@ const init = async () => {
   review.value = reviewStore.review;
 
   // 초기화된 데이터로 입력 필드를 설정
+  console.log(review.value);
   selectedEmotion.value = review.value.selectedEmotion;
-  reviewText.value = review.value.reviewText;
-  reviewTitle.value = review.value.reviewTitle;
-  hashtags.value = review.value.hashtags;
-  selectedDate.value = review.value.selectedDate;
-  uploadedFiles.value = review.value.uploadedFiles;
-  console.log(selectedEmotion.value);
+  reviewText.value = review.value.content;
+  reviewTitle.value = review.value.title;
+  selectedDate.value = review.value.travelDate;
+  uploadedFiles.value = review.value.images;
+  upladedDate.value = review.value.postDate;
+
+  hashtags.value = review.value.hashtags.join(" ");
+  for (const imageUrl of uploadedFiles.value) {
+    const file = await urlToFile(imageUrl, "test.png", "image/png");
+    initialFiles.value.push(file);
+  }
   console.log(reviewText.value);
   console.log(reviewTitle.value);
   console.log(selectedDate.value);
   console.log(hashtags.value);
   console.log(uploadedFiles.value);
+  console.log(upladedDate.value);
 };
 
 // 컴포넌트가 마운트될 때 초기화 함수 호출
@@ -117,12 +133,13 @@ const submitReview = async () => {
     formData.append("reviewTitle", reviewTitle.value);
     formData.append("hashtags", hashtags.value);
     formData.append("selectedDate", selectedDate.value);
-    formData.append("uploadedDate", new Date().toISOString().split("T")[0]);
+    formData.append("uploadedDate", upladedDate.value);
     for (const fileObj of uploadedFiles.value) {
       formData.append(`files`, fileObj.file);
     }
     try {
-      await reviewStore.postReview(formData);
+      console.log(props.reviewId);
+      await reviewStore.updateReview(props.reviewId, formData);
       router.push({ name: "review" });
     } catch (error) {
       console.error("에러:", error);

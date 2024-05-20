@@ -35,7 +35,7 @@ export const useReviewStore = defineStore("review", () => {
   };
 
   const deleteReview = async (id) => {
-    // await mypageApi.delete(`/reviews/${id}`);
+    await mypageApi.delete(`/reviews/${id}`);
     const index = reviewList.value.findIndex((review) => review.reviewId == id);
 
     if (index !== -1) {
@@ -54,6 +54,15 @@ export const useReviewStore = defineStore("review", () => {
     }
   };
 
+  const updateReview = async (id, formData) => {
+    await mypageApi.put(`/reviews/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    getReviews();
+  };
+
   return {
     reviewList,
     review,
@@ -62,5 +71,6 @@ export const useReviewStore = defineStore("review", () => {
     sorting,
     deleteReview,
     findReview,
+    updateReview,
   };
 });
