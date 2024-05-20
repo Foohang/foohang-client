@@ -3,6 +3,21 @@
     <div class="card">
       <div class="card-border-top"></div>
       <span>내 정보 수정</span>
+      <div class="img" @click="triggerFileInput">
+        <input
+          type="file"
+          ref="fileInput"
+          @change="onFileChange"
+          style="display: none"
+        />
+        <img
+          v-if="joinForm.profile_img"
+          :src="joinForm.profile_img"
+          alt="Profile Image"
+        />
+        <img v-else src="/src/assets/addImage.png" alt="Default Image" />
+      </div>
+      <button class="photo-button" @click="triggerFileInput">사진 추가</button>
       <form @submit.prevent="update">
         <input type="hidden" v-model="joinForm.memberId" />
         <div class="form-group">
@@ -46,7 +61,10 @@
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'map-marker-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
             <input
               type="text"
@@ -72,7 +90,10 @@
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'calendar-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
             <input
               type="date"
@@ -111,14 +132,30 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCalendarAlt);
+library.add(
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt
+);
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -132,12 +169,42 @@ const joinForm = ref({
   food: authStore.user.food,
   birth: authStore.user.birth,
   gender: authStore.user.gender,
+  profile: null,
+  profile_img:
+    `http://localhost/files/profile/${authStore.user.profileName}` || null,
+});
+
+const fileInputRef = ref(null);
+
+const onFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    joinForm.value.profile = file;
+    joinForm.value.profile_img = URL.createObjectURL(file);
+  }
+};
+
+const triggerFileInput = () => {
+  fileInputRef.value.click();
+};
+
+onMounted(() => {
+  fileInputRef.value = document.querySelector('input[type="file"]');
 });
 
 const update = async () => {
   if (!confirm("이대로 변경하시겠습니까?")) return;
+
+  const formData = new FormData();
+  formData.append("file", joinForm.value.profile);
+  for (const key in joinForm.value) {
+    if (key !== "profile_img") {
+      formData.append(key, joinForm.value[key]);
+    }
+  }
+
   try {
-    await authStore.update(joinForm.value);
+    await authStore.update(formData);
     router.push({ name: "mypage" });
     alert("변경 완료");
   } catch (error) {
@@ -167,6 +234,34 @@ const update = async () => {
   border-radius: 0px 0px 15px 15px;
 }
 
+.card .img {
+  width: 100px;
+  height: 100px;
+  background: #ffb74d; /* 연한 주황색 */
+  border-radius: 50%;
+  margin: auto;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.card .img input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+.card .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .card span {
   font-weight: 600;
   color: white;
@@ -175,6 +270,23 @@ const update = async () => {
   padding-top: 10px;
   font-size: 36px; /* 회원가입 글자 크기 증가 */
   margin-bottom: 20px; /* 회원가입과 이미지 사이 여백 */
+}
+
+.photo-button {
+  display: block;
+  width: 120px;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-button:hover {
+  background-color: #fb8c00;
 }
 
 form {
