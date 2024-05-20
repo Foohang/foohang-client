@@ -40,9 +40,9 @@ export const useReviewStore = defineStore("review", () => {
       postDate: "2023-06-01",
       travelDate: "2023-05-15",
       images: [
-        "/src/assets/city/32-1.jpg",
-        "/src/assets/city/32-2.jpg",
-        "/src/assets/city/32-3.jpg",
+        // "/src/assets/city/32-1.jpg",
+        // "/src/assets/city/32-2.jpg",
+        // "/src/assets/city/32-3.jpg",
       ],
       content: "This is a sample post content.",
       hashtags: ["#sample", "#post", "#content"],

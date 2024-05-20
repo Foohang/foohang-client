@@ -4,7 +4,9 @@ import { useReviewStore } from "@/stores/review";
 import { ref, onMounted } from "vue";
 import { watch } from "vue";
 import SearchBar from "@/components/review/SearchBar.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const reviewStore = useReviewStore();
 const reviewList = ref([]);
 const selectName = ref("");
@@ -12,11 +14,16 @@ const selectName = ref("");
 const start = async () => {
   //   await reviewStore.getReviews();
   reviewList.value = reviewStore.reviewList;
+  selectList.value = reviewStore.reviewList;
 };
 
 const selectedOption = ref("날짜별");
 
 const reverse = ref(null);
+
+const regist = function () {
+  router.push({ name: "reviewWrite" });
+};
 
 const sorted = async (reverse, type) => {
   await reviewStore.sorting(reverse, type);
@@ -38,19 +45,11 @@ const selectList = ref([]);
 
 watch(selectName, (newVal) => {
   if (newVal === "") {
-    selectList.value = sidoStore.sidoList.map((item) => ({
-      ...item,
-      currentIndex: 1, // 각 항목에 currentIndex를 추가
-      timer: null, // 각 항목에 timer를 추가
-    }));
+    selectList.value = reviewList.value;
   } else {
-    selectList.value = sidoStore.sidoList
-      .filter((item) => item.sidoName.includes(newVal))
-      .map((item) => ({
-        ...item,
-        currentIndex: 1, // 각 항목에 currentIndex를 추가
-        timer: null, // 각 항목에 timer를 추가
-      }));
+    selectList.value = reviewList.value.filter((item) =>
+      item.title.includes(newVal)
+    );
   }
 });
 
@@ -61,6 +60,25 @@ onMounted(() => {
 
 <template>
   <div>
+    <div class="top">
+      <div class="present">
+        <img src="/src/assets/reviewIcon.png" height="50px" />
+        <div>
+          <h1>추억 돌아보기</h1>
+          <p class="subtitle">지난날의 여정을 돌이켜보세요</p>
+        </div>
+      </div>
+      <div>
+        <v-btn
+          class="memory-btn"
+          rounded="xl"
+          size="x-large"
+          block
+          @click="regist"
+          >추억 남기기</v-btn
+        >
+      </div>
+    </div>
     <div class="search out">
       <div class="select">
         <v-select
@@ -77,13 +95,31 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-for="(review, index) in reviewList" :key="index" class="card">
+    <div v-for="(review, index) in selectList" :key="index" class="card">
       <CardForm :review="review"></CardForm>
     </div>
   </div>
 </template>
 
 <style scoped>
+.top {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-bottom: 20px;
+}
+.present {
+  display: flex;
+  align-items: center;
+}
+.subtitle {
+  font-size: 14px;
+  color: grey;
+}
+.memory-btn {
+  background-color: #f7931e;
+  color: white;
+}
 .out {
   width: 70%;
 }
@@ -93,11 +129,12 @@ onMounted(() => {
 .search {
   display: flex;
   justify-content: space-between;
-  /* width: 100%; */
+  width: 70%;
+  margin-bottom: 20px;
 }
 .select {
   display: flex;
-  align-content: center;
+  align-items: center;
 }
 .pick {
   padding-right: 10px;

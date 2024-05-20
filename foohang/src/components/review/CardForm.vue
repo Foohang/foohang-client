@@ -20,27 +20,29 @@
     <div class="image-details">
       <div class="travel-date">Travel Date: {{ review.travelDate }}</div>
       <div class="emotions">
-        <span :class="{'active': review.selectedEmotion === '1'}">😊</span>
-        <span :class="{'active': review.selectedEmotion === '2'}">😐</span>
-        <span :class="{'active': review.selectedEmotion === '3'}">😢</span>
-        <span :class="{'active': review.selectedEmotion === '4'}">😍</span>
-        <span :class="{'active': review.selectedEmotion === '5'}">😡</span>
+        <span :class="{ active: review.selectedEmotion === '1' }">😊</span>
+        <span :class="{ active: review.selectedEmotion === '2' }">😐</span>
+        <span :class="{ active: review.selectedEmotion === '3' }">😢</span>
+        <span :class="{ active: review.selectedEmotion === '4' }">😍</span>
+        <span :class="{ active: review.selectedEmotion === '5' }">😡</span>
       </div>
     </div>
     <div class="details">
       <div class="content">{{ review.content }}</div>
       <div class="hashtags">
-        <span v-for="(hashtag, index) in review.hashtags" :key="index">{{ hashtag }}</span>
+        <span v-for="(hashtag, index) in review.hashtags" :key="index">{{
+          hashtag
+        }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const props = defineProps({
-  review: Object
+  review: Object,
 });
 
 const menuVisible = ref(false);
@@ -137,7 +139,7 @@ function deletePost() {
 .card-image {
   background-color: rgb(236, 236, 236);
   width: 100%;
-  height: 300px;
+  /* height: 100;  */
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
