@@ -4,8 +4,18 @@
       <div class="card-border-top"></div>
       <span>회원가입</span>
       <div class="img" @click="triggerFileInput">
-        <input type="file" ref="fileInput" @change="onFileChange" style="display: none;" />
-        <img v-if="joinForm.profile_img" :src="joinForm.profile_img" alt="프로필 이미지" />
+        <input
+          type="file"
+          ref="fileInput"
+          @change="onFileChange"
+          style="display: none"
+        />
+        <img
+          v-if="joinForm.profile_img"
+          :src="joinForm.profile_img"
+          alt="Profile Image"
+        />
+        <img v-else src="/src/assets/addImage.png" alt="Default Image" />
       </div>
       <button class="photo-button" @click="triggerFileInput">사진 추가</button>
       <form @submit.prevent="join">
@@ -13,57 +23,120 @@
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
             <div class="input-divider"></div>
-            <input type="text" class="input-field" v-model.trim="joinForm.email" placeholder="이메일" required />
+            <input
+              type="text"
+              class="input-field"
+              v-model.trim="joinForm.email"
+              placeholder="이메일"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
             <div class="input-divider"></div>
-            <input type="password" class="input-field" v-model.trim="joinForm.password" placeholder="비밀번호" required />
+            <input
+              type="password"
+              class="input-field"
+              v-model.trim="joinForm.password"
+              placeholder="비밀번호"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'user']" class="input-icon" />
             <div class="input-divider"></div>
-            <input type="text" class="input-field" v-model.trim="joinForm.nickName" placeholder="닉네임" required />
+            <input
+              type="text"
+              class="input-field"
+              v-model.trim="joinForm.nickName"
+              placeholder="닉네임"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'map-marker-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
-            <input type="text" class="input-field" v-model.trim="joinForm.region" placeholder="선호 지역" required />
+            <input
+              type="text"
+              class="input-field"
+              v-model.trim="joinForm.region"
+              placeholder="선호 지역"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon :icon="['fas', 'utensils']" class="input-icon" />
             <div class="input-divider"></div>
-            <input type="text" class="input-field" v-model.trim="joinForm.food" placeholder="선호 음식" required />
+            <input
+              type="text"
+              class="input-field"
+              v-model.trim="joinForm.food"
+              placeholder="선호 음식"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'comment-dots']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'comment-dots']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
-            <input type="text" class="input-field" v-model="joinForm.statusMessage" placeholder="상태 메시지" required />
+            <input
+              type="text"
+              class="input-field"
+              v-model="joinForm.statusMessage"
+              placeholder="상태 메시지"
+              required
+            />
           </div>
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'calendar-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
-            <input type="date" class="input-field" v-model="joinForm.birth" placeholder="생년월일" required />
+            <input
+              type="date"
+              class="input-field"
+              v-model="joinForm.birth"
+              placeholder="생년월일"
+              required
+            />
           </div>
         </div>
         <div class="form-group gender-group">
           <label class="input-label">성별</label>
           <div class="gender-container">
-            <input id="men" name="gender" type="radio" value="1" v-model="joinForm.gender" />
+            <input
+              id="men"
+              name="gender"
+              type="radio"
+              value="1"
+              v-model="joinForm.gender"
+            />
             <label for="men">남성</label>
-            <input id="women" name="gender" type="radio" value="0" v-model="joinForm.gender" />
+            <input
+              id="women"
+              name="gender"
+              type="radio"
+              value="0"
+              v-model="joinForm.gender"
+            />
             <label for="women">여성</label>
           </div>
         </div>
@@ -74,29 +147,45 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt);
+library.add(
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt
+);
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const joinForm = ref({
-  email: '',
-  password: '',
-  nickName: '',
-  region: '',
-  food: '',
-  birth: '',
-  gender: '',
-  statusMessage: '',
+  email: "",
+  password: "",
+  nickName: "",
+  region: "",
+  food: "",
+  birth: "",
+  gender: "",
+  statusMessage: "",
   profile: null,
-  profile_img: null
+  profile_img: null,
 });
 
 const fileInputRef = ref(null);
@@ -147,7 +236,6 @@ const join = async () => {
   }
 };
 </script>
-
 
 <style scoped>
 .card {

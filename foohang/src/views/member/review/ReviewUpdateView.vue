@@ -3,7 +3,6 @@ import ReviewForm from "@/components/review/ReviewForm.vue";
 import ReviewUpdate from "@/components/review/ReviewUpdate.vue";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { useReviewStore } from "@/stores/review";
 
 const route = useRoute();
 const reviewId = computed(() => route.params.reviewId);
