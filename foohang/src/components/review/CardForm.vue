@@ -20,11 +20,11 @@
     <div class="image-details">
       <div class="travel-date">Travel Date: {{ review.travelDate }}</div>
       <div class="emotions">
-        <span :class="{ active: review.selectedEmotion === '1' }">😊</span>
-        <span :class="{ active: review.selectedEmotion === '2' }">😐</span>
-        <span :class="{ active: review.selectedEmotion === '3' }">😢</span>
-        <span :class="{ active: review.selectedEmotion === '4' }">😍</span>
-        <span :class="{ active: review.selectedEmotion === '5' }">😡</span>
+        <span :class="{ active: review.selectedEmotion == '1' }">😊</span>
+        <span :class="{ active: review.selectedEmotion == '2' }">😐</span>
+        <span :class="{ active: review.selectedEmotion == '3' }">😢</span>
+        <span :class="{ active: review.selectedEmotion == '4' }">😍</span>
+        <span :class="{ active: review.selectedEmotion == '5' }">😡</span>
       </div>
     </div>
     <div class="details">
@@ -59,12 +59,10 @@ function toggleMenu() {
 
 function handleMenuOption(option) {
   if (option === "edit") {
-    if (confirm("수정하시겠습니까?")) {
-      router.push({
-        name: "reviewUpdate",
-        params: { reviewId: props.review.reviewId },
-      });
-    }
+    router.push({
+      name: "reviewUpdate",
+      params: { reviewId: props.review.reviewId },
+    });
   } else if (option === "delete") {
     if (confirm("삭제하시겠습니까?")) {
       reviewStore.deleteReview(props.review.reviewId);
@@ -224,13 +222,13 @@ onBeforeUnmount(() => {
 }
 
 .emotions span {
-  font-size: 2em;
+  font-size: 1.3em;
   margin-right: 10px;
   cursor: pointer;
 }
 
 .emotions span.active {
-  transform: scale(1.2);
+  transform: scale(1.5);
   transition: transform 0.2s;
 }
 </style>

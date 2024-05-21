@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useChatStore } from "@/stores/chat";
 import attractionApi from "@/api/attractionApi";
 import routeApi from "@/api/routeApi";
-
 export const useAttractionStore = defineStore("attraction", () => {
+  const chatStore = useChatStore();
   // 기본 attractions
   const attractionList = ref([]);
 
@@ -44,6 +45,8 @@ export const useAttractionStore = defineStore("attraction", () => {
 
     const response = await attractionApi.get(`/${contentId}`);
     attractionDetail.value = response.data;
+    console.log(attractionDetail.value)
+    chatStore.searched(attractionDetail.value.title);
     selectedAttractions.value.push(attractionDetail.value);
   };
 
