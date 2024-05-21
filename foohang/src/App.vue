@@ -24,13 +24,28 @@ document.addEventListener("click", handleClickOutside);
 </script>
 
 <template>
-  <MainHeader></MainHeader>
-  <ChatBot
-    :isChatOpen="isChatOpen"
-    @toggleChat="isChatOpen = !isChatOpen"
-    @openChat="isChatOpen = true"
-  />
-  <RouterView />
+  <div class="app-container">
+    <MainHeader></MainHeader>
+    <div class="content-container">
+      <RouterView />
+    </div>
+    <ChatBot
+      :isChatOpen="isChatOpen"
+      @toggleChat="isChatOpen = !isChatOpen"
+      @openChat="isChatOpen = true"
+    />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 뷰포트 전체 높이를 차지하도록 설정 */
+}
+
+.content-container {
+  flex: 1; /* 나머지 공간을 모두 차지하도록 설정 */
+  background: #fff; /* 하얀 배경 설정 */
+}
+</style>
