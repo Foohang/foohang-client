@@ -1,82 +1,114 @@
 <template>
   <div>
-    <div class="chatbot-icon" @click="toggleChat">💬</div>
+    <div class="chatbot-icon" @click="toggleChat">
+      💬
+    </div>
     <div v-if="isChatOpen" class="chatbot">
       <div class="messages">
-        <div
-          v-for="message in messages"
-          :key="message.id"
-          :class="['message', message.sender]"
-        >
+        <div v-for="message in messages" :key="message.id" :class="['message', message.sender]">
           {{ message.text }}
         </div>
       </div>
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        placeholder="메시지를 입력하세요..."
-      />
+      <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="메시지를 입력하세요..." />
     </div>
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref, watch } from 'vue';
+import { useChatStore } from '@/stores/chat'
+import { useAuthStore } from '@/stores/auth';
+import axios from 'axios';
 
-export default {
-  data() {
-    return {
-      messages: [],
-      newMessage: "",
-      isChatOpen: false,
-    };
-  },
-  methods: {
-    toggleChat() {
-      this.isChatOpen = !this.isChatOpen;
+const messages = ref([]);
+const newMessage = ref('');
+const isChatOpen = ref(false);
+const chatStore = useChatStore();
+const userStore = useAuthStore();
+const sessionId = ref('123456'); // 각 사용자에 대해 고유한 세션 ID를 사용할 수 있습니다.
+
+
+
+watch(chatStore,()=>{
+  autoBotResponse(chatStore.findAttraciton);
+})
+
+watch(userStore,()=>{
+  sessionId.value = userStore.user.memberId;
+})
+
+const toggleChat = () => {
+  isChatOpen.value = !isChatOpen.value;
+};
+
+const sendMessage = () => {
+  if (newMessage.value.trim() !== '') {
+    addMessage(newMessage.value, 'user');
+    newMessage.value = '';
+    generateBotResponse();
+  }
+};
+
+const addMessage = (text, sender) => {
+  messages.value.push({
+    id: messages.value.length + 1,
+    text,
+    sender,
+  });
+};
+
+const autoBotResponse = async (attractionName) => {
+  const apiKey = 'c4c85246d5d44fa15d63a9b8d1404c35196de760'; // 여기에 Dialogflow API 키를 입력하세요.
+  const apiUrl = `https://dialogflow.googleapis.com/v2/projects/sodium-castle-423917-k4/agent/sessions/${sessionId.value}:detectIntent`;
+
+  const data = {
+    queryInput: {
+      text: {
+        text: `선호지역이 서울이고 선호 음식이 오늘 점심뭐임이고 성별이 여성인 사람의 애인이라고 생각하고 대답해줘. 답변의 형태는 글형태가 아니라 채팅을한다고 생각하고 답변해줘. ${attractionName}으로 여행가는거 어때?`,
+        languageCode: 'ko', // 원하는 언어 코드로 변경하세요.
+      },
     },
-    sendMessage() {
-      if (this.newMessage.trim() !== "") {
-        this.addMessage(this.newMessage, "user");
-        this.newMessage = "";
-        this.generateBotResponse();
-      }
-    },
-    addMessage(text, sender) {
-      this.messages.push({
-        id: this.messages.length + 1,
-        text,
-        sender,
-      });
-    },
-    async generateBotResponse() {
-      const apiKey = "YOUR_OPENAI_API_KEY"; // 여기에 OpenAI API 키를 입력하세요.
-      const apiUrl = "https://api.openai.com/v1/chat/completions";
-      const headers = {
-        "Content-Type": "application/json",
+  };
+  isChatOpen.value = true;
+  try {
+    const response = await axios.post(apiUrl, data, {
+      headers: {
         Authorization: `Bearer ${apiKey}`,
-      };
-      const data = {
-        model: "gpt-3.5-turbo",
-        messages: this.messages.map((msg) => ({
-          role: msg.sender === "user" ? "user" : "assistant",
-          content: msg.text,
-        })),
-      };
+      },
+    });
+    const botMessage = response.data.queryResult.fulfillmentText;
+    addMessage(botMessage, 'bot');
+  } catch (error) {
+    console.error('Dialogflow API 호출 오류:', error);
+    addMessage(`${attractionName}? 미안, 여기는 잘 모르겠어.ㅠㅠ`, 'bot');
+  }
+};
 
-      try {
-        const response = await axios.post(apiUrl, data, { headers });
-        const botMessage = response.data.choices[0].message.content;
-        this.addMessage(botMessage, "bot");
-      } catch (error) {
-        console.error("ChatGPT API 호출 오류:", error);
-        this.addMessage(
-          "죄송합니다, 답변을 생성하는데 문제가 발생했습니다.",
-          "bot"
-        );
-      }
+const generateBotResponse = async () => {
+  const apiKey = 'c4c85246d5d44fa15d63a9b8d1404c35196de760'; // 여기에 Dialogflow API 키를 입력하세요.
+  const apiUrl = `https://dialogflow.googleapis.com/v2/projects/sodium-castle-423917-k4/agent/sessions/${sessionId.value}:detectIntent`;
+
+  const data = {
+    queryInput: {
+      text: {
+        text: messages.value[messages.value.length - 1].text,
+        languageCode: 'ko', // 원하는 언어 코드로 변경하세요.
+      },
     },
-  },
+  };
+
+  try {
+    const response = await axios.post(apiUrl, data, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+    const botMessage = response.data.queryResult.fulfillmentText;
+    addMessage(botMessage, 'bot');
+  } catch (error) {
+    console.error('Dialogflow API 호출 오류:', error);
+    addMessage('죄송합니다, 답변을 생성하는데 문제가 발생했습니다.', 'bot');
+  }
 };
 </script>
 
