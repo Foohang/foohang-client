@@ -64,9 +64,13 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
-const user = computed(() => authStore.user);
+const user = ref(authStore.user);
 const router = useRouter();
 const checked = ref(false);
+
+watch(authStore, () => {
+  user.value = authStore.user;
+});
 
 const logout = () => {
   if (!confirm("로그아웃 하시겠습니까?")) return;

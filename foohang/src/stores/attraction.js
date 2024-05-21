@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import { useChatStore } from "@/stores/chat";
 import attractionApi from "@/api/attractionApi";
@@ -45,7 +45,7 @@ export const useAttractionStore = defineStore("attraction", () => {
 
     const response = await attractionApi.get(`/${contentId}`);
     attractionDetail.value = response.data;
-    console.log(attractionDetail.value)
+    console.log(attractionDetail.value);
     chatStore.searched(attractionDetail.value.title);
     selectedAttractions.value.push(attractionDetail.value);
   };
@@ -63,8 +63,8 @@ export const useAttractionStore = defineStore("attraction", () => {
     nearRestaurants.value = [];
   };
 
-    const clearSelected = function () {
-      selectedAttractions.value = [];
+  const clearSelected = function () {
+    selectedAttractions.value = [];
   };
 
   const changeAttribute = function (contentId) {};
@@ -77,11 +77,24 @@ export const useAttractionStore = defineStore("attraction", () => {
     selectedAttractions.value = response.data;
   };
 
+  //직선을 그리기 위한 리스트
+  const lineList = ref([]);
+  const lineCraete = async () => {
+    lineList.value = selectedAttractions.value.map((item) => ({
+      lat: item.latitude,
+      lng: item.longitude,
+    }));
+  };
+  watch(selectedAttractions, () => {
+    lineCraete();
+  });
+
   return {
     attractionList,
     attractionDetail,
     nearRestaurants,
     selectedAttractions,
+    lineList,
     getAttraction,
     getAttractionDetail,
     getNearRestaurants,
@@ -92,5 +105,6 @@ export const useAttractionStore = defineStore("attraction", () => {
     changeAttribute,
     makeBestRoute,
     clearSelected,
+    lineCraete,
   };
 });
