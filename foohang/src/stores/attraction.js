@@ -1,6 +1,7 @@
 import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import { useChatStore } from "@/stores/chat";
+import axios from "axios";
 import attractionApi from "@/api/attractionApi";
 import routeApi from "@/api/routeApi";
 export const useAttractionStore = defineStore("attraction", () => {
@@ -76,15 +77,117 @@ export const useAttractionStore = defineStore("attraction", () => {
     );
     selectedAttractions.value = response.data;
   };
+  // 경로를 찾는 함수
+  const apiKey = "ebf2da93e7122fee5947e193d7330814"; // 카카오디벨로퍼스에서 발급 받은 API 키
+  const postUrl = "https://apis-navi.kakaomobility.com/v1/waypoints/directions";
+  const getUrl = "https://apis-navi.kakaomobility.com/v1/directions";
+
+  const getDirections = async (locations) => {
+    if (locations.length < 2) {
+      console.error("At least two locations are required");
+      return;
+    }
+
+    if (locations.length === 2) {
+      const origin = `${locations[0].longitude},${locations[0].latitude}`;
+      const destination = `${locations[1].longitude},${locations[1].latitude}`;
+
+      const params = new URLSearchParams({
+        origin,
+        destination,
+        priority: "RECOMMEND",
+        car_fuel: "GASOLINE",
+        car_hipass: "false",
+        alternatives: "false",
+        road_details: "false",
+      });
+
+      try {
+        const response = await axios.get(`${getUrl}?${params.toString()}`, {
+          headers: {
+            Authorization: `KakaoAK ${apiKey}`,
+          },
+        });
+
+        lineList.value = response.data.routes[0].sections.flatMap((section) =>
+          section.roads.flatMap((road) =>
+            road.vertexes.reduce((acc, vertex, index, array) => {
+              if (index % 2 === 0) {
+                acc.push({ lat: array[index + 1], lng: vertex });
+              }
+              return acc;
+            }, [])
+          )
+        );
+
+        console.log(lineList.value);
+      } catch (error) {
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    } else {
+      const origin = {
+        x: locations[0].longitude.toString(),
+        y: locations[0].latitude.toString(),
+      };
+
+      const destination = {
+        x: locations[locations.length - 1].longitude.toString(),
+        y: locations[locations.length - 1].latitude.toString(),
+      };
+
+      const waypoints = locations.slice(1, -1).map((location, index) => ({
+        name: `name${index}`,
+        x: location.longitude,
+        y: location.latitude,
+      }));
+
+      const data = {
+        origin,
+        destination,
+        waypoints,
+        priority: "RECOMMEND",
+        car_fuel: "GASOLINE",
+        car_hipass: false,
+        alternatives: false,
+        road_details: false,
+      };
+
+      try {
+        const response = await axios.post(postUrl, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `KakaoAK ${apiKey}`,
+          },
+        });
+        console.log("라인 리스트 변경 직전");
+        lineList.value = response.data.routes[0].sections.flatMap((section) =>
+          section.roads.flatMap((road) =>
+            road.vertexes.reduce((acc, vertex, index, array) => {
+              if (index % 2 === 0) {
+                acc.push({ lat: array[index + 1], lng: vertex });
+              }
+              return acc;
+            }, [])
+          )
+        );
+        console.log("라인 리스트 변경 완료");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   //직선을 그리기 위한 리스트
   const lineList = ref([]);
   const lineCraete = async () => {
-    lineList.value = selectedAttractions.value.map((item) => ({
-      lat: item.latitude,
-      lng: item.longitude,
-    }));
+    // console.log(selectedAttractions.value);
+    await getDirections(selectedAttractions.value);
+    // console.log(lineList.value);
   };
+
   watch(selectedAttractions, () => {
     lineCraete();
   });

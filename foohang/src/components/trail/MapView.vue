@@ -98,6 +98,7 @@ watch(props, (newProps) => {
     }));
   }
 });
+
 watch(latLngList, async () => {
   await attractionStore.lineCraete();
   lineList.value = attractionStore.lineList;
