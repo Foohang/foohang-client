@@ -35,7 +35,6 @@ const onLoadKakaoMapMarker = (newMarker: kakao.maps.Marker): void => {
 
 // 선택된 attraction 마커 리스트 관리
 const restaurantList = ref(attractionStore.nearRestaurants);
-
 const around = async () => {
   await attractionStore.getNearRestaurants(props.centerContent);
   restaurantList.value = attractionStore.nearRestaurants;
@@ -70,6 +69,7 @@ const registR = async (contentId) => {
 
 //선택된 리스트 마커 및 직선 관리
 const latLngList: Ref<KakaoMapLatLngItem[]> = ref([]);
+const lineList: Ref<KakaoMapLatLngItem[]> = ref([]);
 console.log(props);
 watch(props, (newProps) => {
   if (newProps.centerContent === -1) {
@@ -96,8 +96,12 @@ watch(props, (newProps) => {
       lat: item.latitude,
       lng: item.longitude,
     }));
-    console.log(latLngList.value);
   }
+});
+watch(latLngList, async () => {
+  await attractionStore.lineCraete();
+  lineList.value = attractionStore.lineList;
+  console.log(attractionStore.lineList);
 });
 </script>
 
@@ -180,7 +184,7 @@ watch(props, (newProps) => {
       </KakaoMapInfoWindow>
     </div>
     <!-- 선택된 리스트 마커 -->
-    <KakaoMapPolyline :latLngList="latLngList" />
+    <KakaoMapPolyline :latLngList="lineList" />
     <KakaoMapMarker
       v-for="(point, index) in latLngList"
       :key="index"
