@@ -29,13 +29,13 @@ const router = createRouter({
     },
     {
       path: "/mypage",
+      name: "mypage",
+      component: MypageView,
+    },
+    {
+      path: "/mypage",
       component: ProfileView,
       children: [
-        {
-          path: "",
-          name: "mypage",
-          component: MypageView,
-        },
         {
           path: "/review",
           component: ReviewView,
