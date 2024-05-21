@@ -2,22 +2,21 @@
 import { useAuthStore } from "@/stores/auth";
 import { ref } from "vue";
 const authStore = useAuthStore();
-
+console.log(authStore.user)
 const userProfile = ref({
-    nickName : authStore.user.nickName
+    nickName : authStore.user.nickName,
+    profileName: `http://localhost/files/profile/${authStore.user.profileName}`,
+    statusMessage: authStore.user.statusMessage,
 })
 </script>
 
 <template>
-    <h1>마이페이지</h1>
     <div class="out">
         <div class="profile">
-            <RouterLink :to="{name: 'mypage'}"> 회원 정보</RouterLink>
-    <br/>
-    <RouterLink :to="{name: 'review'}"> 후기</RouterLink>
-    <br/>
-    <p> 닉네임 : {{ userProfile.nickName }}</p>
-    </div>
+            <img :src="userProfile.profileName" class="img" />
+            <h1> {{ userProfile.nickName }} 님</h1>
+            <p>{{ userProfile.statusMessage }}</p>
+        </div>
     <div class="show"><RouterView /></div>
     </div>
 
@@ -30,6 +29,9 @@ const userProfile = ref({
 .out{
 display: flex;
 justify-content: space-around;
+}
+.img{
+    width: 100%;
 }
 
 .show{

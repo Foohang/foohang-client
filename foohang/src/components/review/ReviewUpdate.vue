@@ -12,27 +12,27 @@
       <div class="details">
         <div class="emotions">
           <span
-            :class="{ active: selectedEmotion === '1' }"
+            :class="{ active: selectedEmotion == '1' }"
             @click="selectEmotion('1')"
             >😊</span
           >
           <span
-            :class="{ active: selectedEmotion === '2' }"
+            :class="{ active: selectedEmotion == '2' }"
             @click="selectEmotion('2')"
             >😐</span
           >
           <span
-            :class="{ active: selectedEmotion === '3' }"
+            :class="{ active: selectedEmotion == '3' }"
             @click="selectEmotion('3')"
             >😢</span
           >
           <span
-            :class="{ active: selectedEmotion === '4' }"
+            :class="{ active: selectedEmotion == '4' }"
             @click="selectEmotion('4')"
             >😍</span
           >
           <span
-            :class="{ active: selectedEmotion === '5' }"
+            :class="{ active: selectedEmotion == '5' }"
             @click="selectEmotion('5')"
             >😡</span
           >
