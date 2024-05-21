@@ -64,6 +64,7 @@ const attractionList = ref(attractionStore.attractionList);
 const search = async (sidoCode, gugunCode, type) => {
   await attractionStore.getAttraction(sidoCode, gugunCode, type);
   attractionList.value = attractionStore.attractionList;
+  searchList.value = attractionStore.attractionList;
   expandedCardIndex.value = null;
 };
 
@@ -86,9 +87,17 @@ const getRouteList = async () => {
 };
 
 //검색 관련
-const searchAttraction = function (){
-
-}
+const searchAttraction = ref("");
+const searchList = ref(attractionStore.attractionList);
+watch(searchAttraction, (newVal) => {
+  if (newVal === "") {
+    searchList.value = attractionStore.attractionList
+  } else {
+    searchList.value = attractionStore.attractionList.filter((item) =>
+      item.title.includes(newVal)
+    );
+  }
+});
 
 //카드 관련
 const getContentTypeName = (contentTypeId) => {
@@ -252,7 +261,8 @@ initGugun();
 </script>
 
 <template>
-  <main class="main">
+  <div class="out">
+  <div class="main">
     <div class="spot">
       <h1>장소 선택</h1>
       <div class="search-tool">
@@ -348,7 +358,7 @@ initGugun();
           class="mx-auto"
           max-width="300"
           height="200"
-          v-for="(item, index) in attractionList"
+          v-for="(item, index) in searchList"
           :key="index"
         >
           <div v-if="expandedCardIndex !== index">
@@ -501,6 +511,8 @@ initGugun();
         루트 저장
       </v-btn>
     </div>
+
+    <!-- map -->
     <MapView
       :center-lat="centerLat"
       :center-long="centerLong"
@@ -508,7 +520,10 @@ initGugun();
       :center-content="ceterContent"
       :select-list="selectList"
       @attraction-event="attractionAdd"
+      class="map"
     ></MapView>
+
+    <!-- 정리리스트 -->
     <div v-if="seen" class="cards3">
       <h1>내가 다녀간 곳</h1>
       <div class="cards3-another">
@@ -561,10 +576,17 @@ initGugun();
       </v-card>
     </div>
   </div>
-  </main>
+</div>
+</div>
 </template>
 
 <style scoped>
+.out{
+  display: flex;
+  flex-direction: column;
+  height: 87vh; /* 전체 뷰포트 높이를 차지하도록 설정 */
+  overflow: hidden; /* 스크롤바를 숨깁니다 */
+}
 .main {
   display: flex;
   justify-content: space-around;
@@ -588,7 +610,7 @@ initGugun();
 
 .spot-another{
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
-  max-height: 75vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+  max-height: 65vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
 }
 
 .selected {
@@ -610,11 +632,14 @@ initGugun();
 /* 스크롤 영역을 가진 컨테이너 */
 .cards2 {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
-  max-height: 80vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+  max-height: 68vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
 }
 .card-text {
   overflow-y: auto;
   max-height: 200px;
+}
+.map{
+  height: 1;
 }
 
 .attractionList {
@@ -626,7 +651,7 @@ initGugun();
 
 .cards3-another{
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: 75vh;
 }
 
 .position-absolute {
