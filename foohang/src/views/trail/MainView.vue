@@ -7,6 +7,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useRouteStore } from "@/stores/route";
 import { useRouter } from "vue-router";
 import MapView from "@/components/trail/MapView.vue";
+import SearchBar from "@/components/trail/SearchBar.vue";
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 const token = computed(() => authStore.token);
@@ -83,6 +84,11 @@ const getRouteList = async () => {
     routeList.value = routeStore.routeList;
   }
 };
+
+//검색 관련
+const searchAttraction = function (){
+
+}
 
 //카드 관련
 const getContentTypeName = (contentTypeId) => {
@@ -249,6 +255,13 @@ initGugun();
   <main class="main">
     <div class="spot">
       <h1>장소 선택</h1>
+      <div class="search-tool">
+        <SearchBar @update:search="searchAttraction = $event" class="searchBar"/>
+        <v-btn variant="outlined" @click="search(sidoCode, gugunCode, type)">
+          검색
+        </v-btn>
+      </div>
+      <div class="spot-another">
       <div class="selected">
         <v-select
           width="80%"
@@ -264,10 +277,6 @@ initGugun();
           density="comfortable"
           label="구·군"
         ></v-select>
-
-        <v-btn variant="outlined" @click="search(sidoCode, gugunCode, type)">
-          검색
-        </v-btn>
       </div>
       <!-- 버튼 -->
       <v-card flat>
@@ -375,12 +384,14 @@ initGugun();
           </div>
         </v-card>
       </div>
+    </div>
       <v-btn variant="outlined" @click="getRouteList" color="orange">
         {{ routeName }}
       </v-btn>
       <v-btn variant="outlined" @click="clearList" color="orange">
         경로 초기화
       </v-btn>
+
     </div>
     <!-- 선택한 리스트 -->
     <div v-if="attractionSeen" class="attractionList">
@@ -500,6 +511,7 @@ initGugun();
     ></MapView>
     <div v-if="seen" class="cards3">
       <h1>내가 다녀간 곳</h1>
+      <div class="cards3-another">
       <v-card
         v-for="(item, index) in routeList"
         :key="index"
@@ -548,6 +560,7 @@ initGugun();
     </v-btn>
       </v-card>
     </div>
+  </div>
   </main>
 </template>
 
@@ -556,9 +569,28 @@ initGugun();
   display: flex;
   justify-content: space-around;
 }
+.search-tool{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  
+}
+
+.searchBar{
+  margin-right: 10px;
+}
+
 .spot {
   width: 600px;
 }
+
+.spot-another{
+  overflow-y: auto; /* 세로 스크롤을 추가합니다. */
+  max-height: 75vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+}
+
 .selected {
   display: flex;
   justify-content: space-around;
@@ -576,10 +608,6 @@ initGugun();
   margin-top: 10px; /* 원하는 간격으로 조절 */
 }
 /* 스크롤 영역을 가진 컨테이너 */
-.cards {
-  overflow-y: auto; /* 세로 스크롤을 추가합니다. */
-  max-height: 45vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
-}
 .cards2 {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 80vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
@@ -593,9 +621,12 @@ initGugun();
   width: 500px;
 }
 .cards3{
-  overflow-y: auto;
-  max-height: 80vh;
   width: 400px
+}
+
+.cards3-another{
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 .position-absolute {
