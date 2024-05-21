@@ -70,11 +70,11 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #ffffff; /* 주황색 계열 */
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: lighter;
   text-align: center;
-  background-color: #00000080; /* 반투명 검정 배경으로 가독성 증가 */
-  padding: 30px;
+  background-color: #00000090; /* 반투명 검정 배경으로 가독성 증가 */
+  padding: 15px;
   border-radius: 15px;
 }
 </style>
