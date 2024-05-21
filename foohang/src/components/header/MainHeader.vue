@@ -17,7 +17,7 @@
         </li>
         <li v-else class="user-info">
           <img
-            :src="`http://localhost/files/profile/${user.profileName}`"
+            :src="`http://localhost/files/${user.profileName}`"
             alt="프로필 사진"
             class="profile-img"
           />
@@ -35,20 +35,20 @@
           <ul v-if="checked" class="dropdown-menu">
             <li v-if="user !== null">
               <RouterLink :to="{ name: 'mypage' }" class="dropdown-link"
-                >마이페이지</RouterLink
+                >· 마이페이지</RouterLink
               >
             </li>
             <li v-if="user !== null">
               <RouterLink :to="{ name: 'review' }" class="dropdown-link"
-                >후기</RouterLink
+                >· 후기</RouterLink
               >
             </li>
             <li v-if="user !== null" @click="logout" class="dropdown-link">
-              로그아웃
+              · 로그아웃
             </li>
             <li v-if="user === null">
               <RouterLink :to="{ name: 'regist' }" class="dropdown-link"
-                >회원가입</RouterLink
+                >· 회원가입</RouterLink
               >
             </li>
           </ul>
@@ -99,9 +99,10 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 0 1em;
-  height: 80px; /* 헤더 높이 줄임 */
+  height: 100px; /* 헤더 높이 줄임 */
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0); /* 하단 그림자 추가 */
+  box-shadow: 1px 1px 5px 0px #ee703f;
+  margin-bottom: 3px;
 }
 
 nav {
@@ -142,10 +143,10 @@ nav {
 }
 
 .nav-link.button {
-  background-color: #f7931e; /* 주황색 배경 */
-  color: white;
+  background-color: #ee703f; /* 주황색 배경 */
+  color: #e0ffff;
   padding: 0.75em 1.5em; /* Increased padding for larger button */
-  border-radius: 5px;
+  border-radius: 40px;
   transition: background-color 0.3s;
   font-size: 1.2em; /* Increased font size */
 }
@@ -169,7 +170,7 @@ nav {
 .line-1,
 .line-2,
 .line-3 {
-  background: #f7931e; /* 주황색으로 변경 */
+  background: #ee703f; /* 주황색으로 변경 */
   height: 0.3em;
   border-radius: 10em;
   transition-duration: 500ms;
@@ -197,8 +198,9 @@ nav {
   top: 3em;
   right: 0;
   background: white;
-  border: 1px solid #f7931e; /* 주황색으로 테두리 변경 */
+  border: 1px solid #cccccc; /* 주황색으로 테두리 변경 */
   border-radius: 0.5em;
+  box-shadow: 1px 1px 3px 0px #cccccc;
   padding: 1em;
   list-style: none;
   display: flex;
@@ -209,30 +211,30 @@ nav {
 }
 
 .dropdown-link {
+  width: 6em;
   text-decoration: none;
   color: #333;
   font-weight: bold;
   cursor: pointer;
-  width: 5em;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 0.5em;
-  background-color: #f57c00; /* 진한 주황색으로 변경 */
+  background-color: #ee703f; /* 진한 주황색으로 변경 */
   padding: 0.5em 1em;
-  border-radius: 5px;
+  border-radius: 40px;
   color: white; /* 글자색 흰색으로 변경 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
 }
 
 .profile-img {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #f57c00; /* 진한 주황색 테두리 */
+  border: 0.5px solid #ffdab9; /* 진한 주황색 테두리 */
 }
 
 .user-nickname {

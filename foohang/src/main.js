@@ -9,6 +9,8 @@ import { useKakao } from "vue3-kakao-maps/@utils";
 
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
+import "./assets/global.css";
+
 useKakao("0f67d2671dd50723541ec17f40846446");
 
 const app = createApp(App);
