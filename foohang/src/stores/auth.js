@@ -30,8 +30,12 @@ export const useAuthStore = defineStore(
       user.value = jwtDecode(token.value);
     };
 
-    const update = async (joinInfo) => {
-      const response = await mypageApi.put("/", joinInfo);
+    const update = async (formData) => {
+      const response = await mypageApi.put("/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       token.value = response.data;
       user.value = jwtDecode(token.value);
     };

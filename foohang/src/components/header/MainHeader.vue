@@ -17,7 +17,7 @@
         </li>
         <li v-else class="user-info">
           <img
-            :src="`http://localhost/files/${user.profileName}`"
+            :src="`http://localhost/files/profile/${user.profileName}`"
             alt="프로필 사진"
             class="profile-img"
           />

@@ -91,6 +91,22 @@
         <div class="form-group">
           <div class="input-container">
             <font-awesome-icon
+              :icon="['fas', 'comment-dots']"
+              class="input-icon"
+            />
+            <div class="input-divider"></div>
+            <input
+              type="text"
+              class="input-field"
+              v-model="joinForm.statusMessage"
+              placeholder="상태 메시지"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-container">
+            <font-awesome-icon
               :icon="['fas', 'calendar-alt']"
               class="input-icon"
             />
@@ -169,6 +185,7 @@ const joinForm = ref({
   food: authStore.user.food,
   birth: authStore.user.birth,
   gender: authStore.user.gender,
+  statusMessage: authStore.user.statusMessage,
   profile: null,
   profile_img:
     `http://localhost/files/profile/${authStore.user.profileName}` || null,
