@@ -1,7 +1,7 @@
 <template>
   <v-carousel
     cycle
-    height="300"
+    height="450"
     show-arrows="hover"
     hide-delimiters
     v-model="activeIndex"
@@ -9,8 +9,8 @@
     <v-carousel-item
       v-for="(item, i) in items"
       :key="i"
-      @mouseenter="startHoverTimer"
-      @mouseleave="stopHoverTimer"
+      @mouseenter="stopHoverTimer"
+      @mouseleave="startHoverTimer"
     >
       <img :src="item.src" class="carousel-image" />
       <div class="carousel-text">{{ item.text }}</div>
@@ -73,9 +73,8 @@ export default {
   font-size: 24px;
   font-weight: bold;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경으로 가독성 증가 */
+  background-color: #00000080; /* 반투명 검정 배경으로 가독성 증가 */
   padding: 30px;
   border-radius: 15px;
 }
-
 </style>
