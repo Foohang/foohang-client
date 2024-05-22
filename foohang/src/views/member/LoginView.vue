@@ -6,22 +6,40 @@
       </div>
       <!-- <div class="form-title">로그인</div> -->
       <div class="input-container">
-        <label
-          >Email <input type="text" placeholder="이메일" v-model.trim="loginForm.email" required
-        /></label>
+        <label>
+          Email
+          <input
+            type="text"
+            placeholder="이메일"
+            v-model.trim="loginForm.email"
+            required
+          />
+        </label>
       </div>
       <div class="input-container">
-        <label
-          >Password<input
+        <label>
+          Password
+          <input
             type="password"
             placeholder="비밀번호"
             v-model.trim="loginForm.password"
             required
-        /></label>
+          />
+        </label>
       </div>
       <button type="submit" class="submit">로그인</button>
+      <button type="button" class="not-submit">
+        <img
+          src="/src/assets/kakao.png"
+          class="kakao"
+          @click="redirectToKakao"
+        />
+      </button>
       <div class="signup-link">
-        <span>계정이 없으신가요? <RouterLink :to="{ name: 'regist' }">회원가입</RouterLink></span>
+        <span>
+          계정이 없으신가요?
+          <RouterLink :to="{ name: 'regist' }">회원가입</RouterLink>
+        </span>
       </div>
     </form>
   </div>
@@ -31,7 +49,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useKakaoStore } from "@/stores/kakao";
 const authStore = useAuthStore();
+const kakaoStore = useKakaoStore();
 const router = useRouter();
 
 const loginForm = ref({
@@ -47,6 +67,9 @@ const login = async () => {
     console.error("에러:", error);
     alert(" 실패");
   }
+};
+const redirectToKakao = function () {
+  window.location.href = kakaoStore.KAKAO_AUTH_URI;
 };
 </script>
 
@@ -65,7 +88,8 @@ const login = async () => {
   padding: 1rem;
   max-width: 350px;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .image-container {
@@ -97,7 +121,7 @@ const login = async () => {
 }
 
 .input-container input,
-.form button {
+.form button:not(.not-submit) {
   outline: none;
   border: 1px solid #e5e7eb;
   margin: 8px 0;
@@ -131,7 +155,7 @@ const login = async () => {
   height: 1rem;
 }
 
-.submit {
+.submit:not(.not-submit) {
   display: block;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -145,6 +169,21 @@ const login = async () => {
   width: 100%;
   border-radius: 0.5rem;
   text-transform: uppercase;
+}
+
+.not-submit {
+  border: none; /* 테두리 제거 */
+  background-color: transparent; /* 배경 투명 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* 기본 패딩 제거 */
+  margin-top: 10px; /* 위쪽에 약간의 여백 추가 */
+  width: 100%; /* 전체 너비 사용 */
+}
+
+.kakao {
+  margin-bottom: 10px;
 }
 
 .signup-link {
