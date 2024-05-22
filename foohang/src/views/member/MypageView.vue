@@ -2,7 +2,7 @@
   <main>
     <div class="card">
       <div class="card-border-top"></div>
-      <span>내 정보 수정</span>
+
       <div class="img" @click="triggerFileInput">
         <input
           type="file"
@@ -17,7 +17,10 @@
         />
         <img v-else src="/src/assets/addImage.png" alt="Default Image" />
       </div>
-      <button class="photo-button" @click="triggerFileInput">사진 추가</button>
+      <button class="photo-button" @click="triggerFileInput">사진 변경</button>
+
+      <p class="myPage">· 마이페이지</p>
+
       <form @submit.prevent="update">
         <input type="hidden" v-model="joinForm.memberId" />
         <div class="form-group">
@@ -121,7 +124,7 @@
           </div>
         </div>
         <div class="form-group gender-group">
-          <label class="input-label">성별</label>
+          <label class="input-label"></label>
           <div class="gender-container">
             <input
               id="men"
@@ -130,7 +133,7 @@
               value="1"
               v-model="joinForm.gender"
             />
-            <label for="men">남성</label>
+            <label class="gender" for="men">남성</label>
             <input
               id="women"
               name="gender"
@@ -138,10 +141,10 @@
               value="0"
               v-model="joinForm.gender"
             />
-            <label for="women">여성</label>
+            <label class="gender" for="women">여성</label>
           </div>
         </div>
-        <button type="submit">변경</button>
+        <button type="submit">내 정보 수정</button>
       </form>
     </div>
   </main>
@@ -235,9 +238,9 @@ const update = async () => {
 .card {
   width: 500px; /* 입력 폼의 가로를 유지 */
   height: auto;
-  background: #f57c00; /* 주황색 배경 */
+  background: #ffffff; /* 주황색 배경 */
   border-radius: 15px;
-  box-shadow: 1px 5px 60px 0px #ffcc80; /* 주황색 그림자 */
+  box-shadow: 1px 5px 20px 0px #cccccc; /* 주황색 그림자 */
   padding: 20px;
   margin: auto;
   margin-top: 50px;
@@ -246,15 +249,17 @@ const update = async () => {
 .card .card-border-top {
   width: 60%;
   height: 5px;
-  background: #ffb74d; /* 연한 주황색 */
+  background: #ffdab9; /* 연한 주황색 */
   margin: auto;
+  margin-bottom: 20px;
   border-radius: 0px 0px 15px 15px;
 }
 
 .card .img {
   width: 100px;
   height: 100px;
-  background: #ffb74d; /* 연한 주황색 */
+  background: #ffffff; /* 연한 주황색 */
+  box-shadow: 1px 5px 20px 0px #cccccc; /* 주황색 그림자 */
   border-radius: 50%;
   margin: auto;
   position: relative;
@@ -294,7 +299,8 @@ const update = async () => {
   width: 120px;
   margin: 10px auto;
   padding: 10px;
-  background-color: #ff9800;
+  background-color: #ee703f;
+  box-shadow: 1px 5px 20px 0px #ffdab9; /* 주황색 그림자 */
   color: white;
   border: none;
   border-radius: 5px;
@@ -303,7 +309,7 @@ const update = async () => {
 }
 
 .photo-button:hover {
-  background-color: #fb8c00;
+  background-color: #ee703f90;
 }
 
 form {
@@ -338,7 +344,7 @@ form label {
   transform: translateY(-50%);
   pointer-events: none;
   font-size: 1.2em; /* 아이콘 크기 조절 */
-  color: #000; /* 흑백 아이콘으로 설정 */
+  color: #ee703f; /* 흑백 아이콘으로 설정 */
 }
 
 .input-divider {
@@ -355,9 +361,10 @@ form label {
   width: calc(100% - 80px); /* 입력 필드의 너비 조절 */
   padding: 8px 8px 8px 90px; /* 입력 필드 내부 패딩 조절 */
   border-radius: 5px;
-  border: 1px solid #000;
+  border: 1px solid #cccccc;
   margin-top: 5px;
-  background-color: #fff;
+  background-color: #f8f9fb;
+  box-shadow: 1px 5px 10px 0px #cccccc; /* 주황색 그림자 */
 }
 
 .gender-group {
@@ -371,7 +378,8 @@ form label {
 .gender-container {
   display: flex;
   align-items: center;
-  margin-left: 10px; /* 성별 선택의 왼쪽 여백 */
+  margin-right: 60px;
+  color: #000;
 }
 
 form div input[type="radio"] {
@@ -381,16 +389,16 @@ form div input[type="radio"] {
 form button {
   width: 100%;
   padding: 10px 20px;
-  background: #ff9800;
+  background: #ee703f;
   color: white;
   border: none;
   border-radius: 5px;
-  margin-top: 20px;
+  margin-top: 0px;
   cursor: pointer;
 }
 
 form button:hover {
-  background: #fb8c00;
+  background: #ee703f90;
 }
 
 form div {
@@ -404,5 +412,16 @@ form div {
   display: flex;
   align-items: center;
   margin-bottom: 10px; /* 각 입력 요소 사이의 간격 조절 */
+}
+
+.myPage {
+  color: #00000090;
+  font-size: x-large;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.gender {
+  color: black;
 }
 </style>
