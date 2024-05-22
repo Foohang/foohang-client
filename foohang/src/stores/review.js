@@ -2,6 +2,7 @@ import mypageApi from "@/api/mypageApi";
 import { useAuthStore } from "@/stores/auth";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import router from "@/router";
 
 export const useReviewStore = defineStore("review", () => {
   const reviewList = ref([]);
@@ -17,8 +18,15 @@ export const useReviewStore = defineStore("review", () => {
   };
 
   const getReviews = async () => {
-    const response = await mypageApi.get("/reviews/");
-    reviewList.value = response.data;
+    try {
+      const response = await mypageApi.get("/reviews/");
+      reviewList.value = response.data;
+    } catch (error) {
+      const authStore = useAuthStore();
+      authStore.logout();
+      alert("로그인이 만료되었습니다.");
+      router.push({ name: "login" });
+    }
   };
 
   const sorting = (reverse, standard) => {

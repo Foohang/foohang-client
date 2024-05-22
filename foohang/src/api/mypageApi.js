@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
+import router from "@/router";
 const mypageApi = axios.create({
   baseURL: "http://localhost/members",
 });
@@ -23,7 +24,8 @@ mypageApi.interceptors.response.use(
     if (status == 401 && error.response.data == "Unauthorized") {
       const authStore = useAuthStore();
       authStore.logout();
-      alert("로그인이 필요합니다.!!!!");
+      alert("로그인이 만료되었습니다.");
+      router.push({ name: "login" });
     } else if (status == 401) {
       alert("권한이 없습니다.");
     }

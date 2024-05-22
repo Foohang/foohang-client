@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
+import router from "@/router";
 
 const routeApi = axios.create({
   baseURL: "http://localhost/routes",
@@ -18,9 +19,12 @@ routeApi.interceptors.request.use((config) => {
 routeApi.interceptors.response.use(
   (response) => response,
   (error) => {
+    const authStore = useAuthStore();
     // 권한 오류 발생 시
     console.error("요청 응답 오류", error);
-    alert("로그인이 필요합니다.")
+    authStore.logout();
+    alert("로그인이 만료되었습니다.");
+    router.push({ name: "login" });
 
     // error.response가 정의되어 있는지 확인
     if (error.response) {
@@ -29,7 +33,8 @@ routeApi.interceptors.response.use(
         const authStore = useAuthStore();
         if (error.response.data === "Unauthorized") {
           authStore.logout();
-          alert("로그인이 필요합니다.");
+          alert("로그인이 만료되었습니다.");
+          router.push({ name: "login" });
         } else {
           alert("권한이 없습니다.");
         }

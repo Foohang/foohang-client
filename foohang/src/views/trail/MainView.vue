@@ -101,7 +101,9 @@ const routeName = ref("여행 경로 리스트 열기");
 const seen = ref(false);
 const getRouteList = async () => {
   if (user.value == null || token.value == null) {
-    alert("로그인이 필요합니다.");
+    authStore.logout();
+    alert("로그인이 만료되었습니다.");
+    router.push({ name: "login" });
   } else {
     if (seen.value) {
       seen.value = false;
@@ -226,7 +228,9 @@ const endDate = ref("2024-05-24");
 
 const saveRoute = async () => {
   if (user.value == null || token.value == null) {
-    alert("로그인이 필요합니다.");
+    authStore.logout();
+    alert("로그인이 만료되었습니다.");
+    router.push({ name: "login" });
   } else {
     await routeStore.saveRoute(
       startDate.value,
