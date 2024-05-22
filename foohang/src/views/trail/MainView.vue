@@ -35,6 +35,40 @@ const initGugun = async () => {
   gugunNames.value = gugunStore.gugunList.map((item) => item.gugunName);
 };
 
+const type = ref("0");
+
+const attractionStore = useAttractionStore();
+attractionStore.clearSelected();
+attractionStore.clearAttraction();
+const attractionList = ref(attractionStore.attractionList);
+
+//검색 관련
+const searchAttraction = ref("");
+const searchList = ref(attractionStore.attractionList);
+
+const search = async () => {
+  if (searchAttraction.value === "") {
+    searchList.value = attractionStore.attractionList;
+  } else {
+    searchList.value = attractionStore.attractionList.filter((item) =>
+      item.title.includes(searchAttraction.value)
+    );
+  }
+};
+const searchToBar = async (sidoCode, gugunCode, type) => {
+  console.log(sidoCode);
+  console.log(gugunCode);
+  if (sidoCode != null && gugunCode != null) {
+    await attractionStore.getAttraction(sidoCode, gugunCode, type);
+    attractionList.value = attractionStore.attractionList;
+    search();
+    expandedCardIndex.value = null;
+  }
+};
+const handleEnter = () => {
+  searchToBar(sidoCode.value, gugunCode.value, type.value);
+};
+//시도 변경시 자동실행
 watch(sidoName, async (newVal) => {
   const matchedSido = sidoList.value.find((item) => item.sidoName === newVal);
   if (matchedSido) {
@@ -46,27 +80,22 @@ watch(sidoName, async (newVal) => {
   gugunList.value = gugunStore.gugunList;
   gugunNames.value = gugunStore.gugunList.map((item) => item.gugunName);
 });
-
+//gugun변경시 자동실행
 watch(gugunName, (newVal) => {
   const matchedGugun = gugunList.value.find(
     (item) => item.gugunName === newVal
   );
   if (matchedGugun) {
     gugunCode.value = matchedGugun.gugunCode;
+    searchToBar(sidoCode.value, gugunCode.value, type.value);
   }
 });
 
-const type = ref("0");
-
-const attractionStore = useAttractionStore();
-const attractionList = ref(attractionStore.attractionList);
-
-const search = async (sidoCode, gugunCode, type) => {
-  await attractionStore.getAttraction(sidoCode, gugunCode, type);
-  attractionList.value = attractionStore.attractionList;
-  searchList.value = attractionStore.attractionList;
-  expandedCardIndex.value = null;
-};
+// type 변경시 자동 실행
+watch(type, (newVal) => {
+  console.log("watch");
+  searchToBar(sidoCode.value, gugunCode.value, newVal);
+});
 
 const routeName = ref("여행 경로 리스트 열기");
 const seen = ref(false);
@@ -85,20 +114,6 @@ const getRouteList = async () => {
     routeList.value = routeStore.routeList;
   }
 };
-
-//검색 관련
-const searchAttraction = ref("");
-const searchList = ref(attractionStore.attractionList);
-watch(searchAttraction, (newVal) => {
-  if (newVal === "") {
-    searchList.value = attractionStore.attractionList
-  } else {
-    searchList.value = attractionStore.attractionList.filter((item) =>
-      item.title.includes(newVal)
-    );
-  }
-});
-
 //카드 관련
 const getContentTypeName = (contentTypeId) => {
   switch (contentTypeId) {
@@ -133,7 +148,6 @@ const expandCard = async (index, item) => {
   attractionDetail.value = attractionStore.attractionDetail;
 };
 
-
 const closeCard = () => {
   expandedCardIndex.value = null;
 };
@@ -147,7 +161,6 @@ const expandCard2 = async (index, item) => {
   await attractionStore.getAttractionDetail(item.contentId);
   attractionDetail2.value = attractionStore.attractionDetail;
 };
-
 
 const closeCard2 = () => {
   expandedCardIndex2.value = null;
@@ -186,13 +199,16 @@ const clearList = async () => {
   await attractionStore.clearSelected();
   selectList.value = attractionStore.selectedAttractions;
   attractionSeen.value = selectList.value.length > 0;
-}
+};
 
-watch(selectList, (newList) => {
-  console.log(newList.length);
-  attractionSeen.value = newList.length > 0;
-}, { immediate: true });
-
+watch(
+  selectList,
+  (newList) => {
+    console.log(newList.length);
+    attractionSeen.value = newList.length > 0;
+  },
+  { immediate: true }
+);
 
 //최적 경로 생성
 const getBestRoute = async () => {
@@ -206,15 +222,19 @@ const routeList = ref(routeStore.routeList);
 
 //최적 경로 저장
 const startDate = ref("2024-05-24");
-const endDate = ref("2024-05-24")
+const endDate = ref("2024-05-24");
 
 const saveRoute = async () => {
   if (user.value == null || token.value == null) {
     alert("로그인이 필요합니다.");
   } else {
-    await routeStore.saveRoute(startDate.value,endDate.value,selectList.value);
-      seen.value = true;
-      routeName.value = "여행 경로 리스트 접기";
+    await routeStore.saveRoute(
+      startDate.value,
+      endDate.value,
+      selectList.value
+    );
+    seen.value = true;
+    routeName.value = "여행 경로 리스트 접기";
     await routeStore.getRoute();
     routeList.value = routeStore.routeList;
   }
@@ -228,17 +248,16 @@ const showRoute = async (travelId) => {
   centerLat.value = selectList.value[0].latitude;
   centerLong.value = selectList.value[0].longitude;
   centerSrc.value = selectList.value[0].firstImage;
-}
-
+};
 
 //최적 경로 삭제
 const removeItem = async (travelId) => {
-  if(confirm("삭제하시겠습니까?")){
+  if (confirm("삭제하시겠습니까?")) {
     await routeStore.deleteRoute(travelId);
-  routeList.value = routeStore.routeList;
-  alert("삭제 완료")
+    routeList.value = routeStore.routeList;
+    alert("삭제 완료");
   }
-}
+};
 
 const updateMealType = (item: any, mealType: number) => {
   item.mealType = mealType;
@@ -252,8 +271,9 @@ const updateMealType = (item: any, mealType: number) => {
 };
 
 const updateAccommodationsType = (item: any) => {
-  attractionStore.selectedAttractions.forEach(attraction => {
-    attraction.mainAccommodations = (attraction.contentId === item.contentId) ? item.mainAccommodations : 0;
+  attractionStore.selectedAttractions.forEach((attraction) => {
+    attraction.mainAccommodations =
+      attraction.contentId === item.contentId ? item.mainAccommodations : 0;
   });
 };
 
@@ -262,326 +282,323 @@ initGugun();
 
 <template>
   <div class="out">
-  <div class="main">
-    <div class="spot">
-      <h1>장소 선택</h1>
-      <div class="search-tool">
-        <SearchBar @update:search="searchAttraction = $event" class="searchBar"/>
-        <v-btn variant="outlined" @click="search(sidoCode, gugunCode, type)">
-          검색
+    <div class="main">
+      <div class="spot">
+        <h1>장소 선택</h1>
+        <div class="search-tool">
+          <SearchBar
+            @update:search="searchAttraction = $event"
+            @enter="handleEnter"
+            class="searchBar"
+          />
+          <v-btn variant="outlined" @click="search()"> 검색 </v-btn>
+        </div>
+        <div class="spot-another">
+          <div class="selected">
+            <v-select
+              width="80%"
+              :items="sidoNames"
+              v-model="sidoName"
+              density="comfortable"
+              label="시·도"
+            ></v-select>
+            <v-select
+              width="80%"
+              :items="gugunNames"
+              v-model="gugunName"
+              density="comfortable"
+              label="구·군"
+            ></v-select>
+          </div>
+          <!-- 버튼 -->
+          <v-card flat>
+            <v-card-text class="radio-group-container">
+              <v-container fluid>
+                <v-radio-group v-model="type" class="custom-radio-group" row>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="전체"
+                    value="0"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="관광지"
+                    value="12"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="문화시설"
+                    value="14"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="축제공연행사"
+                    value="15"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="여행코스"
+                    value="25"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="레포츠"
+                    value="28"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="숙박"
+                    value="32"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="쇼핑"
+                    value="38"
+                  ></v-radio>
+                  <v-radio
+                    class="custom-radio"
+                    color="orange-darken-3"
+                    label="음식점"
+                    value="39"
+                  ></v-radio>
+                </v-radio-group>
+              </v-container>
+            </v-card-text>
+          </v-card>
+
+          <hr />
+          <div class="cards">
+            <v-card
+              class="mx-auto"
+              max-width="300"
+              height="200"
+              v-for="(item, index) in searchList"
+              :key="index"
+            >
+              <div v-if="expandedCardIndex !== index">
+                <v-img
+                  class="align-end text-white"
+                  height="100"
+                  :src="item.firstImage"
+                  cover
+                >
+                  <v-card-title>{{ item.title }}</v-card-title>
+                </v-img>
+
+                <v-card-subtitle class="pt-4">{{
+                  getContentTypeName(item.contentTypeId)
+                }}</v-card-subtitle>
+                <v-card-actions>
+                  <v-btn color="orange" @click.stop="register(item)"
+                    >이동</v-btn
+                  >
+                  <v-btn color="gray" @click.stop="expandCard(index, item)"
+                    >정보</v-btn
+                  >
+                </v-card-actions>
+              </div>
+              <div v-else class="card-text">
+                <v-card-text v-if="attractionDetail">
+                  <p>관광지명: {{ attractionDetail.title }}</p>
+                  <p>주소: {{ attractionDetail.addr1 }}</p>
+                  <p>상세 정보: {{ attractionDetail.overview }}</p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="orange" @click.stop="register(item)"
+                    >이동</v-btn
+                  >
+                  <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+                </v-card-actions>
+              </div>
+            </v-card>
+          </div>
+        </div>
+        <v-btn variant="outlined" @click="getRouteList" color="orange">
+          {{ routeName }}
+        </v-btn>
+        <v-btn variant="outlined" @click="clearList" color="orange">
+          경로 초기화
         </v-btn>
       </div>
-      <div class="spot-another">
-      <div class="selected">
-        <v-select
-          width="80%"
-          :items="sidoNames"
-          v-model="sidoName"
-          density="comfortable"
-          label="시·도"
-        ></v-select>
-        <v-select
-          width="80%"
-          :items="gugunNames"
-          v-model="gugunName"
-          density="comfortable"
-          label="구·군"
-        ></v-select>
-      </div>
-      <!-- 버튼 -->
-      <v-card flat>
-        <v-card-text class="radio-group-container">
-          <v-container fluid>
-            <v-radio-group v-model="type" class="custom-radio-group" row>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="전체"
-                value="0"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="관광지"
-                value="12"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="문화시설"
-                value="14"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="축제공연행사"
-                value="15"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="여행코스"
-                value="25"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="레포츠"
-                value="28"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="숙박"
-                value="32"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="쇼핑"
-                value="38"
-              ></v-radio>
-              <v-radio
-                class="custom-radio"
-                color="orange-darken-3"
-                label="음식점"
-                value="39"
-              ></v-radio>
-            </v-radio-group>
-          </v-container>
-        </v-card-text>
-      </v-card>
-
-      <hr />
-      <div class="cards">
-        <v-card
-          class="mx-auto"
-          max-width="300"
-          height="200"
-          v-for="(item, index) in searchList"
-          :key="index"
-        >
-          <div v-if="expandedCardIndex !== index">
-            <v-img
-              class="align-end text-white"
-              height="100"
-              :src="item.firstImage"
-              cover
-            >
-              <v-card-title>{{ item.title }}</v-card-title>
-            </v-img>
-
-            <v-card-subtitle class="pt-4">{{
-              getContentTypeName(item.contentTypeId)
-            }}</v-card-subtitle>
-            <v-card-actions>
-              <v-btn color="orange" @click.stop="register(item)">이동</v-btn>
-              <v-btn color="gray" @click.stop="expandCard(index, item)"
-                >정보</v-btn
+      <!-- 선택한 리스트 -->
+      <div v-if="attractionSeen" class="attractionList">
+        <h1>test2</h1>
+        <div class="cards2">
+          <v-card
+            class="mx-auto"
+            max-width="300"
+            height="200"
+            v-for="(item, index) in selectList"
+            :key="index"
+          >
+            <div v-if="expandedCardIndex2 !== index">
+              <v-img
+                class="align-end text-white"
+                height="100"
+                :src="item.firstImage"
+                cover
               >
-            </v-card-actions>
-          </div>
-          <div v-else class="card-text">
-            <v-card-text v-if="attractionDetail">
-              <p>관광지명: {{ attractionDetail.title }}</p>
-              <p>주소: {{ attractionDetail.addr1 }}</p>
-              <p>상세 정보: {{ attractionDetail.overview }}</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="orange" @click.stop="register(item)">이동</v-btn>
-              <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
-            </v-card-actions>
-          </div>
-        </v-card>
-      </div>
-    </div>
-      <v-btn variant="outlined" @click="getRouteList" color="orange">
-        {{ routeName }}
-      </v-btn>
-      <v-btn variant="outlined" @click="clearList" color="orange">
-        경로 초기화
-      </v-btn>
+                <v-card-title>{{ item.title }}</v-card-title>
+              </v-img>
 
-    </div>
-    <!-- 선택한 리스트 -->
-    <div v-if="attractionSeen" class="attractionList">
-      <h1>test2</h1>
-      <div class="cards2">
-        <v-card
-          class="mx-auto"
-          max-width="300"
-          height="200"
-          v-for="(item, index) in selectList"
-          :key="index"
-        >
-          <div v-if="expandedCardIndex2 !== index">
-            <v-img
-              class="align-end text-white"
-              height="100"
-              :src="item.firstImage"
-              cover
-            >
-              <v-card-title>{{ item.title }}</v-card-title>
-            </v-img>
-
-            <v-card-subtitle class="pt-4">{{
-              getContentTypeName(item.contentTypeId)
-            }}</v-card-subtitle>
-            <div v-if="item.contentTypeId === 39" class="radio-buttons">
-              <label>
-                <input
-                  type="radio"
-                  :name="'mealType-' + item.contentId"
-                  :value="1"
-                  v-model="item.mealType"
-                  @change="updateMealType(item, 1)"
-                />
-                아침
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  :name="'mealType-' + item.contentId"
-                  :value="2"
-                  v-model="item.mealType"
-                  @change="updateMealType(item, 2)"
-                />
-                점심
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  :name="'mealType-' + item.contentId"
-                  :value="3"
-                  v-model="item.mealType"
-                  @change="updateMealType(item, 3)"
-                />
-                저녁
-              </label>
+              <v-card-subtitle class="pt-4">{{
+                getContentTypeName(item.contentTypeId)
+              }}</v-card-subtitle>
+              <div v-if="item.contentTypeId === 39" class="radio-buttons">
+                <label>
+                  <input
+                    type="radio"
+                    :name="'mealType-' + item.contentId"
+                    :value="1"
+                    v-model="item.mealType"
+                    @change="updateMealType(item, 1)"
+                  />
+                  아침
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    :name="'mealType-' + item.contentId"
+                    :value="2"
+                    v-model="item.mealType"
+                    @change="updateMealType(item, 2)"
+                  />
+                  점심
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    :name="'mealType-' + item.contentId"
+                    :value="3"
+                    v-model="item.mealType"
+                    @change="updateMealType(item, 3)"
+                  />
+                  저녁
+                </label>
+              </div>
+              <div v-if="item.contentTypeId === 32" class="radio-buttons">
+                <label>
+                  <input
+                    type="radio"
+                    name="firstHome"
+                    :value="1"
+                    v-model="item.mainAccommodations"
+                    @change="updateAccommodationsType(item)"
+                  />
+                  첫 숙소
+                </label>
+              </div>
+              <v-card-actions>
+                <v-btn color="orange" @click.stop="removeList(item.contentId)"
+                  >삭제</v-btn
+                >
+                <v-btn color="gray" @click.stop="expandCard2(index, item)"
+                  >정보</v-btn
+                >
+              </v-card-actions>
             </div>
-            <div v-if="item.contentTypeId === 32" class="radio-buttons">
-              <label>
-                <input
-                  type="radio"
-                  name="firstHome"
-                  :value="1"
-                  v-model="item.mainAccommodations"
-                  @change="updateAccommodationsType(item)"
-                />
-                첫 숙소
-              </label>
+            <div v-else class="card-text">
+              <v-card-text v-if="attractionDetail2">
+                <p>관광지명: {{ attractionDetail2.title }}</p>
+                <p>주소: {{ attractionDetail2.addr1 }}</p>
+                <p>상세 정보: {{ attractionDetail2.overview }}</p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="orange" @click.stop="removeList(item.contentId)"
+                  >삭제</v-btn
+                >
+                <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
+              </v-card-actions>
             </div>
-            <v-card-actions>
-              <v-btn color="orange" @click.stop="removeList(item.contentId)"
-                >삭제</v-btn
-              >
-              <v-btn color="gray" @click.stop="expandCard2(index, item)"
-                >정보</v-btn
-              >
-            </v-card-actions>
-          </div>
-          <div v-else class="card-text">
-            <v-card-text v-if="attractionDetail2">
-              <p>관광지명: {{ attractionDetail2.title }}</p>
-              <p>주소: {{ attractionDetail2.addr1 }}</p>
-              <p>상세 정보: {{ attractionDetail2.overview }}</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="orange" @click.stop="removeList(item.contentId)">삭제</v-btn>
-              <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
-            </v-card-actions>
-          </div>
-        </v-card>
+          </v-card>
+        </div>
+        여행 출발일<input type="date" v-model="startDate" required />
+        <br />
+        여행 종료일<input type="date" v-model="endDate" required />
+        <v-btn variant="outlined" @click="getBestRoute" color="orange">
+          최적 루트 요청
+        </v-btn>
+        <v-btn variant="outlined" @click="saveRoute" color="orange">
+          루트 저장
+        </v-btn>
       </div>
-      여행 출발일<input
-        type="date"
-        v-model="startDate"
-        required
-      />
-      <br/>
-      여행 종료일<input
-        type="date"
-        v-model="endDate"
-        required
-      />
-      <v-btn variant="outlined" @click="getBestRoute" color="orange">
-        최적 루트 요청
-      </v-btn>
-      <v-btn variant="outlined" @click="saveRoute" color="orange">
-        루트 저장
-      </v-btn>
-    </div>
 
-    <!-- map -->
-    <MapView
-      :center-lat="centerLat"
-      :center-long="centerLong"
-      :center-src="centerSrc"
-      :center-content="ceterContent"
-      :select-list="selectList"
-      @attraction-event="attractionAdd"
-      class="map"
-    ></MapView>
+      <!-- map -->
+      <MapView
+        :center-lat="centerLat"
+        :center-long="centerLong"
+        :center-src="centerSrc"
+        :center-content="ceterContent"
+        :select-list="selectList"
+        @attraction-event="attractionAdd"
+        class="map"
+      ></MapView>
 
-    <!-- 정리리스트 -->
-    <div v-if="seen" class="cards3">
-      <h1>내가 다녀간 곳</h1>
-      <div class="cards3-another">
-      <v-card
-        v-for="(item, index) in routeList"
-        :key="index"
-        class="mx-auto"
-        :subtitle="`${item.startDate} ~ ${item.endDate}`"
-        :title="`${item.startRegion} -> ${item.endRegion}`"
-        @click="showRoute(item.travelId)"
-      >
-      <v-card-text>
-      <v-row class="d-flex align-center">
-        <v-col cols="auto">
-          <v-avatar>
-            <v-img
-              alt="/src/assets/FoohangLogo.png"
-              :src="item.startImage"
-            ></v-img>
-          </v-avatar>
-        </v-col>
-        <v-col>
-          <p class="mb-0">{{item.startAttraction}}</p>
-        </v-col>
-      </v-row>
-      <v-row justify="center" align="center">
-        ~
-      </v-row>
-      <v-row class="d-flex align-center mt-2">
-        <v-col cols="auto">
-          <v-avatar>
-            <v-img
-              alt="/src/assets/FoohangLogo.png"
-              :src="item.endImage"
-            ></v-img>
-          </v-avatar>
-        </v-col>
-        <v-col>
-          <p class="mb-0">{{item.endAttraction}}</p>
-        </v-col>
-      </v-row>
-    </v-card-text>
-    <v-btn
-      icon
-      class="close-btn position-absolute top-0 right-0"
-      @click.stop="removeItem(item.travelId)"
-    >
-    <v-icon>mdi-close</v-icon>
-    </v-btn>
-      </v-card>
+      <!-- 정리리스트 -->
+      <div v-if="seen" class="cards3">
+        <h1>내가 다녀간 곳</h1>
+        <div class="cards3-another">
+          <v-card
+            v-for="(item, index) in routeList"
+            :key="index"
+            class="mx-auto"
+            :subtitle="`${item.startDate} ~ ${item.endDate}`"
+            :title="`${item.startRegion} -> ${item.endRegion}`"
+            @click="showRoute(item.travelId)"
+          >
+            <v-card-text>
+              <v-row class="d-flex align-center">
+                <v-col cols="auto">
+                  <v-avatar>
+                    <v-img
+                      alt="/src/assets/FoohangLogo.png"
+                      :src="item.startImage"
+                    ></v-img>
+                  </v-avatar>
+                </v-col>
+                <v-col>
+                  <p class="mb-0">{{ item.startAttraction }}</p>
+                </v-col>
+              </v-row>
+              <v-row justify="center" align="center"> ~ </v-row>
+              <v-row class="d-flex align-center mt-2">
+                <v-col cols="auto">
+                  <v-avatar>
+                    <v-img
+                      alt="/src/assets/FoohangLogo.png"
+                      :src="item.endImage"
+                    ></v-img>
+                  </v-avatar>
+                </v-col>
+                <v-col>
+                  <p class="mb-0">{{ item.endAttraction }}</p>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-btn
+              icon
+              class="close-btn position-absolute top-0 right-0"
+              @click.stop="removeItem(item.travelId)"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 </template>
 
 <style scoped>
-.out{
+.out {
   display: flex;
   flex-direction: column;
   height: 87vh; /* 전체 뷰포트 높이를 차지하도록 설정 */
@@ -591,16 +608,15 @@ initGugun();
   display: flex;
   justify-content: space-around;
 }
-.search-tool{
+.search-tool {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 20px;
-  
 }
 
-.searchBar{
+.searchBar {
   margin-right: 10px;
 }
 
@@ -608,7 +624,7 @@ initGugun();
   width: 600px;
 }
 
-.spot-another{
+.spot-another {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 65vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
 }
@@ -638,18 +654,18 @@ initGugun();
   overflow-y: auto;
   max-height: 200px;
 }
-.map{
+.map {
   height: 1;
 }
 
 .attractionList {
   width: 500px;
 }
-.cards3{
-  width: 400px
+.cards3 {
+  width: 400px;
 }
 
-.cards3-another{
+.cards3-another {
   overflow-y: auto;
   max-height: 75vh;
 }
@@ -674,7 +690,7 @@ initGugun();
 .custom-radio-group {
   display: flex;
   flex-wrap: wrap; /* 버튼들을 여러 줄로 정렬 */
-  gap: 0    px; /* 버튼들 사이의 간격을 조절 */
+  gap: 0 px; /* 버튼들 사이의 간격을 조절 */
   margin-top: -45px; /* 버튼 위의 공백을 제거 */
 }
 
@@ -699,5 +715,4 @@ initGugun();
   font-size: 12px; /* 글자 크기 조절 */
   margin-right: 4px; /* 레이블 사이 간격 줄이기 */
 }
-
 </style>

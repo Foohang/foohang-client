@@ -11,6 +11,10 @@ export const useAttractionStore = defineStore("attraction", () => {
 
   const attractionDetail = ref({});
 
+  const clearAttraction = function () {
+    attractionList.value = [];
+  };
+
   const getAttraction = async (sidoCode, gugunCode, type) => {
     const response = await attractionApi.get(
       `/${sidoCode}/${gugunCode}/${type}`
@@ -46,7 +50,6 @@ export const useAttractionStore = defineStore("attraction", () => {
 
     const response = await attractionApi.get(`/${contentId}`);
     attractionDetail.value = response.data;
-    console.log(attractionDetail.value);
     chatStore.searched(attractionDetail.value.title);
     selectedAttractions.value.push(attractionDetail.value);
   };
@@ -84,7 +87,7 @@ export const useAttractionStore = defineStore("attraction", () => {
 
   const getDirections = async (locations) => {
     if (locations.length < 2) {
-      console.error("At least two locations are required");
+      lineList.value = [];
       return;
     }
 
@@ -119,8 +122,6 @@ export const useAttractionStore = defineStore("attraction", () => {
             }, [])
           )
         );
-
-        console.log(lineList.value);
       } catch (error) {
         console.error(
           "Error:",
@@ -162,7 +163,6 @@ export const useAttractionStore = defineStore("attraction", () => {
             Authorization: `KakaoAK ${apiKey}`,
           },
         });
-        console.log("라인 리스트 변경 직전");
         lineList.value = response.data.routes[0].sections.flatMap((section) =>
           section.roads.flatMap((road) =>
             road.vertexes.reduce((acc, vertex, index, array) => {
@@ -173,7 +173,6 @@ export const useAttractionStore = defineStore("attraction", () => {
             }, [])
           )
         );
-        console.log("라인 리스트 변경 완료");
       } catch (error) {
         console.error(error);
       }
@@ -183,9 +182,7 @@ export const useAttractionStore = defineStore("attraction", () => {
   //직선을 그리기 위한 리스트
   const lineList = ref([]);
   const lineCraete = async () => {
-    // console.log(selectedAttractions.value);
     await getDirections(selectedAttractions.value);
-    // console.log(lineList.value);
   };
 
   watch(selectedAttractions, () => {
@@ -198,6 +195,7 @@ export const useAttractionStore = defineStore("attraction", () => {
     nearRestaurants,
     selectedAttractions,
     lineList,
+    clearAttraction,
     getAttraction,
     getAttractionDetail,
     getNearRestaurants,

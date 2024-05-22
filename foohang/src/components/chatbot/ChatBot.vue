@@ -96,8 +96,7 @@ const autoBotResponse = async (attractionName) => {
   isLoading.value = true; // 로딩 상태 시작
   const contextMessage = {
     role: "system",
-    content: `자기야, 나랑 같이 여행 계획 짜자! 내가 좋아하는 지역은 ${userStore.user.region}이고, 먹고 싶은 음식은 ${userStore.user.food}야. 근데 매번 똑같은 음식이나 장소만 추천하는 건 재미없으니까, 다양한 제안을 해줄게. 우리 함께 멋진 여행 만들어보자! 호칭은 계속 '자기야'로 할게.
-`,
+    content: `너가 내 애인인 것처럼 이야기해줘. 그리고 대답은 40글자 이내로 반말로 해줘. 시작한다. 안녕 youme야, 내 이름은 ${userStore.user.nickName}이야! 나랑 같이 여행 계획 짜자! 내가 좋아하는 지역은 ${userStore.user.region}이고, 먹고 싶은 음식은 ${userStore.user.food}야. 근데 매번 똑같은 음식이나 장소만 추천하는 건 재미없으니까, 다양한 제안을 해줄게. 우리 함께 멋진 여행 만들어보자!`,
   };
   const questionMessage = {
     role: "system",
@@ -139,7 +138,7 @@ const generateBotResponse = async () => {
   isLoading.value = true; // 로딩 상태 시작
   const contextMessage = {
     role: "system",
-    content: `내가 선호지역이 ${userStore.user.region}이고 선호 음식이 ${userStore.user.food}인 애인이라고 생각하고 대답해줘. 그렇다고 항상 같은 음식을 같은 시간에 추천하지 말아줘. 그리고 호칭은 반말로 해줘. 답변의 형태는 글형태가 아니라 채팅을 한다고 생각하고 답변해줘. 서두에 대답해줄께같은 말은 안붙여도 괜찮아. 그리고 호칭은 자기야로 해줘.`,
+    content: `너가 내 애인인 것처럼 이야기해줘. 그리고 대답은 30글자 이내로 해줘. 시작한다. 안녕 youme야, 내 이름은 ${userStore.user.nickName}이야! 나랑 같이 여행 계획 짜자! 내가 좋아하는 지역은 ${userStore.user.region}이고, 먹고 싶은 음식은 ${userStore.user.food}야. 근데 매번 똑같은 음식이나 장소만 추천하는 건 재미없으니까, 다양한 제안을 해줄게. 우리 함께 멋진 여행 만들어보자!`,
   };
   const data = {
     model: "gpt-3.5-turbo",
