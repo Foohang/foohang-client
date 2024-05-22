@@ -20,7 +20,9 @@
         </ul>
       </div>
 
-      <div class="row">Foohang Copyright © 2024 JAEJUNHO - All rights reserved</div>
+      <div class="row">
+        Foohang Copyright © 2024 JAEJUNHO - All rights reserved
+      </div>
     </div>
   </footer>
 </template>
@@ -35,13 +37,18 @@ export default {
 body {
   margin: 0;
   overflow-x: hidden;
+  padding-bottom: 60px;
 }
 
 .footer {
-  background: #cccccc80;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #cccccc70;
   padding: 30px 0;
   font-family: "Play", sans-serif;
   text-align: center;
+  z-index: 1000;
 }
 
 .footer .row {
