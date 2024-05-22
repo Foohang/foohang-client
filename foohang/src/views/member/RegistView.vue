@@ -32,7 +32,7 @@
             class="input-icon"
           />
         </label>
-        <label>
+        <label class="status-input">
           <input
             required
             type="text"
@@ -240,21 +240,18 @@ const onFileChange = (event) => {
   }
 };
 
-// const join = async () => {
-//   if (!confirm('이대로 가입하시겠습니까?')) return;
-//   try {
-//     await authStore.join(joinForm.value);
-//     router.push({ name: 'home' });
-//   } catch (error) {
-//     console.error('에러:', error);
-//     alert('가입 실패');
-//   }
-// };
-
 const join = async () => {
   if (!confirm("이대로 가입하시겠습니까?")) return;
+
+  const formData = new FormData();
+
+  formData.append("file", joinForm.value.profile);
+  for (const key in joinForm.value) {
+    formData.append(key, joinForm.value[key]);
+  }
+
   try {
-    await authStore.join(joinForm.value);
+    await authStore.join(formData);
     router.push({ name: "home" });
   } catch (error) {
     console.error("에러:", error);
@@ -262,12 +259,14 @@ const join = async () => {
   }
 };
 
+const dateInput = ref(null);
 const datePicked = ref(false);
 
 const showDatePicker = (event) => {
   datePicked.value = true;
   nextTick(() => {
-    this.$refs.dateInput.focus();
+    // dateInput의 current 값에 focus()를 호출
+    dateInput.value.focus();
   });
 };
 
@@ -281,6 +280,9 @@ const checkDate = () => {
 /* 스타일 */
 
 <style scoped>
+.status-input {
+  margin-top: 10px;
+}
 .center-container {
   display: flex;
   justify-content: center;
