@@ -23,8 +23,18 @@ const router = createRouter({
       component: LoginView,
     },
     {
+      path: "/login/:token",
+      name: "loginForKakao",
+      component: LoginView,
+    },
+    {
       path: "/regist",
       name: "regist",
+      component: RegistView,
+    },
+    {
+      path: "/regist/:id/:nickName",
+      name: "registForKakao",
       component: RegistView,
     },
     {

@@ -46,35 +46,35 @@
       <p class="title">회원가입</p>
       <p class="message">회원가입을 통해 더욱 쾌적한 여행을 즐기세요</p>
 
-      <div class="flex">
-        <label class="icon-label">
-          <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
-        </label>
-        <label>
-          <input
-            required
-            type="text"
-            class="input"
-            v-model.trim="joinForm.email"
-          />
-          <span>이메일</span>
-        </label>
-      </div>
+        <div class="flex" v-show="socialHidden">
+          <label class="icon-label">
+            <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
+          </label>
+          <label>
+            <input
+              required
+              type="text"
+              class="input"
+              v-model.trim="joinForm.email"
+            />
+            <span>이메일</span>
+          </label>
+        </div>
 
-      <div class="flex">
-        <label class="icon-label">
-          <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
-        </label>
-        <label>
-          <input
-            required
-            type="password"
-            class="input"
-            v-model.trim="joinForm.password"
-          />
-          <span>비밀번호</span>
-        </label>
-      </div>
+        <div class="flex" v-show="socialHidden==true">
+          <label class="icon-label">
+            <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
+          </label>
+          <label>
+            <input
+              required
+              type="password"
+              class="input"
+              v-model.trim="joinForm.password"
+            />
+            <span>비밀번호</span>
+          </label>
+        </div>
 
       <div class="flex">
         <label class="icon-label">
@@ -187,6 +187,7 @@
 <script setup>
 import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -212,7 +213,7 @@ library.add(
 
 const authStore = useAuthStore();
 const router = useRouter();
-
+const route = useRoute();
 const joinForm = ref({
   email: "",
   password: "",
@@ -225,6 +226,16 @@ const joinForm = ref({
   profile: null,
   profile_img: null,
 });
+const socialHidden = ref(true);
+console.log(route.params.id)
+if(route.params.id!=null){
+  joinForm.value.email=route.params.id;
+  joinForm.value.password=route.params.id;
+  socialHidden.value = false;
+}else{
+  socialHidden.value = true;
+  console.log(socialHidden.value)
+}
 
 const fileInputRef = ref(null);
 
