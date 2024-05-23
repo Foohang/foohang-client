@@ -2,6 +2,10 @@
   <div class="chatbot-container">
     <div class="chatbot-icon" @click.stop="toggleChat">💬</div>
     <div v-if="isChatOpen" class="chatbot" @click.stop>
+      <div class="header">
+        <span class="title">youme</span>
+        <button class="close-button" @click="toggleChat">x</button>
+      </div>
       <div class="messages" ref="messagesContainer">
         <div
           v-for="message in messages"
@@ -211,6 +215,30 @@ const generateBotResponse = async () => {
   z-index: 1000;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  /* padding-right: 10px; */
+  background-color: #ee703f;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .messages {
   flex: 1;
   padding: 15px;
@@ -222,20 +250,21 @@ const generateBotResponse = async () => {
   display: flex;
   padding: 10px;
   margin: 10px 0;
-  border-radius: 10px;
+  border-radius: 20px;
   max-width: 70%;
   word-wrap: break-word;
 }
 
 .message.user {
   align-self: flex-end;
-  background-color: #dcf8c6;
+  background-color: #f1f0f0;
   margin-left: auto;
 }
 
 .message.bot {
   align-self: flex-start;
-  background-color: #f1f0f0;
+  background-color: #ed5a00;
+  color: #f8f9fb;
   margin-right: auto;
 }
 
@@ -262,7 +291,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:out(.close-button):hover {
   background-color: #ffdab9;
 }
 
