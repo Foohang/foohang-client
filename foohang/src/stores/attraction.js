@@ -19,7 +19,16 @@ export const useAttractionStore = defineStore("attraction", () => {
     const response = await attractionApi.get(
       `/${sidoCode}/${gugunCode}/${type}`
     );
-    attractionList.value = response.data;
+    const attractions = response.data.map((attraction) => {
+      if (attraction.firstImage === "") {
+        attraction.firstImage =
+          attraction.firstImage2 !== ""
+            ? attraction.firstImage2
+            : "/src/assets/noImage.jpg";
+      }
+      return attraction;
+    });
+    attractionList.value = attractions;
   };
 
   const getAttractionDetail = async (contentId) => {

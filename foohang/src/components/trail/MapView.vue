@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, Ref } from "vue";
-import { KakaoMap, KakaoMapMarker, KakaoMapInfoWindow, KakaoMapPolyline } from "vue3-kakao-maps";
+import {
+  KakaoMap,
+  KakaoMapMarker,
+  KakaoMapInfoWindow,
+  KakaoMapPolyline,
+} from "vue3-kakao-maps";
 import type { KakaoMapLatLngItem } from "vue3-kakao-maps";
 import { useAttractionStore } from "@/stores/attraction";
 const attractionStore = useAttractionStore();
@@ -132,9 +137,20 @@ const createSVGMarker = (order: number, color: string): string => {
         @onClickKakaoMapMarker="onClickKakaoMapMarker"
         @onLoadKakaoMapMarker="onLoadKakaoMapMarker"
       />
-      <KakaoMapInfoWindow :marker="marker" :lat="centerLat" :lng="centerLong" :visible="visibleRef">
+      <KakaoMapInfoWindow
+        :marker="marker"
+        :lat="centerLat"
+        :lng="centerLong"
+        :visible="visibleRef"
+      >
         <div class="info-window-content">
-          <v-img class="align-end text-white" height="100" width="150" :src="centerSrc" cover />
+          <v-img
+            class="info-window-image"
+            height="100"
+            width="100%"
+            :src="centerSrc"
+            cover
+          />
           <v-card-actions>
             <v-btn color="blue" @click.stop="regist">등록</v-btn>
             <v-btn color="orange" @click.stop="around">주변 맛집 보기</v-btn>
@@ -157,6 +173,7 @@ const createSVGMarker = (order: number, color: string): string => {
         @onLoadKakaoMapMarker="onLoadKakaoMapMarkerR(index)"
       />
       <KakaoMapInfoWindow
+        class="infoWin"
         v-for="(restaurant, index) in restaurantList"
         :key="'infoWindow-' + restaurant.contentId"
         :marker="markers[index]"
@@ -164,12 +181,22 @@ const createSVGMarker = (order: number, color: string): string => {
         :lng="restaurant.longitude"
         :visible="visibleRefs[index]"
       >
-        <v-img class="align-end text-white" height="100" :src="restaurant.firstImage" cover>
+        <v-img
+          class="info-window-image"
+          height="100"
+          width="100%"
+          :src="restaurant.firstImage"
+          cover
+        >
           <v-card-title>{{ restaurant.title }}</v-card-title>
         </v-img>
         <v-card-actions>
-          <v-btn color="orange" @click.stop="registR(restaurant.contentId)">등록</v-btn>
-          <v-btn color="gray" @click.stop="onClickKakaoMapMarkerR(index)">닫기</v-btn>
+          <v-btn color="orange" @click.stop="registR(restaurant.contentId)"
+            >등록</v-btn
+          >
+          <v-btn color="gray" @click.stop="onClickKakaoMapMarkerR(index)"
+            >닫기</v-btn
+          >
         </v-card-actions>
       </KakaoMapInfoWindow>
     </div>
@@ -200,7 +227,11 @@ const createSVGMarker = (order: number, color: string): string => {
   align-items: center;
   justify-content: center;
 }
-.slect-marker {
+.info-window-image {
+  width: 100%;
+  object-fit: cover;
+}
+.select-marker {
   color: aliceblue;
 }
 </style>
