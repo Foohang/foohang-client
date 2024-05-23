@@ -1,4 +1,4 @@
-<template>
+zz<template>
   <header @click="handleOutsideClick">
     <nav>
       <ul class="nav-left">
@@ -15,7 +15,7 @@
         </li>
         <li v-else class="user-info">
           <img
-            :src="`http://localhost/files/profile/${user.profileName}`"
+            :src="profilePic"
             alt="프로필 사진"
             class="profile-img"
           />
@@ -57,10 +57,11 @@ const authStore = useAuthStore();
 const user = ref(authStore.user);
 const router = useRouter();
 const checked = ref(false);
-
-watch(authStore, () => {
-  user.value = authStore.user;
-});
+const profilePic = ref(`http://localhost/files/profile/${user.profileName}`);
+watch(() => authStore.user, (newUser) => {
+  user.value = newUser;
+  profilePic.value = newUser ? `http://localhost/files/profile/${newUser.profileName}` : "";
+}, { immediate: true });
 
 const logout = () => {
   if (!confirm("로그아웃 하시겠습니까?")) return;
