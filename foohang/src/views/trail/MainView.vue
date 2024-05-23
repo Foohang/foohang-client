@@ -894,7 +894,7 @@ initGugun();
   flex-grow: 1; */
 }
 .cards3 {
-  width: 450px;
+  width: 550px;
   padding: 0 10px;
   background-color: #f8f9fb;
   border-left: solid 1px #cccccc;
