@@ -69,6 +69,10 @@ watch(props, () => {
 });
 
 const toggleChat = () => {
+  if(userStore.user==null){
+    alert("로그인이 필요한 서비스 입니다.")
+    return;
+  } 
   emit("toggleChat");
 };
 
@@ -99,6 +103,7 @@ const scrollToBottom = () => {
 };
 
 const autoBotResponse = async (attractionName) => {
+  if(userStore.user==null) return;
   if (attractionName.trim() === "") return;
   emit("openChat");
   const apiKey = "sk-proj-u0bdxdOSRNFFqcQ0duBMT3BlbkFJV1ZCncvOWZzbwUsJCHTb"; // 여기에 OpenAI API 키를 입력하세요.

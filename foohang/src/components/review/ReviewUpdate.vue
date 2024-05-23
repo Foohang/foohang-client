@@ -101,9 +101,11 @@ const init = async () => {
   upladedDate.value = review.value.postDate;
 
   hashtags.value = review.value.hashtags.join(" ");
-  for (const imageUrl of uploadedFiles.value) {
+  if(uploadedFiles.value!=null){
+    for (const imageUrl of uploadedFiles.value) {
     const file = await urlToFile(imageUrl, "test.png", "image/png");
     initialFiles.value.push(file);
+  }
   }
   console.log(reviewText.value);
   console.log(reviewTitle.value);
@@ -134,9 +136,11 @@ const submitReview = async () => {
     formData.append("hashtags", hashtags.value);
     formData.append("selectedDate", selectedDate.value);
     formData.append("uploadedDate", upladedDate.value);
+    if(uploadedFiles.value!=null){
     for (const fileObj of uploadedFiles.value) {
       formData.append(`files`, fileObj.file);
     }
+  }
     try {
       console.log(props.reviewId);
       await reviewStore.updateReview(props.reviewId, formData);
