@@ -11,9 +11,7 @@
       </ul>
       <ul class="nav-right">
         <li v-if="user === null">
-          <RouterLink :to="{ name: 'login' }" class="nav-link button"
-            >로그인</RouterLink
-          >
+          <RouterLink :to="{ name: 'login' }" class="nav-link button">로그인</RouterLink>
         </li>
         <li v-else class="user-info">
           <img
@@ -34,22 +32,14 @@
           </label>
           <ul v-if="checked" class="dropdown-menu">
             <li v-if="user !== null">
-              <RouterLink :to="{ name: 'mypage' }" class="dropdown-link"
-                >· 마이페이지</RouterLink
-              >
+              <RouterLink :to="{ name: 'mypage' }" class="dropdown-link">· 마이페이지</RouterLink>
             </li>
             <li v-if="user !== null">
-              <RouterLink :to="{ name: 'review' }" class="dropdown-link"
-                >· 후기</RouterLink
-              >
+              <RouterLink :to="{ name: 'review' }" class="dropdown-link">· 후기</RouterLink>
             </li>
-            <li v-if="user !== null" @click="logout" class="dropdown-link">
-              · 로그아웃
-            </li>
+            <li v-if="user !== null" @click="logout" class="dropdown-link">· 로그아웃</li>
             <li v-if="user === null">
-              <RouterLink :to="{ name: 'regist' }" class="dropdown-link"
-                >· 회원가입</RouterLink
-              >
+              <RouterLink :to="{ name: 'regist' }" class="dropdown-link">· 회원가입</RouterLink>
             </li>
           </ul>
         </li>
@@ -148,8 +138,10 @@ nav {
 
 .nav-link.button {
   background-color: #ee703f; /* 주황색 배경 */
+  box-shadow: 1px 1px 5px 0px #ee703f;
   color: #e0ffff;
   padding: 0.75em 1.5em; /* Increased padding for larger button */
+  text-shadow: 1px 1px 1px #00000080;
   border-radius: 40px;
   transition: background-color 0.3s;
   font-size: 1.2em; /* Increased font size */
@@ -175,6 +167,8 @@ nav {
 .line-2,
 .line-3 {
   background: #ee703f; /* 주황색으로 변경 */
+  box-shadow: 0px 0px 3px 0px #ee703f;
+
   height: 0.3em;
   border-radius: 10em;
   transition-duration: 500ms;
@@ -229,8 +223,9 @@ nav {
   background-color: #ee703f; /* 진한 주황색으로 변경 */
   padding: 0.5em 1em;
   border-radius: 40px;
-  color: white; /* 글자색 흰색으로 변경 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+  color: #f8f9fb; /* 글자색 흰색으로 변경 */
+  text-shadow: 1px 1.5px 1px #00000080;
+  box-shadow: 1px 1px 5px 0px #ee703f;
 }
 
 .profile-img {
@@ -239,6 +234,7 @@ nav {
   border-radius: 50%;
   object-fit: cover;
   border: 0.5px solid #ffdab9; /* 진한 주황색 테두리 */
+  box-shadow: 0px 0px 1px 0px #cccccc;
   background-color: #ffffff;
 }
 

@@ -52,6 +52,7 @@ const query = ref("");
   border-color: #ffffff;
   border-radius: 40px;
   box-shadow: 1px 1px 5px 0px #ffcc80;
+  text-shadow: 0.5px 0.5px 1px #cccccc;
   outline: none;
   background-color: #ffdab9;
   color: #00ced1;

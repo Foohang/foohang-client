@@ -82,9 +82,7 @@ watch(sidoName, async (newVal) => {
 });
 //gugun변경시 자동실행
 watch(gugunName, (newVal) => {
-  const matchedGugun = gugunList.value.find(
-    (item) => item.gugunName === newVal
-  );
+  const matchedGugun = gugunList.value.find((item) => item.gugunName === newVal);
   if (matchedGugun) {
     gugunCode.value = matchedGugun.gugunCode;
     searchToBar(sidoCode.value, gugunCode.value, type.value);
@@ -97,7 +95,7 @@ watch(type, (newVal) => {
   searchToBar(sidoCode.value, gugunCode.value, newVal);
 });
 
-const routeName = ref("여행 경로 리스트 열기");
+const routeName = ref("내 여행지");
 const seen = ref(false);
 const getRouteList = async () => {
   if (user.value == null || token.value == null) {
@@ -107,10 +105,10 @@ const getRouteList = async () => {
   } else {
     if (seen.value) {
       seen.value = false;
-      routeName.value = "여행 경로 리스트 열기";
+      routeName.value = "내 여행지";
     } else {
       seen.value = true;
-      routeName.value = "여행 경로 리스트 접기";
+      routeName.value = "목록 닫기";
     }
     await routeStore.getRoute();
     routeList.value = routeStore.routeList;
@@ -232,13 +230,9 @@ const saveRoute = async () => {
     alert("로그인이 만료되었습니다.");
     router.push({ name: "login" });
   } else {
-    await routeStore.saveRoute(
-      startDate.value,
-      endDate.value,
-      selectList.value
-    );
+    await routeStore.saveRoute(startDate.value, endDate.value, selectList.value);
     seen.value = true;
-    routeName.value = "여행 경로 리스트 접기";
+    routeName.value = "목록 닫기";
     await routeStore.getRoute();
     routeList.value = routeStore.routeList;
   }
@@ -284,18 +278,27 @@ const updateAccommodationsType = (item: any) => {
 initGugun();
 </script>
 
+<!-- ####################################template######################################-->
 <template>
   <div class="out">
     <div class="main">
       <div class="spot">
-        <h1>장소 선택</h1>
+        <div class="spot-align">
+          <img
+            class="spotIcon"
+            src="/src/assets/selecePlace.png"
+            height="35px"
+            style="margin-right: 10px"
+          />
+          <h1 style="text-shadow: 1px 1px 1px #cccccc">장소 선택</h1>
+        </div>
         <div class="search-tool">
           <SearchBar
             @update:search="searchAttraction = $event"
             @enter="handleEnter"
             class="searchBar"
           />
-          <v-btn variant="outlined" @click="search()"> 검색 </v-btn>
+          <v-btn class="search-bar-form" variant="outlined" @click="search()"> 검색 </v-btn>
         </div>
         <div class="spot-another">
           <div class="selected">
@@ -314,8 +317,8 @@ initGugun();
               label="구·군"
             ></v-select>
           </div>
-          <!-- 버튼 -->
-          <v-card flat>
+          <!-- ##############################라디오 버튼######################################## -->
+          <v-card flat class="custum-card">
             <v-card-text class="radio-group-container">
               <v-container fluid>
                 <v-radio-group v-model="type" class="custom-radio-group" row>
@@ -379,6 +382,17 @@ initGugun();
           </v-card>
 
           <hr />
+
+          <!-- 리스트 -->
+          <div class="search-result">
+            <img
+              class="search-result-icon"
+              src="/src/assets/search.png"
+              height="20px"
+              style="margin-right: 10px"
+            />
+            <h1>검색 결과</h1>
+          </div>
           <div class="cards">
             <v-card
               class="mx-auto"
@@ -388,151 +402,169 @@ initGugun();
               :key="index"
             >
               <div v-if="expandedCardIndex !== index">
-                <v-img
-                  class="align-end text-white"
-                  height="100"
-                  :src="item.firstImage"
-                  cover
-                >
-                  <v-card-title>{{ item.title }}</v-card-title>
+                <v-img class="align-end text-white" height="140" :src="item.firstImage" cover>
+                  <v-card-title class="card-title-font">{{ item.title }}</v-card-title>
                 </v-img>
 
                 <v-card-subtitle class="pt-4">{{
                   getContentTypeName(item.contentTypeId)
                 }}</v-card-subtitle>
                 <v-card-actions>
-                  <v-btn color="orange" @click.stop="register(item)"
-                    >이동</v-btn
-                  >
-                  <v-btn color="gray" @click.stop="expandCard(index, item)"
+                  <v-btn class="info-button" color="#007bff" @click.stop="expandCard(index, item)"
                     >정보</v-btn
+                  >
+                  <v-btn class="move-button" color="#F8F9FB" @click.stop="register(item)"
+                    >이동</v-btn
                   >
                 </v-card-actions>
               </div>
               <div v-else class="card-text">
                 <v-card-text v-if="attractionDetail">
-                  <p>관광지명: {{ attractionDetail.title }}</p>
-                  <p>주소: {{ attractionDetail.addr1 }}</p>
-                  <p>상세 정보: {{ attractionDetail.overview }}</p>
+                  <p>· 관광지명 : {{ attractionDetail.title }}</p>
+                  <br />
+                  <p>· 주소 : {{ attractionDetail.addr1 }}</p>
+                  <br />
+                  <p>· 상세 정보 : {{ attractionDetail.overview }}</p>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="orange" @click.stop="register(item)"
+                  <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
+                  <v-btn class="move-button" color="#F8F9FB" @click.stop="register(item)"
                     >이동</v-btn
                   >
-                  <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
                 </v-card-actions>
               </div>
             </v-card>
           </div>
         </div>
-        <v-btn variant="outlined" @click="getRouteList" color="orange">
-          {{ routeName }}
-        </v-btn>
-        <v-btn variant="outlined" @click="clearList" color="orange">
-          경로 초기화
-        </v-btn>
-      </div>
-      <!-- 선택한 리스트 -->
-      <div v-if="attractionSeen" class="attractionList">
-        <h1>test2</h1>
-        <div class="cards2">
-          <v-card
-            class="mx-auto"
-            max-width="300"
-            height="200"
-            v-for="(item, index) in selectList"
-            :key="index"
+        <div class="travel-action">
+          <v-btn
+            class="route-button"
+            variant="outlined"
+            @click="getRouteList"
+            style="background-color: #ee703f; color: #f8f9fb"
           >
-            <div v-if="expandedCardIndex2 !== index">
-              <v-img
-                class="align-end text-white"
-                height="100"
-                :src="item.firstImage"
-                cover
-              >
-                <v-card-title>{{ item.title }}</v-card-title>
-              </v-img>
-
-              <v-card-subtitle class="pt-4">{{
-                getContentTypeName(item.contentTypeId)
-              }}</v-card-subtitle>
-              <div v-if="item.contentTypeId === 39" class="radio-buttons">
-                <label>
-                  <input
-                    type="radio"
-                    :name="'mealType-' + item.contentId"
-                    :value="1"
-                    v-model="item.mealType"
-                    @change="updateMealType(item, 1)"
-                  />
-                  아침
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    :name="'mealType-' + item.contentId"
-                    :value="2"
-                    v-model="item.mealType"
-                    @change="updateMealType(item, 2)"
-                  />
-                  점심
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    :name="'mealType-' + item.contentId"
-                    :value="3"
-                    v-model="item.mealType"
-                    @change="updateMealType(item, 3)"
-                  />
-                  저녁
-                </label>
-              </div>
-              <div v-if="item.contentTypeId === 32" class="radio-buttons">
-                <label>
-                  <input
-                    type="radio"
-                    name="firstHome"
-                    :value="1"
-                    v-model="item.mainAccommodations"
-                    @change="updateAccommodationsType(item)"
-                  />
-                  첫 숙소
-                </label>
-              </div>
-              <v-card-actions>
-                <v-btn color="orange" @click.stop="removeList(item.contentId)"
-                  >삭제</v-btn
-                >
-                <v-btn color="gray" @click.stop="expandCard2(index, item)"
-                  >정보</v-btn
-                >
-              </v-card-actions>
-            </div>
-            <div v-else class="card-text">
-              <v-card-text v-if="attractionDetail2">
-                <p>관광지명: {{ attractionDetail2.title }}</p>
-                <p>주소: {{ attractionDetail2.addr1 }}</p>
-                <p>상세 정보: {{ attractionDetail2.overview }}</p>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="orange" @click.stop="removeList(item.contentId)"
-                  >삭제</v-btn
-                >
-                <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
-              </v-card-actions>
-            </div>
-          </v-card>
+            {{ routeName }}
+          </v-btn>
+          <v-btn
+            class="route-button"
+            variant="outlined"
+            @click="clearList"
+            style="background-color: #f8f9fb"
+          >
+            경로 초기화
+          </v-btn>
         </div>
-        여행 출발일<input type="date" v-model="startDate" required />
-        <br />
-        여행 종료일<input type="date" v-model="endDate" required />
-        <v-btn variant="outlined" @click="getBestRoute" color="orange">
-          최적 루트 요청
-        </v-btn>
-        <v-btn variant="outlined" @click="saveRoute" color="orange">
-          루트 저장
-        </v-btn>
+      </div>
+
+      <div v-if="attractionSeen" class="attractionList">
+        <div class="spot-align">
+          <img
+            class="spotIcon"
+            src="/src/assets/addPlace.png"
+            height="35px"
+            style="margin-right: 10px"
+          />
+          <h1 style="text-shadow: 1px 1px 1px #cccccc; text-align: center">장소 등록</h1>
+        </div>
+
+        <!-- ###################선택한 리스트, 카드 생성######################## -->
+        <div class="cards2-another">
+          <div class="cards2">
+            <v-card
+              class="mx-auto"
+              max-width="300"
+              height="200"
+              v-for="(item, index) in selectList"
+              :key="index"
+            >
+              <div v-if="expandedCardIndex2 !== index">
+                <v-img class="align-end text-white" height="120" :src="item.firstImage" cover>
+                  <v-card-title class="card-title-font">{{ item.title }}</v-card-title>
+                </v-img>
+
+                <v-card-subtitle class="pt-4">{{
+                  getContentTypeName(item.contentTypeId)
+                }}</v-card-subtitle>
+                <div v-if="item.contentTypeId === 39" class="radio-buttons">
+                  <label>
+                    <input
+                      type="radio"
+                      :name="'mealType-' + item.contentId"
+                      :value="1"
+                      v-model="item.mealType"
+                      @change="updateMealType(item, 1)"
+                    />
+                    아침
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      :name="'mealType-' + item.contentId"
+                      :value="2"
+                      v-model="item.mealType"
+                      @change="updateMealType(item, 2)"
+                    />
+                    점심
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      :name="'mealType-' + item.contentId"
+                      :value="3"
+                      v-model="item.mealType"
+                      @change="updateMealType(item, 3)"
+                    />
+                    저녁
+                  </label>
+                </div>
+                <div v-if="item.contentTypeId === 32" class="radio-buttons">
+                  <label>
+                    <input
+                      type="radio"
+                      name="firstHome"
+                      :value="1"
+                      v-model="item.mainAccommodations"
+                      @change="updateAccommodationsType(item)"
+                    />
+                    첫 숙소
+                  </label>
+                </div>
+                <v-card-actions>
+                  <v-btn color="007bff" @click.stop="expandCard2(index, item)">정보</v-btn>
+                  <v-btn color="orange" @click.stop="removeList(item.contentId)">삭제</v-btn>
+                </v-card-actions>
+              </div>
+              <div v-else class="card-text">
+                <v-card-text v-if="attractionDetail2">
+                  <p>관광지명: {{ attractionDetail2.title }}</p>
+                  <p>주소: {{ attractionDetail2.addr1 }}</p>
+                  <p>상세 정보: {{ attractionDetail2.overview }}</p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
+                  <v-btn color="orange" @click.stop="removeList(item.contentId)">삭제</v-btn>
+                </v-card-actions>
+              </div>
+            </v-card>
+          </div>
+        </div>
+        <div class="route-action2">
+          <div class="date-group">
+            <p class="travel-date">여행 출발일</p>
+            <input type="date" v-model="startDate" required />
+          </div>
+          <br />
+          <div class="date-group">
+            <p class="travel-date">여행 종료일</p>
+            <input type="date" v-model="endDate" required />
+          </div>
+          <div class="route-action2-1">
+            <v-btn class="route-button2" variant="outlined" @click="getBestRoute">
+              최적 경로 요청
+            </v-btn>
+            <v-btn class="route-button2" variant="outlined" @click="saveRoute"> 경로 저장 </v-btn>
+          </div>
+        </div>
       </div>
 
       <!-- map -->
@@ -548,7 +580,7 @@ initGugun();
 
       <!-- 정리리스트 -->
       <div v-if="seen" class="cards3">
-        <h1>내가 다녀간 곳</h1>
+        <h1>내 여행지 목록</h1>
         <div class="cards3-another">
           <v-card
             v-for="(item, index) in routeList"
@@ -562,10 +594,7 @@ initGugun();
               <v-row class="d-flex align-center">
                 <v-col cols="auto">
                   <v-avatar>
-                    <v-img
-                      alt="/src/assets/FoohangLogo.png"
-                      :src="item.startImage"
-                    ></v-img>
+                    <v-img alt="/src/assets/FoohangLogo.png" :src="item.startImage"></v-img>
                   </v-avatar>
                 </v-col>
                 <v-col>
@@ -576,10 +605,7 @@ initGugun();
               <v-row class="d-flex align-center mt-2">
                 <v-col cols="auto">
                   <v-avatar>
-                    <v-img
-                      alt="/src/assets/FoohangLogo.png"
-                      :src="item.endImage"
-                    ></v-img>
+                    <v-img alt="/src/assets/FoohangLogo.png" :src="item.endImage"></v-img>
                   </v-avatar>
                 </v-col>
                 <v-col>
@@ -610,7 +636,6 @@ initGugun();
 }
 .main {
   display: flex;
-  justify-content: space-around;
 }
 .search-tool {
   display: flex;
@@ -618,36 +643,147 @@ initGugun();
   align-items: center;
   margin-top: 10px;
   margin-bottom: 20px;
-}
-
-.searchBar {
   margin-right: 10px;
 }
 
+.searchBar {
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+/* 검색 */
+.search-bar-form {
+  height: 43px;
+  margin-left: 100px;
+  background-color: #ee703f;
+  border-color: #cccccc;
+
+  color: #f8f9fb;
+
+  border-width: 1px;
+}
+
+/* 검색결과 */
+.search-result {
+  display: flex;
+  width: 50%;
+  align-items: center;
+  margin-left: 10px;
+  font-size: 10px;
+  margin: 10px 0;
+  color: #333333;
+
+  padding-bottom: 10px;
+  border-bottom: 3px solid #ee703f;
+}
+
+.search-result-icon {
+  display: flex;
+  justify-content: center;
+  margin-left: 10px;
+  size: 10px;
+}
+
+/* 장소 선택 */
 .spot {
-  width: 600px;
+  width: 400px;
+  background-color: #f8f9fb;
+  border-right: 1px solid #cccccc;
 }
 
 .spot-another {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 65vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
 }
+.spot-another::-webkit-scrollbar {
+  display: none;
+}
+
+.spotIcon {
+  display: flex;
+  justify-content: center;
+  color: black;
+}
+
+.spot-align {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  border-bottom: solid 2px #ee703f;
+
+  width: 90%;
+}
 
 .selected {
   display: flex;
   justify-content: space-around;
 }
-/* 버튼 */
-.v-radio,
-.v-label {
-  font-size: 12px; /* 원하는 크기로 조정하세요 */
-  margin-bottom: 0px; /* 줄 사이 간격 줄이기 */
-  padding: 0; /* 패딩 제거 */
+/* 라디오 버튼 */
+.custom-radio-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Creates three columns */
+}
+
+.radio-group-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.custom-radio {
+  box-sizing: border-box;
+}
+
+.custom-radio .v-label {
+  font-size: 10px; /* 글자 크기 줄이기 */
+}
+
+.radio-buttons label {
+  font-size: 10px; /* 글자 크기 조절 */
+  margin-right: 4px; /* 레이블 사이 간격 줄이기 */
+}
+
+.v-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.v-radio {
+  flex: 1 1 33%;
+  margin-bottom: 8px;
 }
 
 /* 카드 */
+.move-button {
+  background-color: #ee703f;
+}
+
+.info-button {
+  background-color: F5F5DC;
+}
+
+.pt-4 {
+  margin-top: -10px;
+}
+
+.mx-auto {
+  background-color: #f8f9fb;
+  box-shadow: 1px 5px 10px 0px #00000080;
+}
+
+.card-title-font {
+  color: #f8f9fb;
+  text-shadow: 1.2px 1.5px 1px #00000090;
+  background-color: #00000060;
+}
+
+.custom-card {
+  max-width: 800px; /* 카드의 최대 너비 설정 */
+}
+
 .v-card {
-  margin-top: 10px; /* 원하는 간격으로 조절 */
+  margin-top: 30px; /* 원하는 간격으로 조절 */
 }
 /* 스크롤 영역을 가진 컨테이너 */
 .cards2 {
@@ -658,12 +794,29 @@ initGugun();
   overflow-y: auto;
   max-height: 200px;
 }
+
+.cards2 {
+  overflow-y: auto; /* 세로 스크롤을 추가합니다. */
+  max-height: 65vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+}
+
+.cards2::-webkit-scrollbar {
+  display: none;
+}
+
 .map {
   height: 1;
 }
 
+/* ###################################장소 등록############################ */
 .attractionList {
-  width: 500px;
+  width: 400px;
+  max-width: 300px;
+  padding: 0 10px;
+  border-right: solid 1px #cccccc;
+  background-color: #f8f9fb;
+  /* overflow-y: auto;
+  flex-grow: 1; */
 }
 .cards3 {
   width: 400px;
@@ -691,22 +844,13 @@ initGugun();
   border-radius: 4px;
 }
 
-.custom-radio-group {
-  display: flex;
-  flex-wrap: wrap; /* 버튼들을 여러 줄로 정렬 */
-  gap: 0 px; /* 버튼들 사이의 간격을 조절 */
-  margin-top: -45px; /* 버튼 위의 공백을 제거 */
-}
-
-.custom-radio .v-label {
-  font-size: 12px; /* 글자 크기 줄이기 */
-}
-
 .v-card-actions {
   padding: 0; /* 카드 액션의 패딩 제거 */
   display: flex;
   flex-direction: row; /* 버튼들을 한 줄로 정렬 */
-  justify-content: space-between; /* 버튼들 사이의 간격을 자동으로 조절 */
+  justify-content: flex-end; /* 버튼들 사이의 간격을 자동으로 조절 */
+  margin-top: -15px;
+  margin-right: 5px;
 }
 
 .v-btn {
@@ -715,8 +859,71 @@ initGugun();
   font-size: 12px; /* 버튼의 글자 크기 조절 */
 }
 
-.radio-buttons label {
-  font-size: 12px; /* 글자 크기 조절 */
-  margin-right: 4px; /* 레이블 사이 간격 줄이기 */
+/* 내 여행지, 경로 초기화 */
+.travel-action {
+  width: 80%;
+  border-top: solid 2px #cccccc;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+
+  margin: 10px 30px;
+}
+.route-button {
+  width: 120px;
+  height: 40px;
+  margin: 0 30px;
+  font-size: 18px;
+  border-color: #cccccc;
+  text-shadow: 0.5px 0.5px 1px #cccccc;
+  box-shadow: 1px 5px 5px 0px #cccccc;
+}
+
+/* 내 여행지, 장소 등록 */
+.route-action2 {
+  position: fixed;
+  width: 80%;
+  border-top: solid 2px #cccccc;
+  padding: 10px;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* flex-direction: column; */
+  /* height: 100vh; */
+  /* overflow: hidden;  */
+}
+
+.route-action2-1 {
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  padding: 10px 50px;
+}
+
+.route-button2 {
+  width: 120px;
+  height: 40px;
+  margin: 0 10px;
+  border-color: #cccccc;
+  color: #000000;
+  text-shadow: 1px 1px 1px #cccccc;
+  box-shadow: 1px 1px 1px 0 #cccccc;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: row;
+  margin-left: -10px;
+}
+
+.travel-date {
+  /* font-size: 1px; */
+  background-color: #ee703f90;
+  box-shadow: 1px 1px 1px 0 #cccccc;
+  color: #f8f9fb;
+  text-shadow: 1px 1px 1px #00000080;
+  border-radius: 10px;
+  padding: 2px 5px;
+  margin-right: 8px;
 }
 </style>
