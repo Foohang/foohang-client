@@ -82,7 +82,9 @@ watch(sidoName, async (newVal) => {
 });
 //gugun변경시 자동실행
 watch(gugunName, (newVal) => {
-  const matchedGugun = gugunList.value.find((item) => item.gugunName === newVal);
+  const matchedGugun = gugunList.value.find(
+    (item) => item.gugunName === newVal
+  );
   if (matchedGugun) {
     gugunCode.value = matchedGugun.gugunCode;
     searchToBar(sidoCode.value, gugunCode.value, type.value);
@@ -230,7 +232,11 @@ const saveRoute = async () => {
     alert("로그인이 만료되었습니다.");
     router.push({ name: "login" });
   } else {
-    await routeStore.saveRoute(startDate.value, endDate.value, selectList.value);
+    await routeStore.saveRoute(
+      startDate.value,
+      endDate.value,
+      selectList.value
+    );
     seen.value = true;
     routeName.value = "목록 닫기";
     await routeStore.getRoute();
@@ -298,7 +304,9 @@ initGugun();
             @enter="handleEnter"
             class="searchBar"
           />
-          <v-btn class="search-bar-form" variant="outlined" @click="search()"> 검색 </v-btn>
+          <v-btn class="search-bar-form" variant="outlined" @click="search()">
+            검색
+          </v-btn>
         </div>
         <div class="spot-another">
           <div class="selected">
@@ -402,18 +410,31 @@ initGugun();
               :key="index"
             >
               <div v-if="expandedCardIndex !== index">
-                <v-img class="align-end text-white" height="140" :src="item.firstImage" cover>
-                  <v-card-title class="card-title-font">{{ item.title }}</v-card-title>
+                <v-img
+                  class="align-end text-white"
+                  height="140"
+                  :src="item.firstImage"
+                  cover
+                >
+                  <v-card-title class="card-title-font">{{
+                    item.title
+                  }}</v-card-title>
                 </v-img>
 
                 <v-card-subtitle class="pt-4">{{
                   getContentTypeName(item.contentTypeId)
                 }}</v-card-subtitle>
                 <v-card-actions>
-                  <v-btn class="info-button" color="#007bff" @click.stop="expandCard(index, item)"
+                  <v-btn
+                    class="info-button"
+                    color="#007bff"
+                    @click.stop="expandCard(index, item)"
                     >정보</v-btn
                   >
-                  <v-btn class="move-button" color="#F8F9FB" @click.stop="register(item)"
+                  <v-btn
+                    class="move-button"
+                    color="#F8F9FB"
+                    @click.stop="register(item)"
                     >이동</v-btn
                   >
                 </v-card-actions>
@@ -428,7 +449,10 @@ initGugun();
                 </v-card-text>
                 <v-card-actions>
                   <v-btn color="gray" @click.stop="closeCard">간단히</v-btn>
-                  <v-btn class="move-button" color="#F8F9FB" @click.stop="register(item)"
+                  <v-btn
+                    class="move-button"
+                    color="#F8F9FB"
+                    @click.stop="register(item)"
                     >이동</v-btn
                   >
                 </v-card-actions>
@@ -464,7 +488,9 @@ initGugun();
             height="35px"
             style="margin-right: 10px"
           />
-          <h1 style="text-shadow: 1px 1px 1px #cccccc; text-align: center">장소 등록</h1>
+          <h1 style="text-shadow: 1px 1px 1px #cccccc; text-align: center">
+            장소 등록
+          </h1>
         </div>
 
         <!-- ###################선택한 리스트, 카드 생성######################## -->
@@ -478,8 +504,15 @@ initGugun();
               :key="index"
             >
               <div v-if="expandedCardIndex2 !== index">
-                <v-img class="align-end text-white" height="120" :src="item.firstImage" cover>
-                  <v-card-title class="card-title-font">{{ item.title }}</v-card-title>
+                <v-img
+                  class="align-end text-white"
+                  height="120"
+                  :src="item.firstImage"
+                  cover
+                >
+                  <v-card-title class="card-title-font">{{
+                    item.title
+                  }}</v-card-title>
                 </v-img>
 
                 <v-card-subtitle class="pt-4">{{
@@ -530,8 +563,12 @@ initGugun();
                   </label>
                 </div>
                 <v-card-actions>
-                  <v-btn color="007bff" @click.stop="expandCard2(index, item)">정보</v-btn>
-                  <v-btn color="orange" @click.stop="removeList(item.contentId)">삭제</v-btn>
+                  <v-btn color="007bff" @click.stop="expandCard2(index, item)"
+                    >정보</v-btn
+                  >
+                  <v-btn color="orange" @click.stop="removeList(item.contentId)"
+                    >삭제</v-btn
+                  >
                 </v-card-actions>
               </div>
               <div v-else class="card-text">
@@ -542,7 +579,9 @@ initGugun();
                 </v-card-text>
                 <v-card-actions>
                   <v-btn color="gray" @click.stop="closeCard2">간단히</v-btn>
-                  <v-btn color="orange" @click.stop="removeList(item.contentId)">삭제</v-btn>
+                  <v-btn color="orange" @click.stop="removeList(item.contentId)"
+                    >삭제</v-btn
+                  >
                 </v-card-actions>
               </div>
             </v-card>
@@ -559,10 +598,16 @@ initGugun();
             <input type="date" v-model="endDate" required />
           </div>
           <div class="route-action2-1">
-            <v-btn class="route-button2" variant="outlined" @click="getBestRoute">
+            <v-btn
+              class="route-button2"
+              variant="outlined"
+              @click="getBestRoute"
+            >
               최적 경로 요청
             </v-btn>
-            <v-btn class="route-button2" variant="outlined" @click="saveRoute"> 경로 저장 </v-btn>
+            <v-btn class="route-button2" variant="outlined" @click="saveRoute">
+              경로 저장
+            </v-btn>
           </div>
         </div>
       </div>
@@ -580,32 +625,50 @@ initGugun();
 
       <!-- 정리리스트 -->
       <div v-if="seen" class="cards3">
-        <h1>내 여행지 목록</h1>
+        <div class="spot-align">
+          <img
+            class="spotIcon"
+            src="/src/assets/travelLists.png"
+            height="35px"
+            style="margin-right: 10px"
+          />
+          <h1 style="text-shadow: 1px 1px 1px #cccccc">내 여행지</h1>
+        </div>
+
+        <!-- ##################################카드3################################################-->
         <div class="cards3-another">
           <v-card
             v-for="(item, index) in routeList"
             :key="index"
             class="mx-auto"
             :subtitle="`${item.startDate} ~ ${item.endDate}`"
-            :title="`${item.startRegion} -> ${item.endRegion}`"
+            :title="`${item.startRegion} → ${item.endRegion}`"
             @click="showRoute(item.travelId)"
           >
-            <v-card-text>
+            <v-card-text class="card-text2">
               <v-row class="d-flex align-center">
                 <v-col cols="auto">
-                  <v-avatar>
-                    <v-img alt="/src/assets/FoohangLogo.png" :src="item.startImage"></v-img>
+                  <v-avatar class="attraction-icon">
+                    <v-img
+                      alt="/src/assets/FoohangLogo.png"
+                      :src="item.startImage"
+                    ></v-img>
                   </v-avatar>
                 </v-col>
                 <v-col>
-                  <p class="mb-0">{{ item.startAttraction }}</p>
+                  <p class="mb-0">
+                    {{ item.startAttraction }}
+                  </p>
                 </v-col>
               </v-row>
-              <v-row justify="center" align="center"> ~ </v-row>
+              <v-row justify="center" align="center"> ↓ </v-row>
               <v-row class="d-flex align-center mt-2">
                 <v-col cols="auto">
-                  <v-avatar>
-                    <v-img alt="/src/assets/FoohangLogo.png" :src="item.endImage"></v-img>
+                  <v-avatar class="attraction-icon">
+                    <v-img
+                      alt="/src/assets/FoohangLogo.png"
+                      :src="item.endImage"
+                    ></v-img>
                   </v-avatar>
                 </v-col>
                 <v-col>
@@ -770,6 +833,7 @@ initGugun();
 .mx-auto {
   background-color: #f8f9fb;
   box-shadow: 1px 5px 10px 0px #00000080;
+  border-color: solid 0.5px #cccccc;
 }
 
 .card-title-font {
@@ -798,6 +862,8 @@ initGugun();
 .cards2 {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 65vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+  padding: 10px;
+  padding-bottom: 20px;
 }
 
 .cards2::-webkit-scrollbar {
@@ -819,12 +885,25 @@ initGugun();
   flex-grow: 1; */
 }
 .cards3 {
-  width: 400px;
+  width: 450px;
+  padding: 0 10px;
+  background-color: #f8f9fb;
+  border-left: solid 1px #cccccc;
 }
 
 .cards3-another {
   overflow-y: auto;
   max-height: 75vh;
+  padding: 0 10px;
+}
+.cards3-another::-webkit-scrollbar {
+  display: none;
+}
+
+/* 관광지명 */
+.mb-0 {
+  margin-left: -12px;
+  font-size: 18px;
 }
 
 .position-absolute {
@@ -925,5 +1004,17 @@ initGugun();
   border-radius: 10px;
   padding: 2px 5px;
   margin-right: 8px;
+}
+.card-text2 {
+  width: 90%;
+  border-top: solid 2.5px #ee703f;
+  margin-top: -10px;
+  padding-top: 10px;
+}
+
+.attraction-icon {
+  background-color: white;
+  border-color: 3px solid #cccccc;
+  box-shadow: 0px 0px 1px 1px #cccccc;
 }
 </style>

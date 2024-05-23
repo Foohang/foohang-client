@@ -234,4 +234,8 @@ const createSVGMarker = (order: number, color: string): string => {
 .select-marker {
   color: aliceblue;
 }
+.card-text {
+  text-shadow: 1px 1px 1px #00000080;
+  background-color: #00000030;
+}
 </style>
