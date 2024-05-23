@@ -5,6 +5,7 @@
     show-arrows="hover"
     hide-delimiters
     v-model="activeIndex"
+    @change="handleSlideChange"
   >
     <v-carousel-item
       v-for="(item, i) in items"
@@ -14,6 +15,7 @@
     >
       <video
         v-if="item.type === 'video'"
+        ref="video"
         :src="item.src"
         class="carousel-media"
         autoplay
@@ -37,31 +39,63 @@ export default {
           text: "어디를 여행하고 싶으신가요?",
         },
         {
-          type: "image",
-          src: "/src/assets/main/main1.png",
+          type: "video",
+          src: "/src/assets/main/main2.mp4",
           text: "최적의 동선으로 즐거운 식사를 만끽하세요",
         },
         {
           type: "video",
-          src: "/src/assets/main/main2.mp4",
+          src: "/src/assets/main/main3.mp4",
           text: "최고의 순간을 기록하세요",
         },
       ],
       activeIndex: 0,
       hoverTimer: null,
+      intervalTimer: null,
     };
   },
+  mounted() {
+    this.startAutoSlide();
+  },
+  beforeDestroy() {
+    this.stopAutoSlide();
+  },
   methods: {
-    startHoverTimer() {
-      this.stopHoverTimer();
-      this.hoverTimer = setTimeout(() => {
+    startAutoSlide() {
+      this.intervalTimer = setInterval(() => {
         this.activeIndex = (this.activeIndex + 1) % this.items.length;
-      }, 1000);
+        this.resetVideos();
+      }, 4000);
+    },
+    stopAutoSlide() {
+      if (this.intervalTimer) {
+        clearInterval(this.intervalTimer);
+        this.intervalTimer = null;
+      }
+    },
+    startHoverTimer() {
+      this.stopAutoSlide();
     },
     stopHoverTimer() {
-      if (this.hoverTimer) {
-        clearTimeout(this.hoverTimer);
-        this.hoverTimer = null;
+      this.startAutoSlide();
+    },
+    handleSlideChange() {
+      this.resetVideos();
+    },
+    resetVideos() {
+      const videos = this.$refs.video;
+      if (videos) {
+        if (Array.isArray(videos)) {
+          videos.forEach((video) => {
+            video.pause();
+            video.currentTime = 0;
+            video.play();
+          });
+        } else {
+          videos.pause();
+          videos.currentTime = 0;
+          videos.play();
+        }
       }
     },
   },
