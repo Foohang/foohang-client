@@ -3,4 +3,5 @@
 /* 추가적인 글로벌 스타일 */
 body {
   font-family: "Spoqa Han Sans Neo", sans-serif;
+  text-shadow: 0.5px 0.5px 1px #cccccc80;
 }
