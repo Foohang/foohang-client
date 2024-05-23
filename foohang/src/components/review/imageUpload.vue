@@ -1,7 +1,7 @@
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits } from "vue";
 
-const emit = defineEmits(['upload']);
+const emit = defineEmits(["upload"]);
 
 const files = ref([]);
 const uploadImageIndex = ref(0);
@@ -58,7 +58,6 @@ const fileDeleteButton = (number) => {
 const emitUploadEvent = () => {
   emit("upload", files.value);
 };
-
 </script>
 
 <template>
@@ -73,25 +72,48 @@ const emitUploadEvent = () => {
         <div v-if="!files.length" class="room-file-upload-example-container">
           <div class="room-file-upload-example">
             <div class="room-file-image-example-wrapper">이미지</div>
-            <div class="room-file-notice-item">여러분의 추억을 저장해 보아요.</div>
+            <div class="room-file-notice-item">
+              여러분의 추억을 저장해 보아요.
+            </div>
             <div class="room-file-notice-item room-file-upload-button">
               <div class="image-box">
                 <label for="file">일반 사진 등록</label>
-                <input type="file" id="file" ref="fileInput" @change="imageUpload" multiple />
+                <input
+                  type="file"
+                  id="file"
+                  ref="fileInput"
+                  @change="imageUpload"
+                  multiple
+                />
               </div>
             </div>
           </div>
         </div>
         <div v-else class="file-preview-content-container">
           <div class="file-preview-container">
-            <div v-for="(file) in files" :key="file.number" class="file-preview-wrapper">
-              <div class="file-close-button" @click="fileDeleteButton(file.number)">x</div>
+            <div
+              v-for="file in files"
+              :key="file.number"
+              class="file-preview-wrapper"
+            >
+              <div
+                class="file-close-button"
+                @click="fileDeleteButton(file.number)"
+              >
+                x
+              </div>
               <img :src="file.preview" />
             </div>
             <div v-if="files.length < 6" class="file-preview-wrapper-upload">
               <div class="image-box">
                 <label for="file">추가 사진 등록</label>
-                <input type="file" id="file" ref="fileInput" @change="imageAddUpload" multiple />
+                <input
+                  type="file"
+                  id="file"
+                  ref="fileInput"
+                  @change="imageAddUpload"
+                  multiple
+                />
               </div>
             </div>
           </div>
@@ -320,7 +342,7 @@ const emitUploadEvent = () => {
 .image-box label {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #232d4a;
+  background-color: #ee703f80;
   color: #fff;
   vertical-align: middle;
   font-size: 15px;

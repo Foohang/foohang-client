@@ -71,16 +71,14 @@ const login = async () => {
   }
 };
 
-if(route.params.token!=null){
-    authStore.kakaoLogin(route.params.token);
-    router.push({ name: "home" });
+if (route.params.token != null) {
+  authStore.kakaoLogin(route.params.token);
+  router.push({ name: "home" });
 }
 
 const redirectToKakao = function () {
   window.location.href = kakaoStore.KAKAO_AUTH_URI;
 };
-
-
 </script>
 
 <style scoped>

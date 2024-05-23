@@ -49,8 +49,8 @@
         class="hashtags-input"
       />
       <div class="buttons">
-        <button @click="submitReview">Submit</button>
-        <button @click="cancelReview">Cancel</button>
+        <button @click="submitReview">등록</button>
+        <button @click="cancelReview">취소</button>
       </div>
     </div>
   </div>
@@ -129,7 +129,7 @@ const cancelReview = () => {
   background: white;
   padding: 0.4em;
   border-radius: 6px;
-  border: 1px solid black;
+  border: 1px solid #cccccc;
   height: auto;
   position: relative;
   box-sizing: border-box;
@@ -256,7 +256,7 @@ textarea {
 
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 button {
@@ -271,12 +271,16 @@ button:hover {
 }
 
 button:first-of-type {
-  background-color: #4caf50;
+  background-color: #ee703f;
   color: white;
+  text-shadow: 0.4px 0.1px 1px #000;
+  margin-right: 10px;
 }
 
 button:last-of-type {
-  background-color: #f44336;
+  background-color: #cccccc;
   color: white;
+  text-shadow: 0.4px 0.1px 1px #000;
+  margin-left: 10px;
 }
 </style>

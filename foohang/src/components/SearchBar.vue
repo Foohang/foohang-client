@@ -49,7 +49,7 @@ const query = ref("");
   padding: 0 1rem;
   padding-left: 2.5rem;
   border: 2px solid transparent;
-  border-color: #ffffff;
+  border-color: #ed5a00;
   border-radius: 40px;
   box-shadow: 1px 1px 5px 0px #ffcc80;
   text-shadow: 0.5px 0.5px 1px #cccccc;

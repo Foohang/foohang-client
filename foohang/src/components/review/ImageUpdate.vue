@@ -359,7 +359,7 @@ const emitUploadEvent = () => {
 .image-box label {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #232d4a;
+  background-color: #ee703f80;
   color: #fff;
   vertical-align: middle;
   font-size: 15px;

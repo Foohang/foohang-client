@@ -8,8 +8,8 @@
       </div>
       <div class="menu-button" @click="toggleMenu">⋮</div>
       <div v-if="menuVisible" class="menu" ref="menu">
-        <div @click="handleMenuOption('edit')">Edit Post</div>
-        <div @click="handleMenuOption('delete')">Delete Post</div>
+        <div @click="handleMenuOption('edit')">포스트 수정</div>
+        <div @click="handleMenuOption('delete')">포스트 삭제</div>
       </div>
     </div>
     <div class="card-image" v-if="review.images != null">
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="image-details">
-      <div class="travel-date">Travel Date: {{ review.travelDate }}</div>
+      <div class="travel-date">여행일 : {{ review.travelDate }}</div>
       <div class="emotions">
         <span :class="{ active: review.selectedEmotion == '1' }">😊</span>
         <span :class="{ active: review.selectedEmotion == '2' }">😐</span>
@@ -95,7 +95,8 @@ onBeforeUnmount(() => {
   background: white;
   padding: 0.4em;
   border-radius: 6px;
-  border: 1px solid black;
+  border: 1px solid #cccccc;
+  box-shadow: 1px 1px 1px 0px #cccccc80;
   position: relative;
   box-sizing: border-box;
 }
@@ -153,8 +154,8 @@ onBeforeUnmount(() => {
 }
 
 .orange-line {
-  background-color: orange;
-  width: 50%;
+  background-color: #ee703f;
+  width: 60%;
   height: 2px; /* Increased thickness */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
   margin-top: 10px;
@@ -163,7 +164,9 @@ onBeforeUnmount(() => {
 }
 
 .card-image {
-  background-color: rgb(236, 236, 236);
+  /* background-color: rgb(236, 236, 236); */
+  background-color: white;
+  border-color: solid 3px black;
   width: 100%;
   /* height: 100;  */
   display: flex;
@@ -190,6 +193,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  border-top: solid 1px #cccccc;
 }
 
 .travel-date {
