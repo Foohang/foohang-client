@@ -127,7 +127,7 @@ const createSVGMarker = (order: number, color: string): string => {
     <div v-if="centerContent > 0">
       <KakaoMapMarker
         :image="{
-          imageSrc: '/src/assets/restaurantMarker.png',
+          imageSrc: '/src/assets/marker/mainMarker.png',
           imageWidth: 64,
           imageHeight: 64,
         }"

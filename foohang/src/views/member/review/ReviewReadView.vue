@@ -15,6 +15,7 @@ const start = async () => {
   await reviewStore.getReviews();
   reviewList.value = reviewStore.reviewList;
   selectList.value = reviewStore.reviewList;
+  sorted(reverse.value, selectedOption.value);
 };
 
 const selectedOption = ref("날짜별");
