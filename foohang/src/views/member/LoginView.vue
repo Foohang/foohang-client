@@ -9,7 +9,7 @@
         <label>
           Email
           <input
-            type="text"
+            type="email"
             placeholder="이메일"
             v-model.trim="loginForm.email"
             required

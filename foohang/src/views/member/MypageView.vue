@@ -9,6 +9,7 @@
           ref="fileInput"
           @change="onFileChange"
           style="display: none"
+          accept="image/gif, image/jpeg, image/png"
         />
         <img
           v-if="joinForm.profile_img"
@@ -28,7 +29,7 @@
             <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
             <div class="input-divider"></div>
             <input
-              type="text"
+              type="email"
               class="input-field"
               v-model.trim="joinForm.email"
               required

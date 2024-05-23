@@ -13,6 +13,7 @@
             ref="fileInputRef"
             @change="onFileChange"
             style="display: none"
+            accept="image/gif, image/jpeg, image/png"
           />
           <img
             v-if="joinForm.profile_img"
@@ -56,7 +57,7 @@
         <label>
           <input
             required
-            type="text"
+            type="email"
             class="input"
             v-model.trim="joinForm.email"
           />

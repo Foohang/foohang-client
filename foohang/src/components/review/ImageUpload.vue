@@ -84,6 +84,7 @@ const emitUploadEvent = () => {
                   ref="fileInput"
                   @change="imageUpload"
                   multiple
+                  accept="image/gif, image/jpeg, image/png"
                 />
               </div>
             </div>
