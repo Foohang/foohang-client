@@ -81,7 +81,7 @@ const moveMain = (item) => {
 const startHover = (item) => {
   stopHover(item); // 기존 타이머가 있을 경우 정지
   item.timer = setInterval(() => {
-    item.currentIndex = (item.currentIndex % 5) + 1;
+    item.currentIndex = (item.currentIndex % 3) + 1;
     const nextImage = `${item.sidoImage}-${item.currentIndex}.jpg`;
 
     item.fading = true; // 페이드 효과 활성화
