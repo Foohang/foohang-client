@@ -188,6 +188,7 @@ const selectList = ref([]);
 const attractionAdd = function () {
   selectList.value = attractionStore.selectedAttractions;
   attractionSeen.value = selectList.value.length > 0;
+  attractionSeen.value=true;
 };
 
 const removeList = async (contentId) => {
@@ -562,6 +563,7 @@ initGugun();
                     첫 숙소
                   </label>
                 </div>
+                <div v-if="!(item.contentTypeId ==32 || item.contentTypeId==39)" class="empty-box"></div>
                 <v-card-actions>
                   <v-btn color="007bff" @click.stop="expandCard2(index, item)"
                     >정보</v-btn
@@ -800,7 +802,10 @@ initGugun();
 .custom-radio .v-label {
   font-size: 10px; /* 글자 크기 줄이기 */
 }
-
+.radio-buttons{
+  margin-left: 15px;
+}
+ 
 .radio-buttons label {
   font-size: 10px; /* 글자 크기 조절 */
   margin-right: 4px; /* 레이블 사이 간격 줄이기 */
@@ -853,6 +858,10 @@ initGugun();
 .cards2 {
   overflow-y: auto; /* 세로 스크롤을 추가합니다. */
   max-height: 68vh; /* 스크롤 영역의 최대 높이를 지정합니다. */
+}
+
+.empty-box{
+  height: 23px;
 }
 .card-text {
   overflow-y: auto;
