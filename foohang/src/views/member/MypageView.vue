@@ -4,8 +4,17 @@
       <div class="card-border-top"></div>
 
       <div class="img" @click="triggerFileInput">
-        <input type="file" ref="fileInput" @change="onFileChange" style="display: none" />
-        <img v-if="joinForm.profile_img" :src="joinForm.profile_img" alt="Profile Image" />
+        <input
+          type="file"
+          ref="fileInput"
+          @change="onFileChange"
+          style="display: none"
+        />
+        <img
+          v-if="joinForm.profile_img"
+          :src="joinForm.profile_img"
+          alt="Profile Image"
+        />
         <img v-else src="/src/assets/addImage.png" alt="Default Image" />
       </div>
       <button class="photo-button" @click="triggerFileInput">사진 변경</button>
@@ -55,7 +64,10 @@
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'map-marker-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
             <input
               type="text"
@@ -81,7 +93,10 @@
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'comment-dots']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'comment-dots']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
             <input
               type="text"
@@ -94,7 +109,10 @@
         </div>
         <div class="form-group">
           <div class="input-container">
-            <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
+            <font-awesome-icon
+              :icon="['fas', 'calendar-alt']"
+              class="input-icon"
+            />
             <div class="input-divider"></div>
             <input
               type="date"
@@ -108,9 +126,21 @@
         <div class="form-group gender-group">
           <label class="input-label"></label>
           <div class="gender-container">
-            <input id="men" name="gender" type="radio" value="1" v-model="joinForm.gender" />
+            <input
+              id="men"
+              name="gender"
+              type="radio"
+              value="1"
+              v-model="joinForm.gender"
+            />
             <label class="gender" for="men">남성</label>
-            <input id="women" name="gender" type="radio" value="0" v-model="joinForm.gender" />
+            <input
+              id="women"
+              name="gender"
+              type="radio"
+              value="0"
+              v-model="joinForm.gender"
+            />
             <label class="gender" for="women">여성</label>
           </div>
         </div>
@@ -136,7 +166,15 @@ import {
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt);
+library.add(
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt
+);
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -152,7 +190,8 @@ const joinForm = ref({
   gender: authStore.user.gender,
   statusMessage: authStore.user.statusMessage,
   profile: null,
-  profile_img: `http://localhost/files/profile/${authStore.user.profileName}` || null,
+  profile_img:
+    `http://localhost/files/profile/${authStore.user.profileName}` || null,
 });
 
 const fileInputRef = ref(null);
@@ -187,6 +226,7 @@ const update = async () => {
   try {
     await authStore.update(formData);
     router.push({ name: "mypage" });
+    router.go(0);
     alert("변경 완료");
   } catch (error) {
     console.error("에러:", error);

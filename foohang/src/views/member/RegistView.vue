@@ -4,72 +4,110 @@
     <form class="form" @submit.prevent="join">
       <p class="title">프로필 설정</p>
       <div class="img-container">
-        <div class="img" @click="joinForm.profile_img ? null : triggerFileInput">
-          <input type="file" ref="fileInputRef" @change="onFileChange" style="display: none" />
-          <img v-if="joinForm.profile_img" :src="joinForm.profile_img" alt="프로필 이미지" />
+        <div
+          class="img"
+          @click="joinForm.profile_img ? null : triggerFileInput"
+        >
+          <input
+            type="file"
+            ref="fileInputRef"
+            @change="onFileChange"
+            style="display: none"
+          />
+          <img
+            v-if="joinForm.profile_img"
+            :src="joinForm.profile_img"
+            alt="프로필 이미지"
+          />
+          <img v-else src="/src/assets/addImage.png" />
         </div>
         <!-- .prevent를 추가하여 폼 제출을 방지 -->
-        <button class="photo-button" @click.prevent="triggerFileInput">사진 추가</button>
+        <button class="photo-button" @click.prevent="triggerFileInput">
+          사진 추가
+        </button>
       </div>
       <div class="flex">
         <label class="icon-label">
-          <font-awesome-icon :icon="['fas', 'comment-dots']" class="input-icon" />
+          <font-awesome-icon
+            :icon="['fas', 'comment-dots']"
+            class="input-icon"
+          />
         </label>
         <label>
-          <input required type="text" class="input" v-model="joinForm.statusMessage" />
+          <input
+            required
+            type="text"
+            class="input"
+            v-model="joinForm.statusMessage"
+          />
           <span>상태 메시지 입력..</span>
         </label>
       </div>
       <br />
       <p class="title">회원가입</p>
-      <p class="message" style="margin-bottom: 10px">회원가입을 통해 더욱 쾌적한 여행을 즐기세요</p>
+      <p class="message" style="margin-bottom: 10px">
+        회원가입을 통해 더욱 쾌적한 여행을 즐기세요
+      </p>
 
-        <div class="flex" v-show="socialHidden">
-          <label class="icon-label">
-            <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
-          </label>
-          <label>
-            <input
-              required
-              type="text"
-              class="input"
-              v-model.trim="joinForm.email"
-            />
-            <span>이메일</span>
-          </label>
-        </div>
+      <div class="flex" v-show="socialHidden">
+        <label class="icon-label">
+          <font-awesome-icon :icon="['fas', 'envelope']" class="input-icon" />
+        </label>
+        <label>
+          <input
+            required
+            type="text"
+            class="input"
+            v-model.trim="joinForm.email"
+          />
+          <span>이메일</span>
+        </label>
+      </div>
 
-        <div class="flex" v-show="socialHidden==true">
-          <label class="icon-label">
-            <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
-          </label>
-          <label>
-            <input
-              required
-              type="password"
-              class="input"
-              v-model.trim="joinForm.password"
-            />
-            <span>비밀번호</span>
-          </label>
-        </div>
+      <div class="flex" v-show="socialHidden == true">
+        <label class="icon-label">
+          <font-awesome-icon :icon="['fas', 'lock']" class="input-icon" />
+        </label>
+        <label>
+          <input
+            required
+            type="password"
+            class="input"
+            v-model.trim="joinForm.password"
+          />
+          <span>비밀번호</span>
+        </label>
+      </div>
 
       <div class="flex">
         <label class="icon-label">
           <font-awesome-icon :icon="['fas', 'user']" class="input-icon" />
         </label>
         <label>
-          <input required type="text" class="input" v-model.trim="joinForm.nickName" />
+          <input
+            required
+            type="text"
+            class="input"
+            v-model.trim="joinForm.nickName"
+          />
           <span>닉네임</span>
         </label>
       </div>
 
       <div class="flex">
         <label class="icon-label">
-          <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="input-icon" />
+          <font-awesome-icon
+            :icon="['fas', 'map-marker-alt']"
+            class="input-icon"
+          />
         </label>
         <label>
-          <input required type="text" class="input" v-model.trim="joinForm.region" />
+          <input
+            required
+            type="text"
+            class="input"
+            v-model.trim="joinForm.region"
+          />
           <span>선호 지역</span>
         </label>
       </div>
@@ -79,14 +117,22 @@
           <font-awesome-icon :icon="['fas', 'utensils']" class="input-icon" />
         </label>
         <label>
-          <input required type="text" class="input" v-model.trim="joinForm.food" />
+          <input
+            required
+            type="text"
+            class="input"
+            v-model.trim="joinForm.food"
+          />
           <span>선호 음식</span>
         </label>
       </div>
 
       <div class="flex">
         <label class="icon-label">
-          <font-awesome-icon :icon="['fas', 'calendar-alt']" class="input-icon" />
+          <font-awesome-icon
+            :icon="['fas', 'calendar-alt']"
+            class="input-icon"
+          />
         </label>
         <label>
           <input
@@ -111,9 +157,21 @@
       <!-- <div class="form-group gender-group"> -->
       <!-- <label class="input-label"></label> -->
       <div class="gender-container">
-        <input id="men" name="gender" type="radio" value="1" v-model="joinForm.gender" />
+        <input
+          id="men"
+          name="gender"
+          type="radio"
+          value="1"
+          v-model="joinForm.gender"
+        />
         <label for="men">남성</label>
-        <input id="women" name="gender" type="radio" value="0" v-model="joinForm.gender" />
+        <input
+          id="women"
+          name="gender"
+          type="radio"
+          value="0"
+          v-model="joinForm.gender"
+        />
         <label for="women">여성</label>
       </div>
       <!-- </div> -->
@@ -146,7 +204,15 @@ import {
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faEnvelope, faLock, faUser, faMapMarkerAlt, faUtensils, faCommentDots, faCalendarAlt);
+library.add(
+  faEnvelope,
+  faLock,
+  faUser,
+  faMapMarkerAlt,
+  faUtensils,
+  faCommentDots,
+  faCalendarAlt
+);
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -164,14 +230,14 @@ const joinForm = ref({
   profile_img: null,
 });
 const socialHidden = ref(true);
-console.log(route.params.id)
-if(route.params.id!=null){
-  joinForm.value.email=route.params.id;
-  joinForm.value.password=route.params.id;
+console.log(route.params.id);
+if (route.params.id != null) {
+  joinForm.value.email = route.params.id;
+  joinForm.value.password = route.params.id;
   socialHidden.value = false;
-}else{
+} else {
   socialHidden.value = true;
-  console.log(socialHidden.value)
+  console.log(socialHidden.value);
 }
 
 const fileInputRef = ref(null);

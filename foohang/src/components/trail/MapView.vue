@@ -145,9 +145,9 @@ const createSVGMarker = (order: number, color: string): string => {
       >
         <div class="info-window-content">
           <v-img
-            class="align-end text-white"
+            class="info-window-image"
             height="100"
-            width="150"
+            width="100%"
             :src="centerSrc"
             cover
           />
@@ -173,6 +173,7 @@ const createSVGMarker = (order: number, color: string): string => {
         @onLoadKakaoMapMarker="onLoadKakaoMapMarkerR(index)"
       />
       <KakaoMapInfoWindow
+        class="infoWin"
         v-for="(restaurant, index) in restaurantList"
         :key="'infoWindow-' + restaurant.contentId"
         :marker="markers[index]"
@@ -181,15 +182,16 @@ const createSVGMarker = (order: number, color: string): string => {
         :visible="visibleRefs[index]"
       >
         <v-img
-          class="align-end text-white"
+          class="info-window-image"
           height="100"
+          width="100%"
           :src="restaurant.firstImage"
           cover
         >
-          <v-card-title class="card-text">{{ restaurant.title }}</v-card-title>
+          <v-card-title>{{ restaurant.title }}</v-card-title>
         </v-img>
         <v-card-actions>
-          <v-btn color="blue" @click.stop="registR(restaurant.contentId)"
+          <v-btn color="orange" @click.stop="registR(restaurant.contentId)"
             >등록</v-btn
           >
           <v-btn color="gray" @click.stop="onClickKakaoMapMarkerR(index)"
@@ -225,7 +227,11 @@ const createSVGMarker = (order: number, color: string): string => {
   align-items: center;
   justify-content: center;
 }
-.slect-marker {
+.info-window-image {
+  width: 100%;
+  object-fit: cover;
+}
+.select-marker {
   color: aliceblue;
 }
 .card-text {
