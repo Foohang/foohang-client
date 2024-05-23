@@ -14,11 +14,14 @@
           <span>생각중..</span>
         </div>
       </div>
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        placeholder="메시지를 입력하세요..."
-      />
+      <div class="input-container">
+        <input
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="메시지를 입력하세요..."
+        />
+        <button @click="sendMessage">전송</button>
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +46,13 @@ const isLoading = ref(false);
 const chatStore = useChatStore();
 const userStore = useAuthStore();
 const messagesContainer = ref(null);
+
+// Add initial message
+messages.value.push({
+  id: messages.value.length + 1,
+  text: `안녕 ${userStore.user.nickName}! 내 이름은 youme야! 나랑 같이 여행 계획 짜자!`,
+  sender: "bot",
+});
 
 watch(chatStore, () => {
   autoBotResponse(chatStore.findAttraciton);
@@ -176,7 +186,7 @@ const generateBotResponse = async () => {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007bff;
+  background-color: #ee703f;
   color: white;
   border-radius: 50%;
   padding: 15px;
@@ -229,13 +239,31 @@ const generateBotResponse = async () => {
   margin-right: auto;
 }
 
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
 input {
+  flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin: 10px;
-  width: calc(100% - 40px);
-  box-sizing: border-box;
+  margin-right: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #ee703f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ffdab9;
 }
 
 .loading {
