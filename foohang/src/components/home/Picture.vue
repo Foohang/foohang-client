@@ -12,7 +12,15 @@
       @mouseenter="stopHoverTimer"
       @mouseleave="startHoverTimer"
     >
-      <img :src="item.src" class="carousel-image" />
+      <video
+        v-if="item.type === 'video'"
+        :src="item.src"
+        class="carousel-media"
+        autoplay
+        loop
+        muted
+      />
+      <img v-else :src="item.src" class="carousel-media" />
       <div class="carousel-text">{{ item.text }}</div>
     </v-carousel-item>
   </v-carousel>
@@ -24,15 +32,18 @@ export default {
     return {
       items: [
         {
-          src: "/src/assets/main/main0.png",
+          type: "video",
+          src: "/src/assets/main/main1.mp4",
           text: "어디를 여행하고 싶으신가요?",
         },
         {
+          type: "image",
           src: "/src/assets/main/main1.png",
           text: "최적의 동선으로 즐거운 식사를 만끽하세요",
         },
         {
-          src: "/src/assets/main/main2.png",
+          type: "video",
+          src: "/src/assets/main/main2.mp4",
           text: "최고의 순간을 기록하세요",
         },
       ],
@@ -42,10 +53,10 @@ export default {
   },
   methods: {
     startHoverTimer() {
-      this.stopHoverTimer(); // clear any existing timer before starting a new one
+      this.stopHoverTimer();
       this.hoverTimer = setTimeout(() => {
         this.activeIndex = (this.activeIndex + 1) % this.items.length;
-      }, 1000); // 1000ms = 1 second
+      }, 1000);
     },
     stopHoverTimer() {
       if (this.hoverTimer) {
@@ -58,7 +69,7 @@ export default {
 </script>
 
 <style scoped>
-.carousel-image {
+.carousel-media {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -69,11 +80,11 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #ffffff; /* 주황색 계열 */
+  color: #ffffff;
   font-size: 22px;
   font-weight: lighter;
   text-align: center;
-  background-color: #00000090; /* 반투명 검정 배경으로 가독성 증가 */
+  background-color: #00000090;
   padding: 15px;
   border-radius: 15px;
 }
