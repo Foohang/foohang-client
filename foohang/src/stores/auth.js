@@ -30,6 +30,11 @@ export const useAuthStore = defineStore(
       user.value = jwtDecode(token.value);
     };
 
+    const kakaoLogin = function(Ktoken){
+      token.value = Ktoken;
+      user.value = jwtDecode(token.value);
+    }
+
     const update = async (formData) => {
       const response = await mypageApi.put("/", formData, {
         headers: {
@@ -58,7 +63,7 @@ export const useAuthStore = defineStore(
       console.log(user.value);
     };
 
-    return { user, token, join, login, logout, update };
+    return { user, token, join, login,kakaoLogin, logout, update };
   },
   {
     persist: true,
