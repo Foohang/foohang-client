@@ -67,7 +67,11 @@ onMounted(() => {
   <div>
     <div class="top">
       <div class="present">
-        <img src="/src/assets/reviewIcon.png" height="50px" />
+        <img
+          src="/src/assets/reviewIcon.png"
+          height="50px"
+          style="margin-right: 10px"
+        />
         <div>
           <h1>추억 돌아보기</h1>
           <p class="subtitle">지난날의 여정을 돌이켜보세요</p>
@@ -96,7 +100,7 @@ onMounted(() => {
         <v-switch v-model="reverse" label="역순"></v-switch>
       </div>
       <div>
-        <SearchBar @update:search="selectName = $event"></SearchBar>
+        <SearchBar class @update:search="selectName = $event"></SearchBar>
       </div>
     </div>
 
@@ -122,8 +126,10 @@ onMounted(() => {
   color: grey;
 }
 .memory-btn {
-  background-color: #f7931e;
-  color: white;
+  margin-top: 10px;
+  background-color: #ee703f;
+  color: #f8f9fb;
+  text-shadow: 0.4px 0.4px 1px #00000080;
 }
 .out {
   width: 70%;

@@ -54,7 +54,7 @@ const messagesContainer = ref(null);
 // Add initial message
 messages.value.push({
   id: messages.value.length + 1,
-  text: `안녕 ${userStore.user.nickName}! 내 이름은 youme야! 나랑 같이 여행 계획 짜자!`,
+  text: `안녕! 내 이름은 youme야! 나랑 같이 여행 계획 짜자!`,
   sender: "bot",
 });
 
@@ -244,6 +244,9 @@ const generateBotResponse = async () => {
   padding: 15px;
   overflow-y: auto;
   background-color: #f9f9f9;
+}
+.messages::-webkit-scrollbar {
+  display: none;
 }
 
 .message {
